@@ -19,7 +19,7 @@
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("userEmail", email);
                 alert("Connexion réussie !");
-                window.location.href = "index.html"; // Redirige vers la page d'accueil
+                window.location.href = "accueil.html"; // Redirige vers la page d'accueil
             } else {
                 // Affiche un message d'erreur
                 const errorMessage = document.getElementById("errorMessage");
