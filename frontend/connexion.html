@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRide - Connexion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>EcoRide</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="covoiturages.html">Covoiturages</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="no-columns">       
+        <div class="login-container">
+            <h2>Connexion</h2>
+            <form id="loginForm" action="connexion.php" method="POST">
+                <div class="form-group">
+                    <label for="email">Adresse email :</label>
+                    <input type="email" id="email" name="email" placeholder="Entrez votre email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
+                </div>
+                <div class="form-group">
+                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                </div>
+                <button type="submit">Se connecter</button>
+            </form>
+            <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
+            <p id="errorMessage" style="color: red; display: none;">Email ou mot de passe incorrect.</p>
+        </div>
+    </main>
+    
+    <footer>
+        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+    </footer>
+
+    <!-- Script JavaScript -->
+    <script>src="js/connexion.js"</script>
+</body>
+</html>
