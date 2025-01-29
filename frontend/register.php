@@ -58,6 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $pdo->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
     if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
         echo "Inscription réussie ! Vous pouvez vous connecter.";
+        // Rediriger vers la page de connnexion ou autre page protégée
+        header("Location: connexion.html");
     } else {
         echo "Erreur lors de l'inscription.";
     }

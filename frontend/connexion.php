@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Connexion réussie !";
 
         // Rediriger vers la page d'accueil ou autre page protégée
-        header("Location: index.html");
+        header("Location: accueil.html");
         exit;
     } else {
         echo "Identifiants incorrects.";

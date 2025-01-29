@@ -70,7 +70,7 @@ $covoiturages = $stmt->fetchAll();
             </div>
             <nav>
                 <ul>
-                    <li><a href="acceuil.html">Accueil</a></li>
+                    <li><a href="accueil.html">Accueil</a></li>
                     <li><a href="#">Contact</a></li>
                     <li id="authButton"></li>
                 </ul>
