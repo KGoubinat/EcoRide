@@ -1,0 +1,416 @@
+/* Global Styles */
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #d8f3dc;
+    color: #333;
+    background-image: url('../Images/Fond.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Prend toute la hauteur de l'écran */
+    font-size: 18px;
+}
+
+/* Header */
+header {
+    background: #0077b6;
+    color: black;
+    padding: 20px;
+    height: 35px; 
+    margin: 0;
+
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 30px;
+}
+header h1 {
+    color: black;
+    margin: 0;
+    font-weight: bolder;
+}
+
+nav {
+    margin-left: auto; /* Pousse la navigation à droite */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 100px; /* Espacement entre les liens */
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #00BFA5; /* Couleur au survol */
+}
+
+/* Main Layout */
+main {
+    padding: 50px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Trois colonnes : ajustées pour une mise en page optimale */
+    gap: 20px;
+    flex-grow: 1; /* Prend tout l'espace disponible entre l'en-tête et le footer */
+}
+main.no-columns{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+main.four-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* Quatre colonnes */
+    gap: 20px;
+}
+/* Ajout de la flexbox pour la première colonne */
+.first-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement si nécessaire */
+    height: 100%; /* Assure que la colonne occupe toute la hauteur disponible */
+}
+.second-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement si nécessaire */
+    height: 100%; /* Assure que la colonne occupe toute la hauteur disponible */
+
+}
+.third-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement si nécessaire */
+    height: 100%; /* Assure que la colonne occupe toute la hauteur disponible */
+}
+.highlight h3 {
+    text-align: center;
+}
+/* Presentation Section */
+.presentation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    background: white;
+    border-radius: 50px;
+    padding: 20px;
+    width: 350px;
+    height: 350px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: justify;
+    margin: auto;
+}
+
+.ecoride-title {
+    font-family: 'Open Sans', sans-serif; /* Police */
+    font-weight: 800; /* ExtraBold */
+    font-size: 60px; /* Taille de la police */
+    line-height: 1.2; /* Ajuste l'espacement vertical */
+    text-align: center; /* Centrer le texte horizontalement */
+    margin: 20px 0; /* Espacement au-dessus et en dessous */
+    color: #333; /* Couleur du texte */
+    letter-spacing: 0%; /* Espace entre les lettres */
+}
+
+/* Form Section */
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50px;
+    padding: 0px; /* Plus d'espace autour du contenu */
+    width: 550px;
+    height: auto; /* Hauteur ajustée au contenu */
+}
+
+form input, form button {
+    width: 100%;
+    padding: 15px; /* Taille des champs */
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+
+/* Details Section */
+.details {
+    background: white;
+    padding: 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    height: auto;
+    margin: 30px;
+}
+
+/* Rejoindre Section */
+.rejoindre {
+    margin:30px;
+    background: white;
+    padding: 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 300px;
+    height: auto;
+    display: flex; /* Active Flexbox */
+    flex-direction: column; /* Place les enfants en colonne */
+    align-items: center; /* Centre horizontalement */
+    justify-content: center; /* Centre verticalement */
+}
+.details, .rejoindre, .form, .presentation, .card, .card-filtres, .login-container, .signup-form-container {
+    border: 3px solid black;
+}
+/* Footer */
+footer {
+    background: #0077b6;
+    color: black;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+button {
+    background-color: #26A69A;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: #00BFA5;
+}
+
+footer a {
+    color: black; /* Couleur du lien en noir */
+    text-decoration: none; /* Supprime le soulignement */
+    font-weight: bold; /* Rendre le texte plus visible (optionnel) */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Ajoute un soulignement au survol pour un effet visuel */
+    color: #00BFA5; /* Change la couleur au survol (optionnel) */
+}
+
+/* Style de la carte */
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    margin: 10px ;
+}
+
+
+/* Partie image */
+.card-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 15px auto;
+    display: block;
+    border: 2px solid #26A69A; /* Bordure bleue ou verte */
+    object-fit: cover;
+    margin: 5px;
+}
+
+/* Partie texte */
+.card-body {
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Titre de la carte */
+.card-body h2 {
+
+    margin: 10px 0;
+    font-size: 18px;
+    color: #333;
+    padding-right: 100px;
+}
+
+.card-body h2 span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #26A69A;
+}
+
+/* Liste des informations */
+.card-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    text-align: left;
+}
+
+.card-body ul li {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* Bouton */
+.card-body button {
+    background-color: #26A69A;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right:80px;
+}
+.card-body-filters button:hover, .card-body button:hover {
+    background-color: #00BFA5;
+}
+
+
+.card-body-filters select {
+    width: 190px;
+}
+
+.card-body-filters {
+    padding: 0px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 15px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column; 
+    align-items: left;
+
+}
+.card-body-filters h2 {
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+    margin: 10px;
+
+}
+.card-body-filters button {
+    background-color: #26A69A;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    width: fit-content; 
+    align-self: center;
+}
+
+.filters{
+    padding: 4px;
+}
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50px;
+    padding: 0px; /* Plus d'espace autour du contenu */
+    width: 550px;
+    height: auto; /* Hauteur ajustée au contenu */
+}
+.login-container button {
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    padding:15px;
+    display: block; 
+    margin: 1rem auto; 
+}
+.login-container a, .signup-form-container a {
+    color: #26A69A;
+    text-decoration: none;
+    font-weight: bold;
+}
+.login-container a:hover {
+    color: #00BFA5;
+}
+.signup-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50px;
+    padding: 0px; /* Plus d'espace autour du contenu */
+    width: 550px;
+    height: auto; /* Hauteur ajustée au contenu */
+}
+.signup-form-container p {
+    margin-top: 0px;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Réduction du nombre de colonnes à une seule pour les petits écrans */
+    main {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Sections ajustées en pleine largeur */
+    .presentation, .form, .details, .rejoindre {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Alignement centré pour les éléments */
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .third-column {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        width: 100%; /* Bouton étendu pour les petits écrans */
+    }
+}

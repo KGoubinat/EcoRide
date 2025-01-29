@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - EcoRide</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>EcoRide</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="covoiturages.html">Covoiturages</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="no-columns">       
+        <section class="signup-form-container">
+            <h2>Inscription</h2>
+            <p>Créez votre compte pour rejoindre EcoRide !</p>
+            <form id="signupForm" action="register.php" method="POST">
+                <input type="text" id="firstName" name="firstName" placeholder="Prénom" required><br>
+                <input type="text" id="lastName" name="lastName" placeholder="Nom" required><br>
+                <input type="email" id="email" name="email" placeholder="Adresse e-mail" required><br>
+                <input type="password" id="password" name="password" placeholder="Mot de passe" required><br>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmer le mot de passe" required><br>
+                <div id="passwordError" style="color: red; font-size: 0.9rem; display: none;">
+                    Les mots de passe ne correspondent pas.
+                </div>
+                <button type="submit">S'inscrire</button>
+            </form>
+            <p>Déjà inscrit ? <a href="connexion.html">Connectez-vous ici !</a></p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+    </footer>
+
+<script src="js/register.js"></script>
+</body>
+</html>
