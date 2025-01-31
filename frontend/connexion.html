@@ -40,15 +40,15 @@
                 <button type="submit">Se connecter</button>
             </form>
             <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
-            <p id="errorMessage" style="color: red; display: none;">Email ou mot de passe incorrect.</p>
+
+            <?php if (isset($errorMessage)): ?>
+                <p id="errorMessage" style="color: red;"><?php echo $errorMessage; ?></p>
+            <?php endif; ?>
         </div>
     </main>
     
     <footer>
         <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
     </footer>
-
-    <!-- Script JavaScript -->
-    <script>src="js/connexion.js"</script>
 </body>
 </html>

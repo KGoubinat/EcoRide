@@ -1,14 +1,15 @@
 <?php
 // Connexion à la base de données
 $dsn = 'mysql:host=localhost;dbname=ecoride';
-$username = 'root';
-$password = 'nouveau_mot_de_passe';
+$username = 'root'; // Remplace avec ton nom d'utilisateur de base de données
+$password = 'nouveau_mot_de_passe'; // Remplace avec ton mot de passe de base de données
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false
 ];
 
+// Tentative de connexion à la base de données
 try {
     $pdo = new PDO($dsn, $username, $password, $options);
 } catch (PDOException $e) {
@@ -17,39 +18,36 @@ try {
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupérer les données du formulaire
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-
-    // Validation des données
+    
+    // Vérification si les champs sont vides
     if (empty($email) || empty($password)) {
-        die("Tous les champs doivent être remplis.");
-    }
-
-    // Vérifier si l'email est valide
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("Adresse email invalide.");
-    }
-
-    // Vérifier si l'email existe
-    $stmt = $pdo->prepare("SELECT id, password FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    // Si l'utilisateur existe et le mot de passe est correct
-    if ($user && password_verify($password, $user['password'])) {
-        session_start(); // Démarrer la session
-        $_SESSION['user_id'] = $user['id']; // Stocker l'ID de l'utilisateur
-        $_SESSION['user_email'] = $email; // Stocker l'email de l'utilisateur
-
-        // Connexion réussie
-        echo "Connexion réussie !";
-
-        // Rediriger vers la page d'accueil ou autre page protégée
-        header("Location: accueil.html");
-        exit;
+        $errorMessage = "Veuillez remplir tous les champs.";
     } else {
-        echo "Identifiants incorrects.";
+        // Vérifier si l'email existe dans la base de données
+        $stmt = $pdo->prepare("SELECT id, password FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            // Vérifier le mot de passe
+            if (password_verify($password, $user['password'])) {
+                // Démarrer une session et stocker l'ID et l'email
+                session_start();
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_email'] = $email;
+
+                // Rediriger vers la page d'accueil après une connexion réussie
+                header("Location: accueil.html");
+                exit;
+            } else {
+                $errorMessage = "Mot de passe incorrect.";
+            }
+        } else {
+            $errorMessage = "Aucun utilisateur trouvé avec cet email.";
+        }
     }
 }
+
 ?>

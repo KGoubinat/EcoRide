@@ -49,3 +49,31 @@ document.addEventListener("DOMContentLoaded", () => {
         searchCovoiturages(queryParams);
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const authButton = document.getElementById("authButton");
+    
+    // Vérifie si l'utilisateur est connecté
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (isLoggedIn) {
+        // Si l'utilisateur est connecté, afficher le bouton "Déconnexion"
+        authButton.innerHTML = `<a href="#" id="logoutBtn">Déconnexion</a>`;
+
+        // Gestion de la déconnexion
+        const logoutBtn = document.getElementById("logoutBtn");
+        logoutBtn.addEventListener("click", function () {
+            // Supprimer les informations de l'utilisateur (ex : token, état de connexion)
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("userToken"); // Si tu utilises un token ou d'autres informations
+
+            // Rediriger l'utilisateur vers la page de connexion
+            window.location.href = "connexion.html"; // Ou redirige vers une autre page, si nécessaire
+        });
+    } else {
+        // Si l'utilisateur n'est pas connecté, afficher le bouton "Connexion"
+        authButton.innerHTML = `<a href="connexion.html">Connexion</a>`;
+    }
+});
+
