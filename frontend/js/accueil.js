@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
+ /*
+ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("rechercheForm");
     const resultsContainer = document.getElementById('results');
 
@@ -48,32 +49,19 @@ document.addEventListener("DOMContentLoaded", () => {
         // Appeler la fonction de recherche avec les paramètres du formulaire
         searchCovoiturages(queryParams);
     });
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const authButton = document.getElementById("authButton");
+}); 
+*/
+document.addEventListener("DOMContentLoaded", function() {
+    // Récupérer l'élément contenant l'attribut data-logged-in
+    const authButton = document.getElementById('authButton');
     
-    // Vérifie si l'utilisateur est connecté
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    // Récupérer la valeur de l'attribut data-logged-in pour déterminer si l'utilisateur est connecté
+    const isLoggedIn = authButton.getAttribute('data-logged-in') === 'true';
 
+    // Modifier le contenu du bouton en fonction de l'état de la connexion
     if (isLoggedIn) {
-        // Si l'utilisateur est connecté, afficher le bouton "Déconnexion"
-        authButton.innerHTML = `<a href="#" id="logoutBtn">Déconnexion</a>`;
-
-        // Gestion de la déconnexion
-        const logoutBtn = document.getElementById("logoutBtn");
-        logoutBtn.addEventListener("click", function () {
-            // Supprimer les informations de l'utilisateur (ex : token, état de connexion)
-            localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("userToken"); // Si tu utilises un token ou d'autres informations
-
-            // Rediriger l'utilisateur vers la page de connexion
-            window.location.href = "connexion.html"; // Ou redirige vers une autre page, si nécessaire
-        });
+        authButton.innerHTML = '<a href="deconnexion.php">Déconnexion</a>';
     } else {
-        // Si l'utilisateur n'est pas connecté, afficher le bouton "Connexion"
-        authButton.innerHTML = `<a href="connexion.html">Connexion</a>`;
+        authButton.innerHTML = '<a href="connexion.html">Connexion</a>';
     }
 });
-

@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<?php
+session_start();
+
+// Vérifie si l'utilisateur est connecté
+$isLoggedIn = isset($_SESSION['user_id']) ? 'true' : 'false'; // Renvoi 'true' ou 'false' en fonction de la connexion
+?>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -14,10 +20,11 @@
             </div>
             <nav>
                 <ul>
+                    <li><a href="accueil.php">Accueil</a></li>
                     <li><a href="#">Contact</a></li>
                     <li><a href="covoiturages.html">Covoiturages</a></li>
-                    <li><a href="accueil.html">Accueil</a></li>
-                    <li id="authButton"></li>
+                    <!-- L'élément où le bouton de connexion/déconnexion sera inséré -->
+                    <li id="authButton" data-logged-in="<?php echo $isLoggedIn; ?>"></li>
                 </ul>
             </nav>
         </div>
@@ -55,10 +62,8 @@
                 <div class="highlight">
                     <h3>Écologique</h3>
                     <p>Nous croyons en un avenir plus vert grâce à une mobilité durable.</p>
-
                     <h3>Économique</h3>
                     <p>Partagez les frais de déplacement et économisez sur vos trajets quotidiens.</p>
-
                     <h3>Convivial</h3>
                     <p>Voyagez en bonne compagnie et faites de nouvelles rencontres.</p>
                 </div>
@@ -78,6 +83,7 @@
     </footer>
 
     <!-- Script JavaScript -->
-   <script src="/frontend/js/accueil.js"></script>
+    <script src="js/accueil.js"></script>
+
 </body>
 </html>

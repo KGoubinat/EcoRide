@@ -14,17 +14,18 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.html">Accueil</a></li>
+                    <li><a href="accueil.php">Accueil</a></li>
                     <li><a href="#">Contact</a></li>
                     <li><a href="covoiturages.html">Covoiturages</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-    
+
     <main class="no-columns">       
         <div class="login-container">
             <h2>Connexion</h2>
+            <!-- Formulaire de connexion avec action correcte vers le fichier PHP -->
             <form id="loginForm" action="connexion.php" method="POST">
                 <div class="form-group">
                     <label for="email">Adresse email :</label>
@@ -39,14 +40,11 @@
                 </div>
                 <button type="submit">Se connecter</button>
             </form>
+            
             <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
-
-            <?php if (isset($errorMessage)): ?>
-                <p id="errorMessage" style="color: red;"><?php echo $errorMessage; ?></p>
-            <?php endif; ?>
         </div>
     </main>
-    
+
     <footer>
         <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
     </footer>

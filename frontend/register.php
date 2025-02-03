@@ -1,6 +1,8 @@
 <?php
+header("Content-Type: application/json"); // Renvoie du JSON
+
 // Connexion à la base de données avec PDO
-$dsn = 'mysql:host=localhost;dbname=ecoride';
+$dsn = 'mysql:host=localhost;dbname=ecoride;charset=utf8';
 $username = 'root';
 $password = 'nouveau_mot_de_passe';
 $options = [
@@ -12,56 +14,72 @@ $options = [
 try {
     $pdo = new PDO($dsn, $username, $password, $options);
 } catch (PDOException $e) {
-    die("Impossible de se connecter à la base de données : " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Erreur de connexion à la base de données"]);
+    exit;
 }
 
-// Vérifier si le formulaire a été soumis
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérifier si les données existent dans le tableau $_POST
-    if (!isset($_POST['firstName'], $_POST['lastName'], $_POST['email'], $_POST['password'], $_POST['confirmPassword'])) {
-        die("Tous les champs doivent être remplis.");
-    }
+// Lire les données envoyées en JSON
+$data = json_decode(file_get_contents("php://input"), true);
 
-    // Récupérer les données du formulaire
-    $firstName = trim($_POST['firstName']);
-    $lastName = trim($_POST['lastName']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-    $confirmPassword = trim($_POST['confirmPassword']);
+if (!$data) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Format JSON invalide"]);
+    exit;
+}
 
-    // Validation des données
-    if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($confirmPassword)) {
-        die("Tous les champs doivent être remplis.");
-    }
+// Vérifier si toutes les valeurs sont présentes
+if (!isset($data['firstName'], $data['lastName'], $data['email'], $data['password'])) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Tous les champs doivent être remplis"]);
+    exit;
+}
 
-    // Validation de l'email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("L'adresse email n'est pas valide.");
-    }
+// Récupérer et nettoyer les données
+$firstName = trim($data['firstName']);
+$lastName = trim($data['lastName']);
+$email = trim($data['email']);
+$password = trim($data['password']);
 
-    // Vérifier si l'email existe déjà
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    if ($stmt->rowCount() > 0) {
-        die("Cet email est déjà utilisé.");
-    }
+// Vérification des champs vides
+if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Tous les champs doivent être remplis"]);
+    exit;
+}
 
-    // Vérifier si les mots de passe correspondent
-    if ($password !== $confirmPassword) {
-        die("Les mots de passe ne correspondent pas.");
-    }
+// Validation de l'email
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "L'adresse email n'est pas valide"]);
+    exit;
+}
 
-    // Hachage du mot de passe
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+// Vérifier si l'email existe déjà
+$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+$stmt->execute([$email]);
+if ($stmt->rowCount() > 0) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Cet email est déjà utilisé"]);
+    exit;
+}
 
-    // Insérer l'utilisateur dans la base de données
-    $stmt = $pdo->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
-    if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
-        echo "Inscription réussie ! Vous pouvez vous connecter.";
-        // Rediriger vers la page de connnexion ou autre page protégée
-        header("Location: connexion.html");
-    } else {
-        echo "Erreur lors de l'inscription.";
-    }
+// Vérifier la longueur du mot de passe
+if (strlen($password) < 6) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Le mot de passe doit contenir au moins 6 caractères"]);
+    exit;
+}
+
+// Hachage du mot de passe
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+// Insérer l'utilisateur dans la base de données
+$stmt = $pdo->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
+if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
+    echo json_encode(["success" => true, "message" => "Inscription réussie !"]);
+} else {
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
 }
 ?>
