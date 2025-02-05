@@ -1,9 +1,31 @@
 <?php
 session_start();
 
+// Connexion à la base de données
+$dsn = 'mysql:host=localhost;dbname=ecoride';
+$username = 'root';
+$password = 'nouveau_mot_de_passe'; // Mets ton mot de passe ici si nécessaire
+$options = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false
+];
+try {
+    $pdo = new PDO($dsn, $username, $password, $options);  // Utilisez directement $dsn ici
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Récupérer la liste des villes
+    $stmt = $pdo->query("SELECT nom FROM villes ORDER BY nom ASC");
+    $villes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
+}
+
 // Vérifie si l'utilisateur est connecté
-$isLoggedIn = isset($_SESSION['user_id']) ? 'true' : 'false'; // Renvoi 'true' ou 'false' en fonction de la connexion
+$isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en fonction de la connexion
 ?>
+
+
 <!DOCTYPE html> 
 <html lang="fr">
 <head>
@@ -22,11 +44,12 @@ $isLoggedIn = isset($_SESSION['user_id']) ? 'true' : 'false'; // Renvoi 'true' o
                 <ul>
                     <li><a href="accueil.php">Accueil</a></li>
                     <li><a href="#">Contact</a></li>
-                    <li><a href="covoiturages.html">Covoiturages</a></li>
-                    <!-- L'élément où le bouton de connexion/déconnexion sera inséré -->
-                    <li id="authButton" data-logged-in="<?php echo $isLoggedIn; ?>"></li>
+                    <li><a href="resultatsCovoiturages.php">Covoiturages</a></li>
+                    <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                    <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
             </nav>
+
         </div>
     </header>
     
@@ -45,13 +68,21 @@ $isLoggedIn = isset($_SESSION['user_id']) ? 'true' : 'false'; // Renvoi 'true' o
                 <div class="formulaire">
                     <h2 class="ecoride-title">EcoRide</h2>
                     <p>Voyagez ensemble, économisez ensemble.</p>
-                    <form id="rechercheForm" action="resultats-covoiturages.php" method="GET">
-                        <input type="text" id="start" placeholder="Départ" name="start"><br>
-                        <input type="text" id="end" placeholder="Destination" name="end"><br>
-                        <input type="number" id="passengers" placeholder="Passager(s)" name="passengers"><br>
-                        <input type="date" id="date" name="date"><br>
+                    <form id="rechercheForm" action="resultatsCovoiturages.php" method="GET">
+                        <input list="cities" id="start" placeholder="Départ" name="start" required><br>
+                        <input list="cities" id="end" placeholder="Destination" name="end" required><br>
+                        <input type="number" id="passengers" placeholder="Passager(s)" name="passengers" min="1" required><br>
+                        <input type="date" id="date" name="date" required><br>
                         <button type="submit">Rechercher</button>
                     </form>
+                    
+                    <datalist id="cities">
+                        <?php foreach ($villes as $ville) : ?>
+                            <option value="<?= htmlspecialchars($ville) ?>">
+                        <?php endforeach; ?>
+                    </datalist>
+
+
                 </div>
                 <div id="results"></div>
             </section>
@@ -84,6 +115,5 @@ $isLoggedIn = isset($_SESSION['user_id']) ? 'true' : 'false'; // Renvoi 'true' o
 
     <!-- Script JavaScript -->
     <script src="js/accueil.js"></script>
-
 </body>
 </html>
