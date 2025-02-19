@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['lastName'] = $user['lastName'];
 
                 // Affichage de débogage sur la redirection
-                var_dump($_SESSION); // Affiche les variables de session après connexion
+               
 
                 // Rediriger l'utilisateur
                 if ($_SESSION['user_role'] == 'administrateur') {
