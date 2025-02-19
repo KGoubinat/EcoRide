@@ -23,15 +23,25 @@ try {
     die("Impossible de se connecter à la base de données : " . $e->getMessage());
 }
 
-// Récupérer les informations de l'utilisateur
-$user_email = $_SESSION['user_email'];
-$stmtUser = $pdo->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
-$stmtUser->execute([$user_email]);
-$user = $stmtUser->fetch();
+// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
+$databaseUrl = getenv('JAWSDB_URL');
 
-if (!$user) {
-    echo "Utilisateur non trouvé.";
-    exit;
+// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
+$parsedUrl = parse_url($databaseUrl);
+
+// Définir les variables pour la connexion à la base de données
+$servername = $parsedUrl['host'];  // Hôte MySQL
+$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
+$password = $parsedUrl['pass'];  // Mot de passe MySQL
+$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+
+// Connexion à la base de données avec PDO
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connexion réussie à la base de données MySQL.";
+} catch (PDOException $e) {
+    echo "Erreur de connexion : " . $e->getMessage();
 }
 
 // Récupérer les données envoyées par AJAX

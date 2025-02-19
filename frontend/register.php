@@ -3,22 +3,25 @@ session_start();
 
 header("Content-Type: application/json"); // Renvoie du JSON
 
-// Connexion à la base de données avec PDO
-$dsn = 'mysql:host=localhost;dbname=ecoride;charset=utf8';
-$username = 'root';
-$password = 'nouveau_mot_de_passe';
-$options = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false
-];
+// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
+$databaseUrl = getenv('JAWSDB_URL');
 
+// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
+$parsedUrl = parse_url($databaseUrl);
+
+// Définir les variables pour la connexion à la base de données
+$servername = $parsedUrl['host'];  // Hôte MySQL
+$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
+$password = $parsedUrl['pass'];  // Mot de passe MySQL
+$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+
+// Connexion à la base de données avec PDO
 try {
-    $pdo = new PDO($dsn, $username, $password, $options);
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connexion réussie à la base de données MySQL.";
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Erreur de connexion à la base de données"]);
-    exit;
+    echo "Erreur de connexion : " . $e->getMessage();
 }
 
 // Lire les données envoyées en JSON
