@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     } else {
                         $redirectUrl = $redirect; // Si déjà absolu, on garde tel quel
                     }
-                    header("Location: " . htmlspecialchars($redirectUrl)); // Sécurisation de l'URL
+                    header("Location: /frontend/accueil.php " . htmlspecialchars($redirectUrl)); // Sécurisation de l'URL
                 }
                 exit;
             } else {
