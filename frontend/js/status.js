@@ -21,7 +21,7 @@ if (statusForm) {
             formData.append("status", status);
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "update_status.php", true);
+            xhr.open("POST", "/frontend/update_status.php", true);
 
             // Lorsque la requête est terminée, traite la réponse
             xhr.onload = function() {

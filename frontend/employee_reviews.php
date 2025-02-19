@@ -44,7 +44,7 @@ $reviews = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gérer les Avis</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
 
@@ -54,10 +54,10 @@ $reviews = $stmt->fetchAll();
             <h1>Gérer les Avis</h1>
             <nav>
                 <ul>
-                    <li><a href="employee_dashboard.php">Tableau de bord</a></li>
-                    <li><a href="employee_reviews.php">Gérer les Avis</a></li>
-                    <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
-                    <li><a href="logout.php">Déconnexion</a></li>
+                    <li><a href="/frontend/employee_dashboard.php">Tableau de bord</a></li>
+                    <li><a href="/frontend/employee_reviews.php">Gérer les Avis</a></li>
+                    <li><a href="/frontend/employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
+                    <li><a href="/frontend/logout.php">Déconnexion</a></li>
                 </ul>
             </nav>
         </div>
@@ -90,8 +90,8 @@ $reviews = $stmt->fetchAll();
                             <td><?php echo $review['rating']; ?></td>
                             <td><?php echo $review['comment']; ?></td>
                             <td>
-                            <a href="approve_review.php?id=<?php echo $review['id']; ?>&status=approved">Valider</a> |
-                            <a href="approve_review.php?id=<?php echo $review['id']; ?>&status=rejected">Refuser</a>
+                            <a href="/frontend/approve_review.php?id=<?php echo $review['id']; ?>&status=approved">Valider</a> |
+                            <a href="/frontend/approve_review.php?id=<?php echo $review['id']; ?>&status=rejected">Refuser</a>
 
                             </td>
                         </tr>
@@ -102,7 +102,7 @@ $reviews = $stmt->fetchAll();
     </section>
 </main>
 <footer>
-    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
 </footer>
 
 </body>

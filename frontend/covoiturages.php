@@ -33,7 +33,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Accueil</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
     <header>
@@ -43,9 +43,9 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="contact_info.php">Contact</a></li>
-                    <li><a href="covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact_info.php">Contact</a></li>
+                    <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>" data-user-email="<?= $user_email ?? ''; ?>"></li>
                 </ul>
@@ -59,7 +59,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                 <div class="formulaire">
                     <h2 class="ecoride-title">EcoRide</h2>
                     <p>Voyagez ensemble, économisez ensemble.</p>
-                    <form id="rechercheForm" action="resultatsCovoiturages.php" method="GET">
+                    <form id="rechercheForm" action="/frontend/resultatsCovoiturages.php" method="GET">
                         <input list="cities" id="start" placeholder="Départ" name="start" required><br>
                         <input list="cities" id="end" placeholder="Destination" name="end" required><br>
                         <input type="number" id="passengers" placeholder="Passager(s)" name="passengers" min="1" required><br>
@@ -85,10 +85,10 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Script JavaScript -->
-    <script src="js/accueil.js"></script>
+    <script src="/frontend/js/accueil.js"></script>
 </body>
 </html>

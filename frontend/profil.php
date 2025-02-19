@@ -151,7 +151,7 @@ if (!empty($reservations)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Utilisateur</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Ajoute ton fichier CSS ici -->
+    <link rel="stylesheet" href="/frontend/styles.css"> <!-- Ajoute ton fichier CSS ici -->
 </head>
 <body>
     <header>
@@ -161,9 +161,9 @@ if (!empty($reservations)) {
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="contact-info">Contact</a></li>
-                    <li><a href="Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact-info">Contact</a></li>
+                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -216,7 +216,7 @@ if (!empty($reservations)) {
                     <p><strong>Status :</strong> <?php echo htmlspecialchars($reservation['statut']); ?></p>
                     
                     <!-- Formulaire d'annulation -->
-                    <form action="annuler_reservation.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                    <form action="/frontend/annuler_reservation.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
                         <!-- Champ caché pour envoyer l'ID de la réservation -->
                         <input type="hidden" name="reservation_id" value="<?php echo htmlspecialchars($reservation['reservation_id']); ?>">
                         <button type="submit" class="btn-danger">Annuler la réservation</button>
@@ -247,7 +247,7 @@ if (!empty($reservations)) {
                                         <p><strong>Date du trajet :</strong> <?php echo htmlspecialchars($ride['date_traject']); ?></p>
                                         <p><strong>Prix :</strong> <?php echo htmlspecialchars($ride['prix']); ?> crédits</p>
                                         <p><strong>Places restantes :</strong> <?php echo htmlspecialchars($ride['places_restantes']); ?></p>
-                                        <form action="annuler_covoiturage.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ce covoiturage ?');">
+                                        <form action="/frontend/annuler_covoiturage.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ce covoiturage ?');">
                                             <button type="submit" class="cancel-ride-button" data-covoiturage-id=<?php echo htmlspecialchars($ride['ride_id']); ?> >Annuler le covoiturage</button>
                                         </form>
                                         
@@ -294,7 +294,7 @@ if (!empty($reservations)) {
                 ?>
                 <div class="saisir-voyage">
                     <h2>Proposer un covoiturage</h2>
-                    <form id="voyageForm" method="POST" action="ajoutCovoiturages.php">
+                    <form id="voyageForm" method="POST" action="/frontend/ajoutCovoiturages.php">
                         <div class="form-group">
                             <label for="depart">Adresse de depart :</label>
                             <input list="cities" id="depart" placeholder="Départ" name="depart" required><br>
@@ -402,7 +402,7 @@ if (!empty($reservations)) {
     </main>
 
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Pour la mise a jour du statut-->
@@ -484,13 +484,13 @@ if (!empty($reservations)) {
         </div>
     </div>
     
-    <script src="js/demarrerCovoiturages.js" defer></script>
-    <script src="js/annulerReservation.js"></script>
-    <script src="js/annulerCovoiturage.js"></script> 
-    <script src="js/ajoutVehicle.js"></script>
-    <script src="js/profil.js"></script>
-    <script src="js/ajoutCovoiturages.js"></script>
-    <script src="js/status.js"></script>
+    <script src="/frontend/js/demarrerCovoiturages.js" defer></script>
+    <script src="/frontend/js/annulerReservation.js"></script>
+    <script src="/frontend/js/annulerCovoiturage.js"></script> 
+    <script src="/frontend/js/ajoutVehicle.js"></script>
+    <script src="/frontend/js/profil.js"></script>
+    <script src="/frontend/js/ajoutCovoiturages.js"></script>
+    <script src="/frontend/js/status.js"></script>
 
 </body>
 </html>

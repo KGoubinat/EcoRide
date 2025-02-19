@@ -27,7 +27,7 @@ modalCancelConfirm.addEventListener('click', () => {
         console.log("Redirection vers annuler_reservation.php?id=" + reservationId);
         
         // Rediriger vers la page d'annulation de la réservation avec l'ID de la réservation
-        window.location.href = `annuler_reservation.php?id=${reservationId}`;
+        window.location.href = `/frontend/annuler_reservation.php?id=${reservationId}`;
     } else {
         console.log("Aucun ID de réservation trouvé.");
     }

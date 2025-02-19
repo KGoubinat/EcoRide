@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Connexion</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
     <header>
@@ -14,9 +14,9 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="covoiturages.html">Covoiturages</a></li>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact-info.php">Contact</a></li>
+                    <li><a href="/frontend/covoiturages.html">Covoiturages</a></li>
                 </ul>
             </nav>
         </div>
@@ -26,8 +26,8 @@
         <div class="login-container">
             <h2>Connexion</h2>
             <!-- Formulaire de connexion avec action correcte vers le fichier PHP -->
-            <form id="loginForm" action="connexion.php" method="POST">
-                <input type="hidden" name="redirect" id="redirectInput" value="accueil.php">
+            <form id="loginForm" action="/frontend/connexion.php" method="POST">
+                <input type="hidden" name="redirect" id="redirectInput" value="/frontend/accueil.php">
                 <div class="form-group">
                     <label for="email">Adresse email :</label>
                     <input type="email" id="email" name="email" placeholder="Entrez votre email" required>
@@ -37,22 +37,22 @@
                     <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
                 </div>
                 <div class="form-group">
-                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    <a href="" class="forgot-password">Mot de passe oublié ?</a>
                 </div>
                 <button type="submit">Se connecter</button>
             </form>
             
-            <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
+            <p>Pas encore inscrit ? <a href="/frontend/register.html">Créer un compte</a></p>
         </div>
     </main>
 
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const params = new URLSearchParams(window.location.search);
-            let redirectUrl = params.get("redirect") || "accueil.php";  // Valeur par défaut si pas de redirect dans l'URL
+            let redirectUrl = params.get("redirect") || "/frontend/accueil.php";  // Valeur par défaut si pas de redirect dans l'URL
     
             // Remplir le champ caché avec la redirection
             document.getElementById('redirectInput').value = redirectUrl;

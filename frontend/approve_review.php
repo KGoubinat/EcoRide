@@ -62,17 +62,17 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
             ]);
 
             // Rediriger après l'insertion
-            header("Location: employee_reviews.php?success=1"); // Redirige vers la page des avis avec un message de succès
+            header("Location: /frontend/employee_reviews.php?success=1"); // Redirige vers la page des avis avec un message de succès
             exit;
         }
     } else {
         // Si l'avis n'existe pas, rediriger vers la page des avis
-        header("Location: employee_reviews.php?error=1");
+        header("Location: /frontend/employee_reviews.php?error=1");
         exit;
     }
 } else {
     // Si les paramètres ne sont pas définis, rediriger vers la page des avis
-    header("Location: employee_reviews.php?error=1");
+    header("Location: /frontend/employee_reviews.php?error=1");
     exit;
 }
 ?>

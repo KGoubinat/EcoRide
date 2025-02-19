@@ -83,7 +83,7 @@ if ($isLoggedIn) {
 <head>
     <meta charset="UTF-8">
     <title>Détails du covoiturage</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
 
@@ -94,9 +94,9 @@ if ($isLoggedIn) {
         </div>
         <nav>
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
-                <li><a href="contact-info">Contact</a></li>
-                <li><a href="Covoiturages.php">Covoiturages</a></li>
+                <li><a href="/frontend/accueil.php">Accueil</a></li>
+                <li><a href="/frontend/contact-info">Contact</a></li>
+                <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
 
@@ -142,7 +142,7 @@ if ($isLoggedIn) {
         <?php endif; ?>
         
         <?php if (!$isLoggedIn): ?>
-            <p><a href="connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
+            <p><a href="/frontend/connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
         <?php elseif ($covoiturage['places_restantes'] > 0 && $users_credit >= $covoiturage['prix']): ?>
             <button class="participer" id="btnParticiper" data-id="<?= $covoiturage['id'] ?>" data-prix="<?= $covoiturage['prix'] ?>">
                 Participer
@@ -195,8 +195,8 @@ if ($isLoggedIn) {
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
 </footer>
-<script src="js/details.js"></script>
+<script src="/frontend/js/details.js"></script>
 </body>
 </html>

@@ -41,7 +41,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Accueil</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
     <header>
@@ -51,9 +51,9 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="contact_info.php">Contact</a></li>
-                    <li><a href="Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact_info.php">Contact</a></li>
+                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -91,7 +91,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
         <p>Les données personnelles sont collectées à des fins de gestion des comptes utilisateurs, etc. Pour plus d'informations, consultez notre politique de confidentialité.</p>
 
         <h4>Cookies</h4>
-        <p>Ce site utilise des cookies pour améliorer votre expérience. Consultez notre <a href="cookies_policy.php">politique de cookies</a>.</p>
+        <p>Ce site utilise des cookies pour améliorer votre expérience. Consultez notre <a href="/frontend/cookies_policy.php">politique de cookies</a>.</p>
 
         <h4>Litiges</h4>
         <p>Les litiges seront résolus par les tribunaux de Paris, France, sous la législation française.</p>
@@ -102,6 +102,6 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     </footer>
 
     <!-- Script JavaScript -->
-    <script src="js/accueil.js"></script>
+    <script src="/frontend/js/accueil.js"></script>
 </body>
 </html>

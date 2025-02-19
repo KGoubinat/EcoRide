@@ -9,6 +9,6 @@ session_unset();
 session_destroy();
 
 // Rediriger vers la page de connexion ou d'accueil
-header("Location: accueil.php");  
+header("Location: /frontend/accueil.php");  
 exit;
 ?>

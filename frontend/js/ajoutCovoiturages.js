@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
         formData.append("vehicule_id", vehiculeId);  // Ajouter vehicule_id au FormData
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "ajoutCovoiturages.php", true);
+        xhr.open("POST", "/frontend/ajoutCovoiturages.php", true);
         
         xhr.onload = function() {
             if (xhr.status === 200) {

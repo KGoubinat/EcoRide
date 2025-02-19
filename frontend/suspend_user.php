@@ -36,7 +36,7 @@ try {
     $stmt->execute([$userId]);
 
     // Rediriger vers la page de gestion des utilisateurs
-    header("Location: manage_users.php");
+    header("Location: /frontend/manage_users.php");
     exit;
 }
 ?>

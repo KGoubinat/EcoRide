@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
     <title>Ajouter un Employé</title>
 </head>
 <body>
@@ -12,11 +12,11 @@
             <h1>Bienvenue, Administrateur</h1>
                 <nav>
                     <ul>
-                        <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-                        <li><a href="add_employee.html">Ajouter un Employé</a></li>
-                        <li><a href="manage_employees.php">Gérer les Employés</a></li>
-                        <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
-                        <li><a href="logout.php">Déconnexion</a></li>
+                        <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                        <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
+                        <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                        <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
+                        <li><a href="/frontend/logout.php">Déconnexion</a></li>
                     </ul>
                 </nav>
             </div>
@@ -24,7 +24,7 @@
     <main class="covoit">
         <div class="addEmployee">
             <h2>Ajouter un Employé</h2>
-            <form class=employee action="add_employee.php" method="POST">
+            <form class=employee action="/frontend/add_employee.php" method="POST">
                 <label for="lastName">Nom :</label>
                 <input type="text" id="lastName" name="lastName" required><br><br>
 
@@ -42,7 +42,7 @@
         </div>
     </main>
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 </body>
 </html>

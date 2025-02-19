@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Données envoyées :", userData); // Debugging
 
         // Envoi des données avec fetch()
-        fetch("register.php", { // Vérifie bien que cette URL est correcte
+        fetch("/frontend/register.php", { // Vérifie bien que cette URL est correcte
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Réponse du serveur :", data); // Debugging
             if (data.success) {
                 alert(data.message);
-                window.location.href = "connexion.html"; // Redirige vers connexion
+                window.location.href = "/frontend/connexion.html"; // Redirige vers connexion
             } else {
                 alert("Erreur : " + data.message);
             }

@@ -33,7 +33,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Accueil</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
     <header>
@@ -43,9 +43,9 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="contact_info.php">Contact</a></li>
-                    <li><a href="Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact_info.php">Contact</a></li>
+                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -94,10 +94,10 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Script JavaScript -->
-    <script src="js/accueil.js"></script>
+    <script src="/frontend/js/accueil.js"></script>
 </body>
 </html>

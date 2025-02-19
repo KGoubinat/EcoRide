@@ -7,10 +7,10 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("Is user logged in? " + isLoggedIn); // Affiche dans la console si l'utilisateur est connecté ou non
 
     if (isLoggedIn) {
-        authButton.innerHTML = '<a href="deconnexion.php">Déconnexion</a>';
-        profilButton.innerHTML = '<a href="profil.php">Profil</a>';
+        authButton.innerHTML = '<a href="/frontend/deconnexion.php">Déconnexion</a>';
+        profilButton.innerHTML = '<a href="/frontend/profil.php">Profil</a>';
     } else {
-        authButton.innerHTML = '<a href="connexion.html">Connexion</a>';
+        authButton.innerHTML = '<a href="/frontend/connexion.html">Connexion</a>';
         profilButton.style.display = 'none';  // Masquer le bouton Profil
     }
 

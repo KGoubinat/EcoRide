@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->execute([$conducteur_id, $utilisateur_id, $note, $commentaire]);
 
             // Redirection vers les détails du covoiturage
-            header("Location: details.php?id=" . $conducteur_id);
+            header("Location: /frontend/details.php?id=" . $conducteur_id);
             exit();
         } else {
             echo "L'utilisateur n'existe pas.";

@@ -16,10 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const isLoggedIn = authButton.getAttribute('data-logged-in') === 'true';
         
         if (isLoggedIn) {
-            authButton.innerHTML = '<a href="deconnexion.php">Déconnexion</a>';
-            profilButton.innerHTML = '<a href="profil.php">Profil</a>';
+            authButton.innerHTML = '<a href="/frontend/deconnexion.php">Déconnexion</a>';
+            profilButton.innerHTML = '<a href="/frontend/profil.php">Profil</a>';
         } else {
-            authButton.innerHTML = '<a href="connexion.html">Connexion</a>';
+            authButton.innerHTML = '<a href="/frontend/connexion.html">Connexion</a>';
             profilButton.style.display = 'none'; // Masquer le bouton Profil
         }
     }
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Envoi de la requête pour participer au covoiturage
-        fetch("participer.php", {
+        fetch("/frontend/participer.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `id=${encodeURIComponent(idCovoiturage)}&user_email=${encodeURIComponent(userEmail)}&passengers=${encodeURIComponent(passengers)}`
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             modalConfirmation2.style.display = 'none'; // Fermer la modale de confirmation finale
             // Rediriger vers la page profil.php après la fermeture de la modale
-            window.location.href = 'profil.php';
+            window.location.href = '/frontend/profil.php';
         })
         .catch(error => console.error("Erreur :", error));
     };

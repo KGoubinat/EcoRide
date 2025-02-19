@@ -30,10 +30,10 @@ cancelButtons.forEach(button => {
 modalCancelConfirm.addEventListener('click', () => {
     if (covoiturageId) {
         // Log pour vérifier que l'ID est correct avant de rediriger
-        console.log("Redirection vers annuler_covoiturage.php?id=" + covoiturageId);
+        console.log("Redirection vers /frontend/annuler_covoiturage.php?id=" + covoiturageId);
         
         // Rediriger vers la page d'annulation du covoiturage avec l'ID du covoiturage
-        window.location.href = `annuler_covoiturage.php?id=${covoiturageId}`;
+        window.location.href = `/frontend/annuler_covoiturage.php?id=${covoiturageId}`;
     } else {
         console.log("Aucun ID de covoiturage trouvé.");
     }

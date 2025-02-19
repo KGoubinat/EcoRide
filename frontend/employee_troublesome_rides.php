@@ -63,7 +63,7 @@ $troublesomeRides = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Covoiturages Problématiques</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
 
@@ -72,10 +72,10 @@ $troublesomeRides = $stmt->fetchAll();
         <h1>Covoiturages Problématiques</h1>
         <nav>
             <ul>
-                <li><a href="employee_dashboard.php">Tableau de bord</a></li>
-                <li><a href="employee_reviews.php">Gérer les Avis</a></li>
-                <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
-                <li><a href="logout.php">Déconnexion</a></li>
+                <li><a href="/frontend/employee_dashboard.php">Tableau de bord</a></li>
+                <li><a href="/frontend/employee_reviews.php">Gérer les Avis</a></li>
+                <li><a href="/frontend/employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
+                <li><a href="/frontend/logout.php">Déconnexion</a></li>
             </ul>
         </nav>
     </div>
@@ -130,7 +130,7 @@ $troublesomeRides = $stmt->fetchAll();
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
 </footer>
 
 </body>

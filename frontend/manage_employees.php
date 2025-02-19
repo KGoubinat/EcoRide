@@ -38,7 +38,7 @@ $stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM user
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Employés</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
     
@@ -47,11 +47,11 @@ $stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM user
             <h1>Gestion des Employés</h1>
             <nav>
                 <ul>
-                    <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-                    <li><a href="add_employee.html">Ajouter un Employé</a></li>
-                    <li><a href="manage_employees.php">Gérer les Employés</a></li>
-                    <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
-                    <li><a href="logout.php">Déconnexion</a></li>
+                    <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                    <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
+                    <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                    <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
+                    <li><a href="/frontend/logout.php">Déconnexion</a></li>
                 </ul>
             </nav>
             </div>
@@ -83,9 +83,9 @@ $stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM user
                         echo "<td>" . $row['role'] . "</td>";
                         echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
                         if ($row['etat'] === 'active') {
-                            echo "<td><a href='suspend_employee.php?id=" . $row['id'] . "'>Suspendre</a> | <a href='edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
+                            echo "<td><a href='/frontend/suspend_employee.php?id=" . $row['id'] . "'>Suspendre</a> | <a href='/frontend/edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
                         } else {
-                            echo "<td><a href='activate_employee.php?id=" . $row['id'] . "'>Activer</a> | <a href='edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
+                            echo "<td><a href='/frontend/activate_employee.php?id=" . $row['id'] . "'>Activer</a> | <a href='/frontend/edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
                         }
                         echo "</tr>";
                     }
@@ -96,7 +96,7 @@ $stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM user
     </main>
 
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 </body>
 </html>

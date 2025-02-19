@@ -88,7 +88,7 @@ $stmtDeleteReservation->execute();
 // Vérifie si l'annulation a réussi
 if ($stmtDeleteReservation->rowCount() > 0) {
     // Rediriger vers la page du profil avec un message de succès
-    header('Location: profil.php?message=Annulation réussie');
+    header('Location: /frontend/profil.php?message=Annulation réussie');
     exit;
 } else {
     // Si aucune ligne n'a été supprimée

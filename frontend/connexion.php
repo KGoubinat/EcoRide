@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
     
     // Récupérer la redirection envoyée dans le formulaire
-    $redirect = isset($_POST['redirect']) ? urldecode($_POST['redirect']) : 'accueil.php'; // Décoder l'URL
+    $redirect = isset($_POST['redirect']) ? urldecode($_POST['redirect']) : '/frontend/accueil.php'; // Décoder l'URL
 
 
     if (empty($email) || empty($password)) {
@@ -54,10 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Rediriger l'utilisateur
                 if ($_SESSION['user_role'] == 'administrateur') {
                     
-                    header("Location: admin_dashboard.php");
+                    header("Location: /frontend/admin_dashboard.php");
                 } elseif ($_SESSION['user_role'] == 'employe') {
                     
-                    header("Location: employee_dashboard.php");
+                    header("Location: /frontend/employee_dashboard.php");
                 } else {
                     // Si l'URL est relative, la rendre absolue
                     if (substr($redirect, 0, 1) === '/') {

@@ -195,7 +195,7 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
 <head>
     <meta charset="UTF-8">
     <title>Détails du covoiturage</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
 
@@ -206,9 +206,9 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
         </div>
         <nav>
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
-                <li><a href="contact-info">Contact</a></li>
-                <li><a href="Covoiturages.php">Covoiturages</a></li>
+                <li><a href="/frontend/accueil.php">Accueil</a></li>
+                <li><a href="/frontend/contact-info">Contact</a></li>
+                <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= isset($_SESSION['user_email']) ? 'true' : 'false'; ?>"></li>
                 <li id="authButton" data-logged-in="<?= isset($_SESSION['user_email']) ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
             </ul>
@@ -275,7 +275,7 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
 </footer>
 
 <script>
@@ -291,19 +291,19 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
         // Fermer la modale lorsque l'utilisateur clique sur le bouton de fermeture
         closeBtn.onclick = function() {
             modal.style.display = "none";
-            window.location.href = "accueil.php";
+            window.location.href = "/frontend/accueil.php";
         }
 
         // Fermer la modale si l'utilisateur clique en dehors de celle-ci
         window.onclick = function(event) {
             if (event.target === modal) {
                 modal.style.display = "none";
-                window.location.href = "accueil.php";
+                window.location.href = "/frontend/accueil.php";
             }
         }
     }
 </script>
 
-<script src="js/validation.js"></script>
+<script src="/frontend/js/validation.js"></script>
 </body>
 </html>

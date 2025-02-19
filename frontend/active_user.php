@@ -33,7 +33,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $stmt->execute([$userId]);
 
     // Rediriger vers la page de gestion des utilisateurs
-    header("Location: manage_users.php");
+    header("Location: /frontend/manage_users.php");
     exit;
 }
 ?>

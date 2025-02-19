@@ -125,7 +125,7 @@ if (empty($covoiturages)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Résultats</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/frontend/styles.css">
 </head>
 <body>
     <header>
@@ -135,9 +135,9 @@ if (empty($covoiturages)) {
             </div>
             <nav>
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="contact-info">Contact</a></li>
-                    <li><a href="Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact-info">Contact</a></li>
+                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -275,10 +275,10 @@ if (empty($covoiturages)) {
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Script JavaScript -->
-    <script src="js/filtres.js"></script>
+    <script src="/frontend/js/filtres.js"></script>
 </body>
 </html>

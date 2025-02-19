@@ -114,11 +114,11 @@ $totalCredits = $totalCovoiturages * 2;
         <h1>Bienvenue, Administrateur</h1>
             <nav>
                 <ul>
-                    <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-                    <li><a href="add_employee.html">Ajouter un Employé</a></li>
-                    <li><a href="manage_employees.php">Gérer les Employés</a></li>
-                    <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
-                    <li><a href="logout.php">Déconnexion</a></li>
+                    <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                    <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
+                    <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                    <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
+                    <li><a href="/frontend/logout.php">Déconnexion</a></li>
                 </ul>
             </nav>
         </div>
@@ -170,9 +170,9 @@ $totalCredits = $totalCovoiturages * 2;
                         echo "<td>" . $row['role'] . "</td>";
                         echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
                         if ($row['etat'] === 'active') {
-                            echo "<td><a href='suspend_user.php?id=" . $row['id'] . "'>Suspendre</a></td>";
+                            echo "<td><a href='/frontend/suspend_user.php?id=" . $row['id'] . "'>Suspendre</a></td>";
                         } else {
-                            echo "<td><a href='active_user.php?id=" . $row['id'] . "'>Activer</a></td>";
+                            echo "<td><a href='/frontend/active_user.php?id=" . $row['id'] . "'>Activer</a></td>";
                         }
                         echo "</tr>";
                     }
@@ -182,7 +182,7 @@ $totalCredits = $totalCovoiturages * 2;
         </section>
     </main>
     <footer>
-        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <script>
