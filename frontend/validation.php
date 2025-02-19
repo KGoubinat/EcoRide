@@ -202,7 +202,7 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
         <nav>
             <ul>
                 <li><a href="accueil.php">Accueil</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="contact-info">Contact</a></li>
                 <li><a href="Covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= isset($_SESSION['user_email']) ? 'true' : 'false'; ?>"></li>
                 <li id="authButton" data-logged-in="<?= isset($_SESSION['user_email']) ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
@@ -270,7 +270,7 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
 </footer>
 
 <script>

@@ -24,15 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Récupérer la redirection envoyée dans le formulaire
     $redirect = isset($_POST['redirect']) ? urldecode($_POST['redirect']) : 'accueil.php'; // Décoder l'URL
-    
-    // Afficher les variables de debug
-    var_dump($redirect);  // Vérifie la valeur de redirect
-    var_dump($_POST);     // Vérifie ce qui est envoyé dans le formulaire
 
-  
-
-    // Affichage de ce qui va se passer
-    var_dump($redirect);  // Vérifie la valeur de redirect après le test
 
     if (empty($email) || empty($password)) {
         $errorMessage = "Veuillez remplir tous les champs.";
@@ -56,10 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Rediriger l'utilisateur
                 if ($_SESSION['user_role'] == 'administrateur') {
-                    var_dump("Redirection vers admin_dashboard.php"); // Debug message
+                    
                     header("Location: admin_dashboard.php");
                 } elseif ($_SESSION['user_role'] == 'employe') {
-                    var_dump("Redirection vers employee_dashboard.php"); // Debug message
+                    
                     header("Location: employee_dashboard.php");
                 } else {
                     // Si l'URL est relative, la rendre absolue
@@ -68,9 +60,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     } else {
                         $redirectUrl = $redirect; // Si déjà absolu, on garde tel quel
                     }
-
-                    // Débogage : Vérifie l'URL finale avant redirection
-                    var_dump($redirectUrl);  // Affiche l'URL complète avant de rediriger
                     header("Location: " . htmlspecialchars($redirectUrl)); // Sécurisation de l'URL
                 }
                 exit;
@@ -83,7 +72,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Affichage des messages d'erreur
-if (isset($errorMessage)) {
-    echo $errorMessage;
-}

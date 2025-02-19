@@ -1,15 +1,8 @@
 <?php
 session_start();
 
-// Vérifier si l'utilisateur est connecté
-if (isset($_SESSION['user_email'])) {
-    echo "Utilisateur connecté : " . $_SESSION['user_email'];
-} else {
-    echo "Aucun utilisateur connecté.";
-}
 
 $isLoggedIn = isset($_SESSION['user_email']);
-echo "Is user logged in? " . ($isLoggedIn ? "true" : "false");
 
 $user_credit = 0;
 $dsn = 'mysql:host=localhost;dbname=ecoride';
@@ -95,7 +88,7 @@ if ($isLoggedIn) {
         <nav>
             <ul>
                 <li><a href="accueil.php">Accueil</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="contact-info">Contact</a></li>
                 <li><a href="Covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
@@ -195,7 +188,7 @@ if ($isLoggedIn) {
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
 </footer>
 <script src="js/details.js"></script>
 </body>

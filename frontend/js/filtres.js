@@ -3,6 +3,7 @@ function applyFilters() {
     // Récupérer les valeurs des filtres
     const start = document.querySelector('select[name="start"]').value;
     const end = document.querySelector('select[name="end"]').value;
+    const passengers = document.getElementById('passengers').value;
     const ecolo = document.querySelector('input[name="ecolo"]:checked') ? document.querySelector('input[name="ecolo"]:checked').value : '';
     const prix = document.querySelector('select[name="prix"]').value;
     const duree = document.querySelector('select[name="duree"]').value;
@@ -18,6 +19,9 @@ function applyFilters() {
     }
     if (end) {
         url += `end=${end}&`;
+    }
+    if (passengers) {
+        url+= `passengers=${passengers}&` ;
     }
     if (ecolo) {
         url += `ecolo=${ecolo}&`;

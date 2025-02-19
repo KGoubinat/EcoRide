@@ -98,9 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conducteur = $user['firstName'] . ' ' . $user['lastName'];
     $note = 0;
     $photo = 'default.jpg';
-    $places_restantes = $nb_places_disponibles;
+    $places_restantes = isset($_POST['places_restantes']) ? (int) $_POST['places_restantes'] : 0;
     $passagers = 0;
 
+    if ($places_restantes <= 0 || $places_restantes > $nb_places_disponibles) {
+        echo json_encode(['status' => 'error', 'message' => 'Nombre de places sélectionnées invalide.']);
+        exit;
+    }
+    
     // Déterminer la valeur de "ecologique" en fonction du type de carburant
     $ecologique = 0; // Valeur par défaut (non écologique)
 
@@ -117,8 +122,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insertion dans la table covoiturages
     $stmtCovoiturage = $pdo->prepare("INSERT INTO covoiturages (depart, destination, prix, vehicule_id, user_id, conducteur, places_restantes, note, heure_depart, duree, passagers, ecologique, photo, nb_places_disponibles, modele_voiture, marque_voiture, energie_voiture, heure_arrivee, `date`) 
-                                    
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
 
     if ($stmtCovoiturage->execute([
         $depart,   // Le départ (ville ou autre donnée)

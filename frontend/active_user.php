@@ -7,8 +7,10 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur
     exit;
 }
 
-if (isset($_GET['id'])) {
-    $userId = $_GET['id'];
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    die("ID utilisateur invalide.");
+
+    $userId = (int) $_GET['id'];
 
     // Connexion à la base de données
     $dsn = 'mysql:host=localhost;dbname=ecoride';
@@ -26,7 +28,7 @@ if (isset($_GET['id'])) {
         die("Impossible de se connecter à la base de données : " . $e->getMessage());
     }
 
-    // Mettre à jour le statut de l'utilisateur pour le suspendre
+    // Mettre à jour le statut de l'utilisateur pour l'activer'
     $stmt = $pdo->prepare("UPDATE users SET etat = 'active' WHERE id = ?");
     $stmt->execute([$userId]);
 

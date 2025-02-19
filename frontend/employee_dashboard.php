@@ -87,7 +87,7 @@ foreach ($ride_data as $data) {
 
     </main>
     <footer>
-    <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
 </footer>
 </body>
 

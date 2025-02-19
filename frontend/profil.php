@@ -1,13 +1,6 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_email'])) {
-    echo "Utilisateur connecté : " . $_SESSION['user_email'];
-} else {
-    echo "Aucun utilisateur connecté.";
-    exit;
-}
-
 // Connexion à la base de données
 $dsn = 'mysql:host=localhost;dbname=ecoride';
 $username = 'root';
@@ -164,7 +157,7 @@ if (!empty($reservations)) {
             <nav>
                 <ul>
                     <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="contact-info">Contact</a></li>
                     <li><a href="Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
@@ -239,7 +232,7 @@ if (!empty($reservations)) {
                 <?php if (!empty($offeredRides)): ?>
                             <div class="offered-rides-list">
                                 
-                                <?php foreach ($offeredRides as $ride):  echo "DEBUG ID : " . htmlspecialchars($ride['ride_id']);
+                                <?php foreach ($offeredRides as $ride):  
                                         $startButtonStyle = ($ride['ride_status'] === 'en attente') ? 'inline-block' : 'none';
                                         $endButtonStyle = ($ride['ride_status'] === 'en cours') ? 'inline-block' : 'none';?>
                                     <div class="offered-ride-item">
@@ -252,7 +245,7 @@ if (!empty($reservations)) {
                                         <form action="annuler_covoiturage.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ce covoiturage ?');">
                                             <button type="submit" class="cancel-ride-button" data-covoiturage-id=<?php echo htmlspecialchars($ride['ride_id']); ?> >Annuler le covoiturage</button>
                                         </form>
-                                        <p>ID debug : <?php echo $ride['ride_id']; ?></p>
+                                        
 
                                         <!-- Bouton "Démarrer le covoiturage" visible uniquement si le statut est "en attente" -->
                                         <button id="start-trip-<?php echo $ride['ride_id']; ?>" class="btn-start-trip" 
@@ -306,8 +299,8 @@ if (!empty($reservations)) {
                             <input list="cities" id="destination" placeholder="Destination" name="destination" required><br>
                         </div>
                         <div class="form-group">
-                            <label for="place_restantes">Place restantes:</label>
-                            <input id="place_restantes"  name="place_restantes" required><br>
+                            <label for="places_restantes">Place restantes:</label>
+                            <input id="places_restantes"  name="places_restantes" required><br>
                         </div>
                         <div class="form-group">
                             <label for="date">Date:</label>
@@ -404,7 +397,7 @@ if (!empty($reservations)) {
     </main>
 
     <footer>
-        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Pour la mise a jour du statut-->

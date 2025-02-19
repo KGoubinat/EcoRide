@@ -91,7 +91,7 @@ $stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM user
     </main>
 
     <footer>
-        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
 </body>
 </html>

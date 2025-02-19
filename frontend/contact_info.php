@@ -1,13 +1,6 @@
 <?php
 session_start(); // Commencer la session
 
-if (isset($_SESSION['user_email'])) {
-    echo "Utilisateur connecté : " . $_SESSION['user_email'];
-} else {
-    echo "Aucun utilisateur connecté.";
-}
-
-
 // Connexion à la base de données
 $dsn = 'mysql:host=localhost;dbname=ecoride';
 $username = 'root';
@@ -70,7 +63,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Script JavaScript -->

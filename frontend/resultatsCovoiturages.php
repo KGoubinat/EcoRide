@@ -1,12 +1,6 @@
 <?php
 // Démarrer la session PHP
-session_start(); // Commencer la session
-
-if (isset($_SESSION['user_email'])) {
-    echo "Utilisateur connecté : " . $_SESSION['user_email'];
-} else {
-    echo "Aucun utilisateur connecté.";
-}
+session_start(); 
 
 
 // Vérifier si l'utilisateur est connecté
@@ -137,7 +131,7 @@ if (empty($covoiturages)) {
             <nav>
                 <ul>
                     <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="contact-info">Contact</a></li>
                     <li><a href="Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
@@ -221,7 +215,19 @@ if (empty($covoiturages)) {
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="filters">
+                    <label for="passengers">Passagers :</label>
+                    <select id="passengers" name="passengers" onchange="applyFilters()">
+                        <option value="">-- Sélectionnez le nombre de passagers --</option>
+                        <option value="1" <?php if ($passengers == 1) echo 'selected'; ?>>1</option>
+                        <option value="2" <?php if ($passengers == 2) echo 'selected'; ?>>2</option>
+                        <option value="3" <?php if ($passengers == 3) echo 'selected'; ?>>3</option>
+                        <option value="4" <?php if ($passengers == 4) echo 'selected'; ?>>4</option>
+                        <option value="5" <?php if ($passengers == 5) echo 'selected'; ?>>5</option>
 
+                    </select>
+                </div>
+                
                 <div class="filters">
                     <label for="date">Date du voyage :</label>
                     <input type="date" id="date" name="date" value="<?= htmlspecialchars($date) ?>" onchange="applyFilters()">
@@ -246,7 +252,7 @@ if (empty($covoiturages)) {
                         Durée du trajet : <?= date('H\h i\m', strtotime($covoiturage['duree'])) ?><br>
                         Voyage écologique : <?= $covoiturage['ecologique'] ? 'Oui' : 'Non' ?></p>
 
-                        <a href="http://localhost/ecoride/frontend/details.php?id=<?= $covoiturage['id'] ?>" class="btn-detail">+ d'informations</a>
+                        <a href="http://localhost/ecoride/frontend/details.php?id=<?= $covoiturage['id'] ?>&start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($date) ?>&passengers=<?= urlencode($passengers) ?>&ecolo=<?= urlencode($ecolo) ?>&prix=<?= urlencode($prix) ?>&duree=<?= urlencode($duree) ?>&note=<?= urlencode($note) ?>" class="btn-detail">+ d'informations</a>
 
                     </div>
                 </div>
@@ -255,7 +261,7 @@ if (empty($covoiturages)) {
                 <div class="suggestion">
                     <p>Aucun covoiturage trouvé pour cette date.</p>
                     <p>Premier itinéraire le plus proche le <strong><?= htmlspecialchars((new DateTime($suggestedRide['date']))->format('d/m/Y')) ?></strong> à <?= date('H:i', strtotime($suggestedRide['heure_depart'])) ?></p> <!-- Affichage de l'heure de départ pour la suggestion -->
-                    <a href="?start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($suggestedRide['date']) ?>" class="btn">Voir ce trajet</a>
+                    <a href="?start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($suggestedRide['date'])?>" class="btn">Voir ce trajet</a>
                 </div>
             <?php else: ?>
                 <p class="no-results">Aucun covoiturage trouvé avec ces critères.</p>
@@ -264,7 +270,7 @@ if (empty($covoiturages)) {
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Script JavaScript -->

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // Récupérer les valeurs des champs
             const depart = document.getElementById("depart").value.trim();
             const destination = document.getElementById("destination").value.trim();
-            const placeRestantes = document.getElementById("place_restantes").value.trim();
+            const placeRestantes = document.getElementById("places_restantes").value.trim();
             const date = document.getElementById("date").value;
             const heureDepart = document.getElementById("heure_depart").value.trim();
             const duree = document.getElementById("duree").value.trim();
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const formData = new FormData();
         formData.append("depart", depart);
         formData.append("destination", destination);
-        formData.append("place_restantes", placeRestantes);
+        formData.append("places_restantes", placeRestantes);
         formData.append("date", date);
         formData.append("heure_depart", heureDepart);
         formData.append("duree", duree);

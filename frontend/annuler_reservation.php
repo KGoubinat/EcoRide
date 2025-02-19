@@ -41,14 +41,47 @@ if (!$user) {
     exit;
 }
 
-// Préparer et exécuter la suppression de la réservation
-$stmt = $pdo->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
-$stmt->bindParam(':id', $reservationId, PDO::PARAM_INT);
-$stmt->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
-$stmt->execute();
+// Récupérer l'ID de la course associée à cette réservation
+$stmtReservation = $pdo->prepare("SELECT covoiturage_id FROM reservations WHERE id = :id AND user_id = :user_id");
+$stmtReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
+$stmtReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
+$stmtReservation->execute();
+$reservation = $stmtReservation->fetch();
+
+if (!$reservation) {
+    echo "Erreur : Aucune réservation trouvée avec cet ID ou vous n'êtes pas autorisé à annuler cette réservation.";
+    exit;
+}
+
+$rideId = $reservation['covoiturage_id'];
+
+// Récupérer le nombre actuel de places restantes dans la table 'covoiturage'
+$stmtCovoiturage = $pdo->prepare("SELECT places_restantes FROM covoiturages WHERE id = :ride_id");
+$stmtCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
+$stmtCovoiturage->execute();
+$covoiturage = $stmtCovoiturage->fetch();
+
+if (!$covoiturage) {
+    echo "Erreur : Course non trouvée dans la table covoiturage.";
+    exit;
+}
+
+$newPassagers = $covoiturage['passengers'] - 1;  // Réduire le nombre de passagers
+$newPlacesRestantes = $covoiturage['places_restantes'] + 1;
+// Mettre à jour le nombre de passagers et de places restantes
+$stmtUpdateCovoiturage = $pdo->prepare("UPDATE covoiturages SET passengers = :passengers, places_restantes = :places_restantes WHERE id = :ride_id");
+$stmtUpdateCovoiturage->bindParam(':passengers', $newPassagers, PDO::PARAM_INT);
+$stmtUpdateCovoiturage->bindParam(':places_restantes', $newPlacesRestantes, PDO::PARAM_INT);
+$stmtUpdateCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
+$stmtUpdateCovoiturage->execute();
+// Supprimer la réservation
+$stmtDeleteReservation = $pdo->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
+$stmtDeleteReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
+$stmtDeleteReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
+$stmtDeleteReservation->execute();
 
 // Vérifie si l'annulation a réussi
-if ($stmt->rowCount() > 0) {
+if ($stmtDeleteReservation->rowCount() > 0) {
     // Rediriger vers la page du profil avec un message de succès
     header('Location: profil.php?message=Annulation réussie');
     exit;

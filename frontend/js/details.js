@@ -34,8 +34,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (btnParticiper) {
         btnParticiper.addEventListener("click", function () {
+            console.log("bouton cliqué")
             const idCovoiturage = this.getAttribute("data-id");
             const prixCovoiturage = this.getAttribute("data-prix");
+
+            // Récupérer le nombre de passagers depuis l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const passengers = urlParams.get('passengers');  // Récupérer la valeur des passagers depuis l'URL
+
+            if (!passengers) {
+                alert("Le nombre de passagers n'est pas défini.");
+                return;
+            }
 
             // Affichage de la première modale avec le prix
             modalMessage1.textContent = `Ce covoiturage coûte ${prixCovoiturage} crédits. Voulez-vous continuer ?`;
@@ -63,17 +73,23 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        console.log("Email envoyé dans la requête : " + userEmail);  // Vérification dans la console
+        // S'assurer que la variable 'passengers' est définie ici avant de l'utiliser
+        const urlParams = new URLSearchParams(window.location.search);
+        const passengers = urlParams.get('passengers');
+
+        if (!passengers) {
+            alert("Le nombre de passagers est manquant.");
+            return;
+        }
 
         // Envoi de la requête pour participer au covoiturage
         fetch("participer.php", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `id=${idCovoiturage}&user_email=${userEmail}`  // Passer l'email au lieu de l'ID
+            body: `id=${encodeURIComponent(idCovoiturage)}&user_email=${encodeURIComponent(userEmail)}&passengers=${encodeURIComponent(passengers)}`
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);  // Voir la réponse complète
             if (data.success) {
                 if (data.message === "Réservation effectuée avec succès.") {
                     modalReservationReussie.style.display = 'flex';
@@ -82,8 +98,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert(data.message);  // Affiche le message d'erreur
             }
             modalConfirmation2.style.display = 'none'; // Fermer la modale de confirmation finale
+            // Rediriger vers la page profil.php après la fermeture de la modale
+            window.location.href = 'profil.php';
         })
-
         .catch(error => console.error("Erreur :", error));
     };
 

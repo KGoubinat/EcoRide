@@ -1,13 +1,6 @@
 <?php
 session_start(); // Commencer la session
 
-if (isset($_SESSION['user_email'])) {
-    echo "Utilisateur connecté : " . $_SESSION['user_email'];
-} else {
-    echo "Aucun utilisateur connecté.";
-}
-
-
 // Connexion à la base de données
 $dsn = 'mysql:host=localhost;dbname=ecoride';
 $username = 'root';
@@ -113,7 +106,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                 <p>Plateforme intuitive et sécurisée.</p>
                 <p>Large choix de trajets adaptés à vos besoins.</p>
                 <p>Des conducteurs et passagers vérifiés.</p>
-                <button type="button" id="rejoindreBtn">Rejoignez nous!</button>
+                <a href="register.html"><button type="button" id="rejoindreBtn">Rejoignez nous!</button></a>
             </div>
         </section>
     </main>

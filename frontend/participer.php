@@ -1,11 +1,18 @@
 <?php
 session_start();
 
-// Vérifier si les données nécessaires sont présentes dans la requête
-if (isset($_POST['id']) && isset($_POST['user_email'])) {
-    $covoiturage_id = intval($_POST['id']);
-    $user_email = $_POST['user_email'];
+header('Content-Type: application/json; charset=UTF-8');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
+
+// Vérifier si les données nécessaires sont présentes dans la requête POST
+if (isset($_POST['id']) && isset($_POST['user_email']) && isset($_POST['passengers'])) {
+    $covoiturage_id = intval($_POST['id']); // Récupérer l'ID du covoiturage via POST
+    $user_email = $_POST['user_email'];     // Récupérer l'email de l'utilisateur via POST
+    $passengers = intval($_POST['passengers']); // Récupérer le nombre de passagers via POST
+
+   
     // Connexion à la base de données
     $dsn = 'mysql:host=localhost;dbname=ecoride';
     $username = 'root';
@@ -34,7 +41,7 @@ if (isset($_POST['id']) && isset($_POST['user_email'])) {
     $user_id = $user['id'];
 
     // Vérifier si le covoiturage existe et obtenir les informations
-    $stmt = $pdo->prepare("SELECT places_restantes, prix FROM covoiturages WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT places_restantes, prix, passagers FROM covoiturages WHERE id = ?");
     $stmt->execute([$covoiturage_id]);
     $covoiturage = $stmt->fetch();
 
@@ -54,13 +61,13 @@ if (isset($_POST['id']) && isset($_POST['user_email'])) {
     }
 
     // Vérifier si l'utilisateur a suffisamment de crédits et s'il y a des places disponibles
-    if ($userCredits['credit'] < $covoiturage['prix']) {
+    if ($userCredits['credit'] < $covoiturage['prix'] * $passengers) {
         echo json_encode(["success" => false, "message" => "Crédits insuffisants pour effectuer la réservation."]);
         exit;
     }
 
-    if ($covoiturage['places_restantes'] <= 0) {
-        echo json_encode(["success" => false, "message" => "Aucune place disponible."]);
+    if ($covoiturage['places_restantes'] < $passengers) {
+        echo json_encode(["success" => false, "message" => "Pas assez de places disponibles."]);
         exit;
     }
 
@@ -69,16 +76,20 @@ if (isset($_POST['id']) && isset($_POST['user_email'])) {
         $pdo->beginTransaction();
 
         // Insérer la réservation dans la table 'reservations'
-        $stmtReservation = $pdo->prepare("INSERT INTO reservations (user_id, covoiturage_id, statut) VALUES (?, ?, 'en attente')");
-        $stmtReservation->execute([$user_id, $covoiturage_id]);
+        $stmtReservation = $pdo->prepare("INSERT INTO reservations (user_id, covoiturage_id, statut, places_reservees) VALUES (?, ?, 'en attente', ?)");
+        $stmtReservation->execute([$user_id, $covoiturage_id, $passengers]);
 
         // Mettre à jour le nombre de places restantes
-        $stmtUpdate = $pdo->prepare("UPDATE covoiturages SET places_restantes = places_restantes - 1 WHERE id = ?");
-        $stmtUpdate->execute([$covoiturage_id]);
+        $stmtUpdate = $pdo->prepare("UPDATE covoiturages SET places_restantes = places_restantes - ? WHERE id = ?");
+        $stmtUpdate->execute([$passengers, $covoiturage_id]);
+
+        // Mettre à jour le nombre total de passagers
+        $stmtUpdatePassagers = $pdo->prepare("UPDATE covoiturages SET passagers = passagers + ? WHERE id = ?");
+        $stmtUpdatePassagers->execute([$passengers, $covoiturage_id]);
 
         // Déduire les crédits de l'utilisateur
         $stmtDeductCredits = $pdo->prepare("UPDATE users_credit SET credit = credit - ? WHERE user_id = ?");
-        $stmtDeductCredits->execute([$covoiturage['prix'], $user_id]);
+        $stmtDeductCredits->execute([$covoiturage['prix'] * $passengers, $user_id]);
 
         // Commit la transaction
         $pdo->commit();
