@@ -1,5 +1,5 @@
 {
-    "name": "ecoride",
+    "name": "kgoubinat/ecoride",
     "description": "EcoRide Covoiturage App",
     "require": {
       "php": "^7.3"
