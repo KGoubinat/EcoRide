@@ -1,5 +1,12 @@
 <?php
-session_start();
+session_start(); // Commencer la session
+
+if (isset($_SESSION['user_email'])) {
+    echo "Utilisateur connecté : " . $_SESSION['user_email'];
+} else {
+    echo "Aucun utilisateur connecté.";
+}
+
 
 // Connexion à la base de données
 $dsn = 'mysql:host=localhost;dbname=ecoride';
@@ -11,7 +18,7 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES => false
 ];
 try {
-    $pdo = new PDO($dsn, $username, $password, $options);  // Utilisez directement $dsn ici
+    $pdo = new PDO($dsn, $username, $password, $options);  
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Récupérer la liste des villes
@@ -43,8 +50,8 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
             <nav>
                 <ul>
                     <li><a href="accueil.php">Accueil</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="resultatsCovoiturages.php">Covoiturages</a></li>
+                    <li><a href="contact_info.php">Contact</a></li>
+                    <li><a href="covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -73,7 +80,9 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                         <input list="cities" id="end" placeholder="Destination" name="end" required><br>
                         <input type="number" id="passengers" placeholder="Passager(s)" name="passengers" min="1" required><br>
                         <input type="date" id="date" name="date" required><br>
-                        <button type="submit">Rechercher</button>
+                        <div class=button>
+                            <button type="submit">Rechercher</button>
+                        </div>
                     </form>
                     
                     <datalist id="cities">
@@ -110,7 +119,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="#">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
 
     <!-- Script JavaScript -->

@@ -1,9 +1,17 @@
 <?php
 // Démarrer la session PHP
-session_start();
+session_start(); // Commencer la session
+
+if (isset($_SESSION['user_email'])) {
+    echo "Utilisateur connecté : " . $_SESSION['user_email'];
+} else {
+    echo "Aucun utilisateur connecté.";
+}
+
 
 // Vérifier si l'utilisateur est connecté
 $isLoggedIn = isset($_SESSION['user_id']); // Vérifie si l'identifiant utilisateur est présent dans la session
+
 
 // Connexion à la base de données
 $dsn = 'mysql:host=localhost;dbname=ecoride';
@@ -96,6 +104,20 @@ $stmt->execute($params);
 
 // Récupérer les résultats
 $covoiturages = $stmt->fetchAll();
+
+// Trouver le premier trajet disponible si aucun covoiturage ne correspond
+$suggestedRide = null;
+if (empty($covoiturages)) {
+    $sql = "SELECT * FROM covoiturages 
+            WHERE depart LIKE ? AND destination LIKE ? 
+            AND places_restantes >= ? 
+            ORDER BY date ASC LIMIT 1";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(["%$start%", "%$end%", $passengers]);
+    $suggestedRide = $stmt->fetch();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -116,6 +138,7 @@ $covoiturages = $stmt->fetchAll();
                 <ul>
                     <li><a href="accueil.php">Accueil</a></li>
                     <li><a href="#">Contact</a></li>
+                    <li><a href="Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -123,7 +146,7 @@ $covoiturages = $stmt->fetchAll();
         </div>
     </header>
 
-    <main class="four-columns">
+    <main class="adaptation">
         <div class="card">
             <div class="card-body-filters">
                 <h2>FILTRES</h2>
@@ -219,15 +242,25 @@ $covoiturages = $stmt->fetchAll();
                         Arrivée : <?= htmlspecialchars($covoiturage['destination']) ?><br>
                         Places restantes : <?= htmlspecialchars($covoiturage['places_restantes']) ?><br>
                         Tarif : <?= htmlspecialchars($covoiturage['prix']) ?>€<br>
-                        Le : <?= htmlspecialchars($covoiturage['date']) ?><br>
+                        Le : <?= date('d/m/Y', strtotime($covoiturage['date'])) ?> à <?= date('H:i', strtotime($covoiturage['heure_depart'])) ?><br> <!-- Affichage de l'heure de départ -->
+                        Durée du trajet : <?= date('H\h i\m', strtotime($covoiturage['duree'])) ?><br>
                         Voyage écologique : <?= $covoiturage['ecologique'] ? 'Oui' : 'Non' ?></p>
-                        <a href="details-covoiturage.php?id=<?= $covoiturage['id'] ?>" class="btn-detail">+ d'informations</a>
+
+                        <a href="http://localhost/ecoride/frontend/details.php?id=<?= $covoiturage['id'] ?>" class="btn-detail">+ d'informations</a>
+
                     </div>
                 </div>
             <?php endforeach; ?>
-        <?php else: ?>
-            <p>Aucun covoiturage trouvé avec ces critères.</p>
-        <?php endif; ?>
+            <?php elseif ($suggestedRide): ?>
+                <div class="suggestion">
+                    <p>Aucun covoiturage trouvé pour cette date.</p>
+                    <p>Premier itinéraire le plus proche le <strong><?= htmlspecialchars((new DateTime($suggestedRide['date']))->format('d/m/Y')) ?></strong> à <?= date('H:i', strtotime($suggestedRide['heure_depart'])) ?></p> <!-- Affichage de l'heure de départ pour la suggestion -->
+                    <a href="?start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($suggestedRide['date']) ?>" class="btn">Voir ce trajet</a>
+                </div>
+            <?php else: ?>
+                <p class="no-results">Aucun covoiturage trouvé avec ces critères.</p>
+            <?php endif; ?>
+
     </main>
     
     <footer>

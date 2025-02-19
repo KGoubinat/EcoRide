@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 header("Content-Type: application/json"); // Renvoie du JSON
 
 // Connexion à la base de données avec PDO
@@ -64,10 +66,10 @@ if ($stmt->rowCount() > 0) {
     exit;
 }
 
-// Vérifier la longueur du mot de passe
-if (strlen($password) < 6) {
+// Vérification de la sécurité du mot de passe
+if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password)) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Le mot de passe doit contenir au moins 6 caractères"]);
+    echo json_encode(["success" => false, "message" => "Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial"]);
     exit;
 }
 
@@ -77,6 +79,13 @@ $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 // Insérer l'utilisateur dans la base de données
 $stmt = $pdo->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
 if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
+    // Récupérer l'ID de l'utilisateur inséré
+    $userId = $pdo->lastInsertId();
+
+    // Insérer les 20 crédits dans la table des crédits (par exemple, credit_users)
+    $stmtCredits = $pdo->prepare("INSERT INTO users_credit (user_id, credits) VALUES (?, ?)");
+    $stmtCredits->execute([$userId, 20]); // Attribuer 20 crédits à l'utilisateur
+
     echo json_encode(["success" => true, "message" => "Inscription réussie !"]);
 } else {
     http_response_code(500);

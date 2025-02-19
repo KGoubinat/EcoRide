@@ -63,6 +63,13 @@ nav ul li a:hover {
     color: #00BFA5; /* Couleur au survol */
 }
 
+main.covoit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
 /* Main Layout */
 main {
     padding: 50px;
@@ -147,13 +154,13 @@ main.four-columns {
     height: auto; /* Hauteur ajustée au contenu */
 }
 
-form input, form button {
+form input{
     width: 100%;
     padding: 15px; /* Taille des champs */
     font-size: 1.2em;
     border: 1px solid #ccc;
     border-radius: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 
@@ -209,6 +216,8 @@ button {
     transition: background-color 0.3s ease;
     font-weight: bold;
     text-transform: uppercase;
+    display: block; /* Important pour centrer */
+    margin: 0 auto; /* Centrer horizontalement */
 }
 
 button:hover {
@@ -240,15 +249,13 @@ footer a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 100%;
-    max-height: 300px;
+    max-height: 500px;
     width: auto;
     height: auto;
     background-color: #ffffff;
     border-radius: 50px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    font-family: Arial, sans-serif;
     margin: 10px ;
 }
 
@@ -317,7 +324,7 @@ footer a:hover {
 
 
 .card-body-filters select {
-    width: 190px;
+    width: 350px;
 }
 
 .card-body-filters {
@@ -354,6 +361,12 @@ footer a:hover {
 
 .filters{
     padding: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filters label {
+    white-space: nowrap; /* Évite le retour à la ligne des labels */
 }
 .login-container {
     display: flex;
@@ -396,34 +409,409 @@ footer a:hover {
 .signup-form-container p {
     margin-top: 0px;
 }
-/* Responsive Design */
-@media (max-width: 768px) {
-    /* Réduction du nombre de colonnes à une seule pour les petits écrans */
-    main {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
 
-    /* Sections ajustées en pleine largeur */
-    .presentation, .form, .details, .rejoindre {
-        max-width: 100%;
-        height: auto;
-    }
 
-    /* Alignement centré pour les éléments */
-    nav ul {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .third-column {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    button {
-        width: 100%; /* Bouton étendu pour les petits écrans */
-    }
+.suggestion {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 50px;
+    margin-top: 30px;
+    outline: 3px solid black !important;
 }
 
+.suggestion .btn {
+    display: inline-block;
+    background-color: #26A69A ;
+    color: black;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.suggestion .btn:hover {
+    background-color: #00BFA5;
+}
+
+.no-results {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    margin-top: 20px;
+}
+.adaptation {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px,1fr));
+    max-width: 1750px; 
+    margin: 0 auto; /* Centre le grid horizontalement */
+    gap: 20px;
+    padding: 20px;
+    align-items: center; 
+    justify-items: center;
+}
+.formAvis {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50px;
+    padding: 20px; /* Plus d'espace autour du contenu */
+    width: 500px;
+    height: auto; /* Hauteur ajustée au contenu */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    border: 3px solid black;
+}
+
+.formAvis h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.formAvis label {
+    align-self: flex-start;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+    
+}
+
+.formAvis input, .formAvis select, .formAvis textarea {
+    width: 100%;
+    padding: 12px; /* Taille des champs */
+    font-size: 1.1em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: #f9f9f9;
+    transition: 0.3s ease-in-out;
+}
+
+.formAvis input:focus, .formAvis select:focus, .formAvis textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+
+.covoiturage-details{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50px;
+    padding: 5px; /* Plus d'espace autour du contenu */
+    width: 500px;
+    height: auto; /* Hauteur ajustée au contenu */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    border: 3px solid black;
+
+}
+.covoiturage-details p{
+    margin: 5px;
+}
+.participer{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Style de la modale */
+.modal {
+    display: none; /* Par défaut, la modale est cachée */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* S'assure que la modale s'affiche par-dessus les autres éléments */
+  }
+
+  .modal.show {
+    display: flex; /* Affiche seulement quand la classe 'show' est ajoutée */
+    justify-content: center;
+    align-items: center;
+}
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 50px;
+    width: 400px;
+    text-align: center;
+    border: 3px solid black;
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .btn-confirm, .btn-cancel {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-confirm{
+    background-color: #0077b6;
+    color: white;
+  }
+  
+  .btn-cancel{
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-confirm:hover {
+    background-color: #00BFA5;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #c82333;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+  /* Section Informations personnelles */
+
+
+.info-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-card p {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Section Réservations passées */
+.user-reservations{
+    margin-bottom: 40px;
+}
+
+.reservations-list {
+    margin-top: 20px;
+}
+
+.reservation-item, .offered-ride-item {
+    display: grid;
+    background-color: #f9f9f9;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    align-items: center; /* Centre horizontalement */
+    justify-content: center;
+}
+
+.reservation-item p, .offered-ride-item p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.reservation-item h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Formulaire de suppression */
+.reservation-action-form {
+    margin-top: 10px;
+}
+
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
+.user-info,.user-status,.chauffeur-info,.user-reservations,.user-offered-rides, .saisir-voyage, .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies{
+
+    border: 3px solid black;
+    border-radius: 50px;
+    justify-content: center;
+    justify-items: center;
+    width: fit-content;
+    height: fit-content;
+    margin: 30px;
+    padding: 15px;
+    background-color: white;
+}
+
+.container{
+    justify-content: center;
+    justify-items: center;
+}
+
+.user-status{
+    justify-content: center;
+    justify-items: center;
+}
+
+.status-form{
+    display: grid;
+    justify-content: center;
+    justify-items: center;
+}
+.chauffeur-info{
+    width: 100%;
+}
+input[type="text"], input[type="number"], input[type="date"], textarea, select {
+    box-sizing: border-box; /* Assure que la largeur de l'élément inclut le padding */
+}
+
+
+
+button {
+    width: fit-content;
+    text-align: center;
+    justify-content: center;
+    justify-items: center;
+    padding: 15px; /* Taille des champs */
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+.button{
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    padding-top: 20px;
+}
+
+
+/* Assure que les labels et les cases à cocher soient sur la même ligne */
+ .form-group {
+    flex-wrap: nowrap;
+    display: flex;
+    align-items: center; /* Aligner verticalement le texte et la case */
+    margin-bottom: 15px; /* Espacement entre les groupes */
+}
+
+/* Espacement entre le label et la case à cocher */
+.form-group label {
+    margin-right: 10px; /* Un petit écart entre le label et la case à cocher */
+    white-space: nowrap;
+}
+
+/* Si tu veux que les cases à cocher soient plus petites ou uniformes */
+.form-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+/* Style pour le select */
+select {
+    font-size: 18px; /* Taille de la police dans le select */
+    padding: 5px; /* Un peu d'espace autour du texte pour plus de confort */
+    width: 100%; /* Utilise toute la largeur disponible dans le formulaire */
+    padding: 10px;
+    margin-bottom: 5px; /* Espacement entre les champs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+input {
+    font-size: 18px; 
+    padding: 10px;
+
+}
+/* Style pour les options */
+option {
+    font-size: 18px; /* Taille de la police dans les options */
+    padding: 10px; /* Un peu d'espace pour les options */
+}
+
+.feedbackForm h2 {
+    margin-bottom: 30px; /* Ajouter plus d'espace sous le titre */
+
+}
+
+#rating {
+    margin-bottom: 0; /* Supprime l'espace sous le champ de saisie de la note */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;  /* Ajoute un espacement autour du tableau */
+}
+
+th, td {
+    padding: 12px 15px;  /* Ajoute de l'espacement entre le texte et les bordures des cellules */
+    text-align: left;     /* Aligne le texte à gauche dans les cellules */
+    border-bottom: 1px solid #ddd;  /* Ajoute une bordure sous chaque ligne */
+}
+
+th {
+    background-color: #f4f4f4; /* Change la couleur de fond des en-têtes */
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Change la couleur de fond lors du survol de la ligne */
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+
+
+
+label {
+    margin-bottom: 8px; /* Espacement sous les labels */
+}
+select[type="prix"],
+input[type="date"],
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%; /* Utilise toute la largeur disponible dans le formulaire */
+    padding: 10px;
+    margin-bottom: 15px; /* Espacement entre les champs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur */
+}
