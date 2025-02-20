@@ -178,7 +178,6 @@ if (!empty($reservations)) {
             <!-- Informations personnelles -->
             <div class="user-info">
                 <h2>Informations personnelles</h2>
-                <div class="info-card">
                 <div class="profil-photo">
                 <?php 
                 // Vérifier si l'utilisateur a une photo et si le fichier existe
@@ -190,7 +189,7 @@ if (!empty($reservations)) {
                 } else {
                     // Afficher l'image par défaut avec un lien pour la changer
                     echo '<a href="javascript:void(0);" id="change-photo-link">
-                            <img src="/frontend/images/default-avatar.png" alt="Photo de profil" class="profile-img">
+                            <img src="Ecoride/frontend/images/default-avatar.png" alt="Photo de profil" class="profile-img">
                         </a>';
                 }
                 ?>
@@ -202,6 +201,8 @@ if (!empty($reservations)) {
                         <button type="submit">Changer la photo</button>
                     </form>
                 </div>
+                <div class="info-card">
+                
                     <p><strong>Nom :</strong> <?php echo htmlspecialchars($user['firstName']); ?></p>
                     <p><strong>Prénom :</strong> <?php echo htmlspecialchars($user['lastName']); ?></p>
                     <p><strong>Email :</strong> <?php echo htmlspecialchars($user['email']); ?></p>

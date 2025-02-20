@@ -118,8 +118,8 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // Insertion dans la base de données avec l'URL de l'image Cloudinary
-$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, photo) VALUES (?, ?, ?, ?, ?)");
-if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, $imagePath])) {
+$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, photo, credits) VALUES (?, ?, ?, ?, ?)");
+if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, $imagePath], 20)) {
     echo json_encode(["success" => true, "message" => "Inscription réussie"]);
 } else {
     http_response_code(500);
