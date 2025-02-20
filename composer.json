@@ -4,7 +4,7 @@
     "description": "EcoRide Covoiturage App",
     "require": {
       "php": "^7.3 || ^8.0",
-      "some/package":"version"
+      "monolog/monolog": "^2.0"
     }
 
   }
