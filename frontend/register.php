@@ -2,6 +2,14 @@
 session_start();
 header("Content-Type: application/json");
 
+require_once '/Ecoride/cloudinary_php_master/src/Cloudinary.php';
+
+\Cloudinary::config(array(
+    "cloud_name" => "dj9iiquhw",
+    "api_key" => "191869388494711",
+    "api_secret" => "pjhNfoa_aSfLssECHSy_kpUliHQ"
+));
+
 // Récupérer l'URL de la base de données
 $databaseUrl = getenv('JAWSDB_URL');
 if (!$databaseUrl) {

@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
         const confirmPassword = document.getElementById("confirmPassword").value.trim();
+        const photo = document.getElementById("photo").files[0]; // Récupère la photo
+
         const errorMessage = document.getElementById("passwordError");
         const passwordMinLength = 6; // Longueur minimale du mot de passe
 
@@ -27,27 +29,23 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Objet avec les données utilisateur
-        const userData = {
-            firstName,
-            lastName,
-            email,
-            password
-        };
-
-        console.log("Données envoyées :", userData); // Debugging
+        // Créer un FormData pour envoyer aussi l'image
+        const formData = new FormData();
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("email", email);
+        formData.append("password", password);
+        if (photo) {
+            formData.append("photo", photo); // Ajoute la photo si elle est sélectionnée
+        }
 
         // Envoi des données avec fetch()
-        fetch("/frontend/register.php", { // Vérifie bien que cette URL est correcte
+        fetch("https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/frontend/register.php", { 
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(userData)
+            body: formData // Utilisation de FormData pour l'image
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Réponse du serveur :", data); // Debugging
             if (data.success) {
                 alert(data.message);
                 window.location.href = "/frontend/connexion.html"; // Redirige vers connexion
@@ -56,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .catch(error => {
-            console.error("Erreur réseau :", error);
             alert("Une erreur réseau est survenue.");
         });
     });
