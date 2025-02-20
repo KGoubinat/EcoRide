@@ -159,6 +159,28 @@ if (!empty($reservations)) {
         <div class="header-container">
             <div class="logo">
                 <h1>Bienvenue sur votre profil, <?php echo $isLoggedIn ? htmlspecialchars($user['lastName']) : 'Utilisateur'; ?> !</h1>
+                
+
+
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/frontend/accueil.php">Accueil</a></li>
+                    <li><a href="/frontend/contact-info.php">Contact</a></li>
+                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
+                    <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                    <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class=adaptation>
+        <div class="container">
+            <!-- Informations personnelles -->
+            <div class="user-info">
+                <h2>Informations personnelles</h2>
+                <div class="info-card">
                 <div class="profil-photo">
                 <?php 
                 // Vérifier si l'utilisateur a une photo et si le fichier existe
@@ -182,27 +204,6 @@ if (!empty($reservations)) {
                         <button type="submit">Changer la photo</button>
                     </form>
                 </div>
-
-
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact-info.php">Contact</a></li>
-                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
-                    <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-                    <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main class=adaptation>
-        <div class="container">
-            <!-- Informations personnelles -->
-            <div class="user-info">
-                <h2>Informations personnelles</h2>
-                <div class="info-card">
                     <p><strong>Nom :</strong> <?php echo htmlspecialchars($user['firstName']); ?></p>
                     <p><strong>Prénom :</strong> <?php echo htmlspecialchars($user['lastName']); ?></p>
                     <p><strong>Email :</strong> <?php echo htmlspecialchars($user['email']); ?></p>
