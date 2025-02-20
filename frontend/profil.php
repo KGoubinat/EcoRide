@@ -1,5 +1,28 @@
 <?php
 session_start();
+require_once '/Ecoride/cloudinary_php_master/src/Cloudinary.php';
+\Cloudinary::config(array(
+    "cloud_name" => "dj9iiquhw",
+    "api_key" => "191869388494711",
+    "api_secret" => "pjhNfoa_aSfLssECHSy_kpUliHQ"
+));
+if (isset($_FILES['photo'])) {
+    $photo = $_FILES['photo'];
+    // Vérification du type et taille de l'image si nécessaire
+
+    // Envoi de l'image à Cloudinary
+    $uploadResult = \Cloudinary\Uploader::upload($photo['tmp_name'], [
+        "folder" => "profile_pictures"  // Choisir un dossier pour l'image
+    ]);
+
+    // Récupérer l'URL de l'image téléchargée
+    $imageUrl = $uploadResult['secure_url'];
+
+    // Enregistrer l'URL dans la base de données
+    $stmtUpdatePhoto = $conn->prepare("UPDATE users SET photo = ? WHERE email = ?");
+    $stmtUpdatePhoto->execute([$imageUrl, $user_email]);
+}
+
 
 // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
 $databaseUrl = getenv('JAWSDB_URL');
@@ -159,8 +182,6 @@ if (!empty($reservations)) {
         <div class="header-container">
             <div class="logo">
                 <h1>Bienvenue sur votre profil, <?php echo $isLoggedIn ? htmlspecialchars($user['lastName']) : 'Utilisateur'; ?> !</h1>
-                
-
 
             </div>
             <nav>

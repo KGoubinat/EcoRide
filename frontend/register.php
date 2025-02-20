@@ -79,8 +79,8 @@ if ($userExists) {
     echo json_encode(["success" => false, "message" => "Email déjà utilisé"]);
     exit;
 }
-// Traitement de l'image
-// Traitement de l'image
+
+// Traitement de l'image avec Cloudinary
 $imagePath = null;
 if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
     // Vérification du type et de la taille de l'image
@@ -98,57 +98,29 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
         exit;
     }
 
-    // Générer un nom unique pour le fichier
-    $fileExtension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-    $uniqueFileName = uniqid('user_', true) . '.' . $fileExtension; // Nom unique avec un préfixe
+    // Appeler l'API Cloudinary pour uploader l'image
+    try {
+        // Upload de l'image vers Cloudinary
+        $uploadResult = \Cloudinary\Uploader::upload($_FILES['photo']['tmp_name'], [
+            "folder" => "profile_pictures"  // Organiser dans un dossier spécifique sur Cloudinary
+        ]);
 
-    // Dossier de téléchargement (assurez-vous que ce dossier a les bonnes permissions)
-    $uploadDir = 'uploads/photos/';
-
-    // Créer le dossier si il n'existe pas
-    if (!file_exists($uploadDir)) {
-        if (!mkdir($uploadDir, 0777, true)) {
-            http_response_code(500);
-            echo json_encode(["success" => false, "message" => "Erreur lors de la création du dossier de téléchargement"]);
-            exit;
-        }
-    }
-
-    // Sécuriser le chemin de l'image
-    $imagePath = $uploadDir . $uniqueFileName;
-
-    // Déplacer l'image dans le dossier de destination
-    if (!move_uploaded_file($_FILES['photo']['tmp_name'], $imagePath)) {
+        // Récupérer l'URL sécurisée de l'image
+        $imagePath = $uploadResult['secure_url'];
+    } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de l'image."]);
-        exit;
-    }
-
-    // Optionnel: Vérification du type réel du fichier
-    $detectedType = mime_content_type($imagePath);
-    if (!in_array($detectedType, $allowedTypes)) {
-        unlink($imagePath); // Supprimer le fichier téléchargé si le type MIME est incorrect
-        http_response_code(400);
-        echo json_encode(["success" => false, "message" => "Fichier uploadé non valide."]);
+        echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de l'image sur Cloudinary"]);
         exit;
     }
 }
 
-// Insertion dans la base de données
+// Hachage du mot de passe
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+// Insertion dans la base de données avec l'URL de l'image Cloudinary
 $stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, photo) VALUES (?, ?, ?, ?, ?)");
 if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, $imagePath])) {
     echo json_encode(["success" => true, "message" => "Inscription réussie"]);
-} else {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
-}
-
-// Hachage du mot de passe et insertion
-$hashed_password = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
-if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
-    $userId = $conn->lastInsertId();
-    echo json_encode(["success" => true, "message" => "Inscription réussie", "user_id" => $userId]);
 } else {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
