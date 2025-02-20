@@ -189,7 +189,7 @@ if (!empty($reservations)) {
                 } else {
                     // Afficher l'image par défaut avec un lien pour la changer
                     echo '<a href="javascript:void(0);" id="change-photo-link">
-                            <img src="Ecoride/frontend/images/default-avatar.png" alt="Photo de profil" class="profile-img">
+                            <img src="/frontend/images/default-avatar.png" alt="Photo de profil" class="profile-img">
                         </a>';
                 }
                 ?>
