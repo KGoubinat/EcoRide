@@ -1,10 +1,8 @@
 {
     "name": "kgoubinat/ecoride",
-    "version": "1.0.0",
     "description": "EcoRide Covoiturage App",
     "require": {
-      "php": "^7.3 || ^8.0",
-      "monolog/monolog": "^2.0"
+    "php": "^7.3 || ^8.0"
     }
 
   }

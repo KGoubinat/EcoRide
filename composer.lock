@@ -5,30 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "6ec8495ee88f1649d53e1ef9a64e35fa",
-    "packages": [
-        {
-            "name": "monolog/monolog",
-            "version": "2.0.0",
-            "dist": {
-                "type": "tar",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/2.0.0",
-                "reference": "b73c6d8fc470e8e8d6d9d426c211759c2b6f0b5a"
-            },
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "b73c6d8fc470e8e8d6d9d426c211759c2b6f0b5a"
-            },
-            "autoload": {
-                "psr-4": {
-                    "Monolog\\": "src/"
-                }
-            },
-            "require": {
-                "php": "^7.3 || ^8.0"
-            }
-        }
-    ],
+    "packages": [],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
