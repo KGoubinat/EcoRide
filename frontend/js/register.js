@@ -29,18 +29,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Créer un FormData pour envoyer aussi l'image
+        // Créer un FormData pour envoyer aussi l'image, seulement si elle est sélectionnée
         const formData = new FormData();
         formData.append("firstName", firstName);
         formData.append("lastName", lastName);
         formData.append("email", email);
         formData.append("password", password);
+        
         if (photo) {
             formData.append("photo", photo); // Ajoute la photo si elle est sélectionnée
         }
 
         // Envoi des données avec fetch()
-        fetch("https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/frontend/register.php", { 
+        fetch("/frontend/register.php", { 
             method: "POST",
             body: formData // Utilisation de FormData pour l'image
         })
