@@ -84,9 +84,9 @@ if ($userExists) {
 // Hachage du mot de passe
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Insertion dans la base de données avec l'URL de l'image Cloudinary
-$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, photo, credits) VALUES (?, ?, ?, ?, ?)");
-if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, $imagePath], 20)) {
+
+$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, credits) VALUES (?, ?, ?, ?, ?)");
+if ($stmt->execute([$firstName, $lastName, $email, $hashed_password,], 20)) {
     echo json_encode(["success" => true, "message" => "Inscription réussie"]);
 } else {
     http_response_code(500);
