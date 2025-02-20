@@ -816,3 +816,20 @@ input[type="password"] {
     box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur */
 }
 
+.profile-photo img {
+    width: 100px; /* Taille de l'image */
+    height: 100px; /* Taille de l'image */
+    border-radius: 50%; /* Rendre l'image ronde */
+    object-fit: cover; /* L'image remplira le cadre sans déformation */
+    margin-top: 10px; /* Espacement supérieur si nécessaire */
+}
+
+.header-container .profile-photo {
+    display: flex;
+    align-items: center;
+}
+
+.user-info .profile-photo {
+    margin-bottom: 15px; /* Espacement pour les informations */
+}
+

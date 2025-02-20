@@ -30,7 +30,7 @@ $user_email = $_SESSION['user_email'] ?? null;
 
 if ($isLoggedIn) {
     // Récupérer les informations de l'utilisateur
-    $stmtUser = $conn->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
+    $stmtUser = $conn->prepare("SELECT id, firstName, lastName, email, photo, credits, status FROM users WHERE email = ?");
     $stmtUser->execute([$user_email]);
     $user = $stmtUser->fetch();
 
@@ -39,6 +39,7 @@ if ($isLoggedIn) {
         exit;
     }
 
+  
         // Récupérer le statut du covoiturage depuis la base de données
    
     // Si l'utilisateur a des réservations
@@ -158,11 +159,36 @@ if (!empty($reservations)) {
         <div class="header-container">
             <div class="logo">
                 <h1>Bienvenue sur votre profil, <?php echo $isLoggedIn ? htmlspecialchars($user['lastName']) : 'Utilisateur'; ?> !</h1>
+                <div class="profil-photo">
+                <?php 
+                // Vérifier si l'utilisateur a une photo et si le fichier existe
+                if (!empty($user['photo']) && file_exists($user['photo'])) {
+                    // Afficher la photo de profil avec un lien pour la changer
+                    echo '<a href="javascript:void(0);" id="change-photo-link">
+                            <img src="' . htmlspecialchars($user['photo']) . '" alt="Photo de profil" class="profile-img">
+                        </a>';
+                } else {
+                    // Afficher l'image par défaut avec un lien pour la changer
+                    echo '<a href="javascript:void(0);" id="change-photo-link">
+                            <img src="/frontend/images/default-avatar.png" alt="Photo de profil" class="profile-img">
+                        </a>';
+                }
+                ?>
+                <!-- Formulaire de téléchargement d'image caché -->
+                <div id="change-photo-form" style="display: none;">
+                    <form action="/frontend/upload_photo.php" method="POST" enctype="multipart/form-data">
+                        <label for="photo">Choisir une nouvelle photo de profil :</label>
+                        <input type="file" name="photo" id="photo" accept="image/*" required>
+                        <button type="submit">Changer la photo</button>
+                    </form>
+                </div>
+
+
             </div>
             <nav>
                 <ul>
                     <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact-info">Contact</a></li>
+                    <li><a href="/frontend/contact-info.php">Contact</a></li>
                     <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
@@ -483,7 +509,13 @@ if (!empty($reservations)) {
             <button id="modal-cancel-cancel" class="btn-cancel">Annuler</button>
         </div>
     </div>
-    
+    <script>
+        // Lorsque l'utilisateur clique sur l'image de profil
+        document.getElementById('change-photo-link').addEventListener('click', function() {
+            // Afficher le formulaire de changement de photo
+            document.getElementById('change-photo-form').style.display = 'block';
+        });
+    </script>
     <script src="/frontend/js/demarrerCovoiturages.js" defer></script>
     <script src="/frontend/js/annulerReservation.js"></script>
     <script src="/frontend/js/annulerCovoiturage.js"></script> 

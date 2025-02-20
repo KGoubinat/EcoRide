@@ -79,6 +79,69 @@ if ($userExists) {
     echo json_encode(["success" => false, "message" => "Email déjà utilisé"]);
     exit;
 }
+// Traitement de l'image
+// Traitement de l'image
+$imagePath = null;
+if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
+    // Vérification du type et de la taille de l'image
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($_FILES['photo']['type'], $allowedTypes)) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Format de fichier non autorisé. Seuls les formats JPEG, PNG et GIF sont autorisés."]);
+        exit;
+    }
+
+    // Vérification de la taille du fichier (max 2MB par exemple)
+    if ($_FILES['photo']['size'] > 2 * 1024 * 1024) { // 2MB
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "L'image est trop grande. La taille maximale est de 2MB."]);
+        exit;
+    }
+
+    // Générer un nom unique pour le fichier
+    $fileExtension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+    $uniqueFileName = uniqid('user_', true) . '.' . $fileExtension; // Nom unique avec un préfixe
+
+    // Dossier de téléchargement (assurez-vous que ce dossier a les bonnes permissions)
+    $uploadDir = 'uploads/photos/';
+
+    // Créer le dossier si il n'existe pas
+    if (!file_exists($uploadDir)) {
+        if (!mkdir($uploadDir, 0777, true)) {
+            http_response_code(500);
+            echo json_encode(["success" => false, "message" => "Erreur lors de la création du dossier de téléchargement"]);
+            exit;
+        }
+    }
+
+    // Sécuriser le chemin de l'image
+    $imagePath = $uploadDir . $uniqueFileName;
+
+    // Déplacer l'image dans le dossier de destination
+    if (!move_uploaded_file($_FILES['photo']['tmp_name'], $imagePath)) {
+        http_response_code(500);
+        echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de l'image."]);
+        exit;
+    }
+
+    // Optionnel: Vérification du type réel du fichier
+    $detectedType = mime_content_type($imagePath);
+    if (!in_array($detectedType, $allowedTypes)) {
+        unlink($imagePath); // Supprimer le fichier téléchargé si le type MIME est incorrect
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Fichier uploadé non valide."]);
+        exit;
+    }
+}
+
+// Insertion dans la base de données
+$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, photo) VALUES (?, ?, ?, ?, ?)");
+if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, $imagePath])) {
+    echo json_encode(["success" => true, "message" => "Inscription réussie"]);
+} else {
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
+}
 
 // Hachage du mot de passe et insertion
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);

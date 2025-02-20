@@ -245,7 +245,20 @@ if (empty($covoiturages)) {
             <?php foreach ($covoiturages as $covoiturage): ?>
                 <div class="card">
                     <div class="card-header">
-                        <img src="../Images/yasmina.jpg" alt="Photo de Yasmina">
+                        <?php
+                        // Récupérer la photo du conducteur
+                        $stmtPhoto = $conn->prepare("SELECT photo FROM users WHERE id = ?");
+                        $stmtPhoto->execute([$covoiturage['conducteur_id']]); // Assure-toi que 'conducteur_id' existe dans $covoiturage
+                        $photo = $stmtPhoto->fetchColumn();
+
+                        // Afficher la photo du conducteur
+                        if (!empty($photo) && file_exists($photo)) {
+                            echo '<img src="' . htmlspecialchars($photo) . '" alt="Photo de ' . htmlspecialchars($covoiturage['conducteur']) . '">';
+                        } else {
+                            // Afficher l'image par défaut si pas de photo
+                            echo '<img src="/frontend/images/default-avatar.png" alt="Photo de ' . htmlspecialchars($covoiturage['conducteur']) . '">';
+                        }
+                        ?>
                     </div>
                     <div class="card-body">
                         <h2><?= htmlspecialchars($covoiturage['conducteur']) ?> <span><?= htmlspecialchars($covoiturage['note']) ?>/5</span></h2>
