@@ -2,17 +2,6 @@
 session_start();
 header("Content-Type: application/json");
 
-require_once('../cloudinary_php_master/src/Cloudinary.php');
-
-
-
-
-\Cloudinary::config(array(
-    "cloud_name" => "dj9iiquhw",
-    "api_key" => "191869388494711",
-    "api_secret" => "pjhNfoa_aSfLssECHSy_kpUliHQ"
-));
-
 // Récupérer l'URL de la base de données
 $databaseUrl = getenv('JAWSDB_URL');
 if (!$databaseUrl) {
@@ -91,39 +80,6 @@ if ($userExists) {
     exit;
 }
 
-// Traitement de l'image avec Cloudinary
-$imagePath = null;
-if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
-    // Vérification du type et de la taille de l'image
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($_FILES['photo']['type'], $allowedTypes)) {
-        http_response_code(400);
-        echo json_encode(["success" => false, "message" => "Format de fichier non autorisé. Seuls les formats JPEG, PNG et GIF sont autorisés."]);
-        exit;
-    }
-
-    // Vérification de la taille du fichier (max 2MB par exemple)
-    if ($_FILES['photo']['size'] > 2 * 1024 * 1024) { // 2MB
-        http_response_code(400);
-        echo json_encode(["success" => false, "message" => "L'image est trop grande. La taille maximale est de 2MB."]);
-        exit;
-    }
-
-    // Appeler l'API Cloudinary pour uploader l'image
-    try {
-        // Upload de l'image vers Cloudinary
-        $uploadResult = \Cloudinary\Uploader::upload($_FILES['photo']['tmp_name'], [
-            "folder" => "profile_pictures"  // Organiser dans un dossier spécifique sur Cloudinary
-        ]);
-
-        // Récupérer l'URL sécurisée de l'image
-        $imagePath = $uploadResult['secure_url'];
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de l'image sur Cloudinary"]);
-        exit;
-    }
-}
 
 // Hachage du mot de passe
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);

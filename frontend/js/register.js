@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
         const confirmPassword = document.getElementById("confirmPassword").value.trim();
-        const photo = document.getElementById("photo").files[0]; // Récupère la photo
 
         const errorMessage = document.getElementById("passwordError");
         const passwordMinLength = 6; // Longueur minimale du mot de passe
@@ -36,9 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append("email", email);
         formData.append("password", password);
         
-        if (photo) {
-            formData.append("photo", photo); // Ajoute la photo si elle est sélectionnée
-        }
 
         // Envoi des données avec fetch()
         fetch("/frontend/register.php", { 
