@@ -2,7 +2,9 @@
 session_start();
 header("Content-Type: application/json");
 
-require_once '/../cloudinary_php_master/src/Cloudinary.php';
+require_once __DIR__ . '/../Ecoride/cloudinary_php_master/src/Cloudinary.php';
+
+
 
 \Cloudinary::config(array(
     "cloud_name" => "dj9iiquhw",
