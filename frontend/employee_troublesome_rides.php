@@ -53,7 +53,7 @@ $query = "
     ORDER BY tr.created_at DESC
 ";
 
-$stmt = $pdo->prepare($query);
+$stmt = $conn->prepare($query);
 $stmt->execute();
 $troublesomeRides = $stmt->fetchAll();
 ?>

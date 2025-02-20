@@ -61,7 +61,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // Vérifier si l'email existe déjà
-$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmt->execute([$email]);
 if ($stmt->rowCount() > 0) {
     http_response_code(400);
@@ -80,13 +80,13 @@ if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // Insérer l'utilisateur dans la base de données
-$stmt = $pdo->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
 if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
     // Récupérer l'ID de l'utilisateur inséré
-    $userId = $pdo->lastInsertId();
+    $userId = $conn->lastInsertId();
 
     // Insérer les 20 crédits dans la table des crédits (par exemple, credit_users)
-    $stmtCredits = $pdo->prepare("INSERT INTO users_credit (user_id, credits) VALUES (?, ?)");
+    $stmtCredits = $conn->prepare("INSERT INTO users_credit (user_id, credits) VALUES (?, ?)");
     $stmtCredits->execute([$userId, 20]); // Attribuer 20 crédits à l'utilisateur
 
     echo json_encode(["success" => true, "message" => "Inscription réussie !"]);

@@ -73,7 +73,7 @@ try {
                 <tbody>
                     <?php
                     // Récupérer les utilisateurs de la base de données
-                    $stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM users");
+                    $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM users");
                     while ($row = $stmt->fetch()) {
                         echo "<tr>";
                         echo "<td>" . $row['id'] . "</td>";

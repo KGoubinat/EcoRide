@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Récupérer l'ID de l'utilisateur à partir de son email
     try {
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email_utilisateur]);
         $user = $stmt->fetch();
 
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $utilisateur_id = $user['id']; // Récupérer l'ID de l'utilisateur
 
             // Insertion de l'avis dans la base de données
-            $stmt = $pdo->prepare("INSERT INTO reviews (user_id, driver_id, rating, comment, status) VALUES (?, ?, ?, ?, 'pending')");
+            $stmt = $conn->prepare("INSERT INTO reviews (user_id, driver_id, rating, comment, status) VALUES (?, ?, ?, ?, 'pending')");
             $stmt->execute([$conducteur_id, $utilisateur_id, $note, $commentaire]);
 
             // Redirection vers les détails du covoiturage

@@ -35,7 +35,7 @@ try {
 }
 
     // Récupérer l'ID utilisateur à partir de l'email
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$user_email]);
     $user = $stmt->fetch();
 
@@ -47,7 +47,7 @@ try {
     $user_id = $user['id'];
 
     // Vérifier si le covoiturage existe et obtenir les informations
-    $stmt = $pdo->prepare("SELECT places_restantes, prix, passagers FROM covoiturages WHERE id = ?");
+    $stmt = $conn->prepare("SELECT places_restantes, prix, passagers FROM covoiturages WHERE id = ?");
     $stmt->execute([$covoiturage_id]);
     $covoiturage = $stmt->fetch();
 
@@ -57,7 +57,7 @@ try {
     }
 
     // Vérifier les crédits de l'utilisateur
-    $stmtCredits = $pdo->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
+    $stmtCredits = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
     $stmtCredits->execute([$user_id]);
     $userCredits = $stmtCredits->fetch();
 
@@ -79,32 +79,32 @@ try {
 
     // Si les conditions sont remplies, on lance la transaction
     try {
-        $pdo->beginTransaction();
+        $conn->beginTransaction();
 
         // Insérer la réservation dans la table 'reservations'
-        $stmtReservation = $pdo->prepare("INSERT INTO reservations (user_id, covoiturage_id, statut, places_reservees) VALUES (?, ?, 'en attente', ?)");
+        $stmtReservation = $conn->prepare("INSERT INTO reservations (user_id, covoiturage_id, statut, places_reservees) VALUES (?, ?, 'en attente', ?)");
         $stmtReservation->execute([$user_id, $covoiturage_id, $passengers]);
 
         // Mettre à jour le nombre de places restantes
-        $stmtUpdate = $pdo->prepare("UPDATE covoiturages SET places_restantes = places_restantes - ? WHERE id = ?");
+        $stmtUpdate = $conn->prepare("UPDATE covoiturages SET places_restantes = places_restantes - ? WHERE id = ?");
         $stmtUpdate->execute([$passengers, $covoiturage_id]);
 
         // Mettre à jour le nombre total de passagers
-        $stmtUpdatePassagers = $pdo->prepare("UPDATE covoiturages SET passagers = passagers + ? WHERE id = ?");
+        $stmtUpdatePassagers = $conn->prepare("UPDATE covoiturages SET passagers = passagers + ? WHERE id = ?");
         $stmtUpdatePassagers->execute([$passengers, $covoiturage_id]);
 
         // Déduire les crédits de l'utilisateur
-        $stmtDeductCredits = $pdo->prepare("UPDATE users_credit SET credit = credit - ? WHERE user_id = ?");
+        $stmtDeductCredits = $conn->prepare("UPDATE users_credit SET credit = credit - ? WHERE user_id = ?");
         $stmtDeductCredits->execute([$covoiturage['prix'] * $passengers, $user_id]);
 
         // Commit la transaction
-        $pdo->commit();
+        $conn->commit();
 
         echo json_encode(["success" => true, "message" => "Réservation effectuée avec succès."]);
 
     } catch (Exception $e) {
         // Si une erreur survient, annuler la transaction
-        $pdo->rollBack();
+        $conn->rollBack();
         echo json_encode(["success" => false, "message" => "Erreur lors de la réservation : " . $e->getMessage()]);
     }
 } else {

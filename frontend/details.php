@@ -34,7 +34,7 @@ if ($id === null) {
 }
 
 // Récupérer les détails du covoiturage
-$stmt = $pdo->prepare("SELECT * FROM covoiturages WHERE id = ?");
+$stmt = $conn->prepare("SELECT * FROM covoiturages WHERE id = ?");
 $stmt->execute([$id]);
 $covoiturage = $stmt->fetch();
 
@@ -43,7 +43,7 @@ if (!$covoiturage) {
 }
 
 // Récupérer les avis du conducteur
-$stmtAvis = $pdo->prepare("
+$stmtAvis = $conn->prepare("
     SELECT 
         u.firstName, 
         u.lastName, 
@@ -63,13 +63,13 @@ $users_credit = 0; // Initialisation de la variable $users_credit
 if ($isLoggedIn) {
     // Récupérer l'ID de l'utilisateur
     $userEmail = $_SESSION['user_email'];
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$userEmail]);
     $user = $stmt->fetch();
 
     if ($user) {
         // Récupérer les crédits de l'utilisateur
-        $stmtCredit = $pdo->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
+        $stmtCredit = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
         $stmtCredit->execute([$user['id']]);
         $creditData = $stmtCredit->fetch();
         $users_credit = $creditData ? $creditData['credit'] : 0; // Si aucun crédit trouvé, définir $users_credit à 0

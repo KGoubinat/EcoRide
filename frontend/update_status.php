@@ -33,7 +33,7 @@ try {
 }
 
 // Récupérer l'ID de l'utilisateur
-$stmtUser = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+$stmtUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmtUser->execute([$user_email]);
 $user = $stmtUser->fetch();
 
@@ -49,7 +49,7 @@ if (isset($_POST['status'])) {
     $status = $_POST['status'];
 
     // Mettre à jour le statut de l'utilisateur dans la base de données
-    $stmtUpdateStatus = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
+    $stmtUpdateStatus = $conn->prepare("UPDATE users SET status = ? WHERE id = ?");
     $stmtUpdateStatus->execute([$status, $user_id]);
 
     // Répondre avec succès

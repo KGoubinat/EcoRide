@@ -37,7 +37,7 @@ $reservationId = $_POST['reservation_id'];
 
 // Récupérer les informations de l'utilisateur
 $user_email = $_SESSION['user_email'];
-$stmtUser = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+$stmtUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmtUser->execute([$user_email]);
 $user = $stmtUser->fetch();
 
@@ -47,7 +47,7 @@ if (!$user) {
 }
 
 // Récupérer l'ID de la course associée à cette réservation
-$stmtReservation = $pdo->prepare("SELECT covoiturage_id FROM reservations WHERE id = :id AND user_id = :user_id");
+$stmtReservation = $conn->prepare("SELECT covoiturage_id FROM reservations WHERE id = :id AND user_id = :user_id");
 $stmtReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
 $stmtReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
 $stmtReservation->execute();
@@ -61,7 +61,7 @@ if (!$reservation) {
 $rideId = $reservation['covoiturage_id'];
 
 // Récupérer le nombre actuel de places restantes dans la table 'covoiturage'
-$stmtCovoiturage = $pdo->prepare("SELECT places_restantes FROM covoiturages WHERE id = :ride_id");
+$stmtCovoiturage = $conn->prepare("SELECT places_restantes FROM covoiturages WHERE id = :ride_id");
 $stmtCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
 $stmtCovoiturage->execute();
 $covoiturage = $stmtCovoiturage->fetch();
@@ -74,13 +74,13 @@ if (!$covoiturage) {
 $newPassagers = $covoiturage['passengers'] - 1;  // Réduire le nombre de passagers
 $newPlacesRestantes = $covoiturage['places_restantes'] + 1;
 // Mettre à jour le nombre de passagers et de places restantes
-$stmtUpdateCovoiturage = $pdo->prepare("UPDATE covoiturages SET passengers = :passengers, places_restantes = :places_restantes WHERE id = :ride_id");
+$stmtUpdateCovoiturage = $conn->prepare("UPDATE covoiturages SET passengers = :passengers, places_restantes = :places_restantes WHERE id = :ride_id");
 $stmtUpdateCovoiturage->bindParam(':passengers', $newPassagers, PDO::PARAM_INT);
 $stmtUpdateCovoiturage->bindParam(':places_restantes', $newPlacesRestantes, PDO::PARAM_INT);
 $stmtUpdateCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
 $stmtUpdateCovoiturage->execute();
 // Supprimer la réservation
-$stmtDeleteReservation = $pdo->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
+$stmtDeleteReservation = $conn->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
 $stmtDeleteReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
 $stmtDeleteReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
 $stmtDeleteReservation->execute();

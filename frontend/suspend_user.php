@@ -32,7 +32,7 @@ try {
 }
 
     // Mettre à jour le statut de l'utilisateur pour le suspendre
-    $stmt = $pdo->prepare("UPDATE users SET etat = 'suspended' WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE users SET etat = 'suspended' WHERE id = ?");
     $stmt->execute([$userId]);
 
     // Rediriger vers la page de gestion des utilisateurs

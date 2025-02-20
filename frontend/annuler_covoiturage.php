@@ -31,7 +31,7 @@ try {
 
 // Récupérer les informations de l'utilisateur
 $user_email = $_SESSION['user_email'];
-$stmtUser = $pdo->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
+$stmtUser = $conn->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
 $stmtUser->execute([$user_email]);
 $user = $stmtUser->fetch();
 
@@ -50,7 +50,7 @@ $covoiturageId = $_GET['id'];
 echo "ID de covoiturage reçu : " . htmlspecialchars($covoiturageId);
 
 // Prépare et exécute la suppression du covoiturage
-$stmt = $pdo->prepare("DELETE FROM covoiturages WHERE id = :id AND user_id = :user_id");
+$stmt = $conn->prepare("DELETE FROM covoiturages WHERE id = :id AND user_id = :user_id");
 $stmt->bindParam(':id', $covoiturageId, PDO::PARAM_INT);
 $stmt->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
 $stmt->execute();

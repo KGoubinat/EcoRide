@@ -28,8 +28,8 @@ try {
     echo "Erreur de connexion : " . $e->getMessage();
 }
 // Fonction pour récupérer le nombre de covoiturages par jour
-function getCarpoolData($pdo) {
-    $stmt = $pdo->query("
+function getCarpoolData($conn) {
+    $stmt = $conn->query("
         SELECT DATE(date) AS jour, COUNT(*) AS total_covoiturages
         FROM covoiturages
         GROUP BY jour
@@ -47,7 +47,7 @@ function getCarpoolData($pdo) {
 }
 
 // Récupérer les données pour le graphique du nombre de covoiturages
-$carpoolData = getCarpoolData($pdo);
+$carpoolData = getCarpoolData($conn);
 
 // Formatage des données pour Chart.js
 $carpoolLabels = [];
@@ -58,8 +58,8 @@ foreach ($carpoolData as $data) {
 }
 
 // Fonction pour récupérer les crédits gagnés par jour
-function getCreditsData($pdo) {
-    $stmt = $pdo->query("
+function getCreditsData($conn) {
+    $stmt = $conn->query("
         SELECT DATE(date) AS jour, COUNT(*) * 2 AS total_credits
         FROM covoiturages
         WHERE statut = 'terminé'
@@ -78,7 +78,7 @@ function getCreditsData($pdo) {
 }
 
 // Récupérer les données pour le graphique des crédits
-$creditsData = getCreditsData($pdo);
+$creditsData = getCreditsData($conn);
 
 // Formatage des données pour Chart.js
 $creditsLabels = [];
@@ -89,7 +89,7 @@ foreach ($creditsData as $data) {
 }
 
 // Requête pour calculer le total des crédits
-$stmt = $pdo->query("SELECT COUNT(*) as total_covoiturages FROM covoiturages WHERE statut = 'terminé'");
+$stmt = $conn->query("SELECT COUNT(*) as total_covoiturages FROM covoiturages WHERE statut = 'terminé'");
 $row = $stmt->fetch();
 $totalCovoiturages = $row['total_covoiturages'];
 
@@ -161,7 +161,7 @@ $totalCredits = $totalCovoiturages * 2;
                     <?php
                     // Connexion à la base de données pour récupérer les utilisateurs
                     // Exemple de requête pour afficher les utilisateurs
-                    $stmt = $pdo->query("SELECT id, firstName, lastName, etat, email, role FROM users");
+                    $stmt = $conn->query("SELECT id, firstName, lastName, etat, email, role FROM users");
                     while ($row = $stmt->fetch()) {
                         echo "<tr>";
                         echo "<td>" . $row['id'] . "</td>"; 

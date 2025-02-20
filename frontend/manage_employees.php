@@ -29,7 +29,7 @@ try {
 }
 
 // Récupérer les employés depuis la base de données
-$stmt = $pdo->query("SELECT id, firstName, lastName, email, role, etat FROM users WHERE role = 'employe'");
+$stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM users WHERE role = 'employe'");
 ?>
 
 <!DOCTYPE html>

@@ -28,7 +28,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
 
     // Récupérer les détails de l'avis depuis la base de données
     $sql = "SELECT * FROM reviews WHERE id = :review_id";
-    $stmt = $pdo->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->execute(['review_id' => $review_id]);
     $review = $stmt->fetch();
 
@@ -36,7 +36,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
     if ($review) {
         // Mettre à jour le statut de l'avis
         $update_sql = "UPDATE reviews SET status = :status WHERE id = :review_id";
-        $update_stmt = $pdo->prepare($update_sql);
+        $update_stmt = $conn->prepare($update_sql);
         $update_stmt->execute(['status' => $status, 'review_id' => $review_id]);
 
         // Si l'avis est validé, l'insérer dans la table avis_conducteur
@@ -52,7 +52,7 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
             // Insérer l'avis validé dans la table avis_conducteur
             $insert_sql = "INSERT INTO avis_conducteurs (conducteur_id, utilisateur_id, note, commentaire, date_avis) 
                            VALUES (:driver_id, :user_id, :rating, :comment, :date_review)";
-            $insert_stmt = $pdo->prepare($insert_sql);
+            $insert_stmt = $conn->prepare($insert_sql);
             $insert_stmt->execute([
                 'driver_id' => $driver_id,
                 'user_id' => $user_id,

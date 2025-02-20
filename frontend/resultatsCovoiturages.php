@@ -98,7 +98,7 @@ if ($note) {
 }
 
 // Préparer et exécuter la requête
-$stmt = $pdo->prepare($sql);
+$stmt = $conn->prepare($sql);
 $stmt->execute($params);
 
 // Récupérer les résultats
@@ -112,7 +112,7 @@ if (empty($covoiturages)) {
             AND places_restantes >= ? 
             ORDER BY date ASC LIMIT 1";
     
-    $stmt = $pdo->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->execute(["%$start%", "%$end%", $passengers]);
     $suggestedRide = $stmt->fetch();
 }

@@ -36,7 +36,7 @@ if (!$isLoggedIn) {
     exit;
 }
 
-$stmtUser = $pdo->prepare("SELECT id, credits, status, lastName, firstName FROM users WHERE email = ?");
+$stmtUser = $conn->prepare("SELECT id, credits, status, lastName, firstName FROM users WHERE email = ?");
 $stmtUser->execute([$user_email]);
 $user = $stmtUser->fetch();
 
@@ -50,11 +50,11 @@ if ($user['status'] !== 'chauffeur' && $user['status'] !== 'passager_chauffeur')
     exit;
 }
 
-$stmtVéhicules = $pdo->prepare("SELECT id, modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE user_id = ?");
+$stmtVéhicules = $conn->prepare("SELECT id, modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE user_id = ?");
 $stmtVéhicules->execute([$user['id']]);
 $vehicules = $stmtVéhicules->fetchAll() ?: [];
 
-$stmtVilles = $pdo->query("SELECT nom FROM villes");
+$stmtVilles = $conn->query("SELECT nom FROM villes");
 $villes = $stmtVilles->fetchAll(PDO::FETCH_COLUMN);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmtVehicule = $pdo->prepare("SELECT modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE id = ? AND user_id = ?");
+    $stmtVehicule = $conn->prepare("SELECT modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE id = ? AND user_id = ?");
     $stmtVehicule->execute([$vehicule_id, $user['id']]);
     $vehicule = $stmtVehicule->fetch();
 
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $heure_arrivee = date('H:i:s', $heure_arrivee_timestamp);  // Convertir l'heure d'arrivée au format H:i:s
 
     // Insertion dans la table covoiturages
-    $stmtCovoiturage = $pdo->prepare("INSERT INTO covoiturages (depart, destination, prix, vehicule_id, user_id, conducteur, places_restantes, note, heure_depart, duree, passagers, ecologique, photo, nb_places_disponibles, modele_voiture, marque_voiture, energie_voiture, heure_arrivee, `date`) 
+    $stmtCovoiturage = $conn->prepare("INSERT INTO covoiturages (depart, destination, prix, vehicule_id, user_id, conducteur, places_restantes, note, heure_depart, duree, passagers, ecologique, photo, nb_places_disponibles, modele_voiture, marque_voiture, energie_voiture, heure_arrivee, `date`) 
                                  
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $heure_arrivee,  // L'heure d'arrivée calculée
         $date  // La date du voyage (format YYYY-MM-DD)
     ])) {
-        $stmtCredits = $pdo->prepare("UPDATE users SET credits = credits - 2 WHERE id = ?");
+        $stmtCredits = $conn->prepare("UPDATE users SET credits = credits - 2 WHERE id = ?");
         $stmtCredits->execute([$user['id']]);
         echo json_encode(['status' => 'success', 'message' => 'Voyage ajouté avec succès.']);
     } else {

@@ -29,7 +29,7 @@ try {
 }
 
 // Récupérer les avis en attente de validation
-$stmt = $pdo->query("SELECT r.id, r.user_id, r.driver_id, r.rating, r.comment, r.status, u.firstName AS user_firstname, u.lastName AS user_lastname, d.firstName AS driver_firstname, d.lastName AS driver_lastname
+$stmt = $conn->query("SELECT r.id, r.user_id, r.driver_id, r.rating, r.comment, r.status, u.firstName AS user_firstname, u.lastName AS user_lastname, d.firstName AS driver_firstname, d.lastName AS driver_lastname
                      FROM reviews r
                      LEFT JOIN users u ON r.user_id = u.id
                      LEFT JOIN users d ON r.driver_id = d.id

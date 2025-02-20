@@ -37,10 +37,10 @@ use PHPMailer\PHPMailer\Exception;
 
 // fonction pour generer un token
 function generateToken($id, $ride_id) {
-    global $pdo;
+    global $conn;
     $token = bin2hex(random_bytes(16));
     $query = "INSERT INTO validation_tokens (user_id, ride_id, token, expiration) VALUES (:user_id, :ride_id, :token, NOW() + INTERVAL 24 HOUR)";
-    $stmt = $pdo->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->execute(['user_id' => $id, 'ride_id' => $ride_id, 'token' => $token]);
     return $token;
 }
@@ -105,9 +105,9 @@ function sendValidationEmail($toEmail, $rideId, $id) {
 
 // Fonction pour récupérer les participants d'un covoiturage
 function getParticipantsForRide($id) {
-    global $pdo;
+    global $conn;
     $query = "SELECT users.email, users.id FROM users INNER JOIN reservations ON users.id = reservations.user_id WHERE covoiturage_id = :id";
-    $stmt = $pdo->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->execute(['id' => $id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -115,7 +115,7 @@ function getParticipantsForRide($id) {
 // Récupérer l'ID du covoiturage en fonction de l'utilisateur connecté
 $user_id = $_SESSION['user_id'];
 $query = "SELECT id FROM covoiturages WHERE user_id = :user_id";
-$stmt = $pdo->prepare($query);
+$stmt = $conn->prepare($query);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 $stmt->execute();
 $covoiturage = $stmt->fetch(PDO::FETCH_ASSOC);

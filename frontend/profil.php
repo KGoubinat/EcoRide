@@ -30,7 +30,7 @@ $user_email = $_SESSION['user_email'] ?? null;
 
 if ($isLoggedIn) {
     // Récupérer les informations de l'utilisateur
-    $stmtUser = $pdo->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
+    $stmtUser = $conn->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
     $stmtUser->execute([$user_email]);
     $user = $stmtUser->fetch();
 
@@ -47,7 +47,7 @@ if (!empty($reservations)) {
     $rideId = $reservations[0]['reservation_id'];  // L'ID de la réservation
 
     // Récupérer l'ID du covoiturage lié à cette réservation
-    $stmt = $pdo->prepare("SELECT covoiturage_id FROM reservations WHERE id = ?");
+    $stmt = $conn->prepare("SELECT covoiturage_id FROM reservations WHERE id = ?");
     $stmt->execute([$rideId]);
     $covoiturageId = $stmt->fetchColumn();
 
@@ -57,7 +57,7 @@ if (!empty($reservations)) {
         $covoiturageId = $_GET['ride_id']; // Récupère l'ID du covoiturage passé dans l'URL (ex : ?ride_id=1)
 
         // Vérifier si un covoiturage avec cet ID existe
-        $stmt = $pdo->prepare("SELECT statut FROM covoiturages WHERE id = ?");
+        $stmt = $conn->prepare("SELECT statut FROM covoiturages WHERE id = ?");
         $stmt->execute([$covoiturageId]);
         $rideStatus = $stmt->fetchColumn(); // Récupère le statut du covoiturage
 
@@ -77,20 +77,20 @@ if (!empty($reservations)) {
     // Mise à jour du statut si la méthode POST est utilisée
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
         $newStatus = $_POST['status'];
-        $stmtUpdateStatus = $pdo->prepare("UPDATE users SET status = ? WHERE email = ?");
+        $stmtUpdateStatus = $conn->prepare("UPDATE users SET status = ? WHERE email = ?");
         $stmtUpdateStatus->execute([$newStatus, $user_email]);
     }
 
     // Si l'utilisateur est un chauffeur, récupérer ses informations de chauffeur
     if ($user['status'] == 'chauffeur' || $user['status'] == 'passager_chauffeur') {
-        $stmtChauffeurInfo = $pdo->prepare("SELECT * FROM chauffeur_info WHERE user_id = ?");
+        $stmtChauffeurInfo = $conn->prepare("SELECT * FROM chauffeur_info WHERE user_id = ?");
         $stmtChauffeurInfo->execute([$user['id']]);
         $chauffeurInfo = $stmtChauffeurInfo->fetch();
     }
 
     // Récupérer les préférences fumeur et animaux de l'utilisateur
     if ($user['status'] == 'chauffeur' || $user['status'] == 'passager_chauffeur') {
-        $stmtPreferences = $pdo->prepare("SELECT smoker_preference, pet_preference FROM chauffeur_info WHERE user_id = ?");
+        $stmtPreferences = $conn->prepare("SELECT smoker_preference, pet_preference FROM chauffeur_info WHERE user_id = ?");
         $stmtPreferences->execute([$user['id']]);
         $preferences = $stmtPreferences->fetch();
 
@@ -100,7 +100,7 @@ if (!empty($reservations)) {
     }
 
     // Récupérer les réservations passées de l'utilisateur
-    $stmtReservations = $pdo->prepare("
+    $stmtReservations = $conn->prepare("
         SELECT 
             r.id AS reservation_id,
             c.depart AS depart,
@@ -121,7 +121,7 @@ if (!empty($reservations)) {
 }
 
     // Récupérer les covoiturages proposés
-    $stmtOfferedRides = $pdo->prepare("
+    $stmtOfferedRides = $conn->prepare("
         SELECT 
             c.id AS ride_id, 
             c.depart, 
@@ -282,13 +282,13 @@ if (!empty($reservations)) {
             <?php if ($user['status'] == 'chauffeur' || $user['status'] == 'passager_chauffeur'): ?>
                 <?php
                 // Récupérer les véhicules du chauffeur
-                $stmtVéhicules = $pdo->prepare("SELECT id, modele, marque FROM chauffeur_info WHERE user_id = ?");
+                $stmtVéhicules = $conn->prepare("SELECT id, modele, marque FROM chauffeur_info WHERE user_id = ?");
                 $stmtVéhicules->execute([$user['id']]);
                 $vehicules = $stmtVéhicules->fetchAll();
                 if (!$vehicules) {
                     $vehicules = [];
                 }
-                $stmtVilles = $pdo->query("SELECT nom FROM villes");
+                $stmtVilles = $conn->query("SELECT nom FROM villes");
                 $villes = $stmtVilles->fetchAll(PDO::FETCH_COLUMN);
 
                 ?>

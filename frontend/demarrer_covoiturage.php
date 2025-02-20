@@ -56,7 +56,7 @@ if (isset($data['id']) && isset($data['action']) && isset($data['type'])) {
 
             // Mettre à jour les réservations associées
             $updateReservationsQuery = "UPDATE reservations SET statut = 'en cours' WHERE covoiturage_id = :id";
-            $updateReservationsStmt = $pdo->prepare($updateReservationsQuery);
+            $updateReservationsStmt = $conn->prepare($updateReservationsQuery);
             $updateReservationsStmt->bindParam(':id', $id, PDO::PARAM_INT);
             $updateReservationsStmt->execute();
 
@@ -73,7 +73,7 @@ if (isset($data['id']) && isset($data['action']) && isset($data['type'])) {
 
             // Mettre à jour les réservations associées
             $updateReservationsQuery = "UPDATE reservations SET statut = 'terminé' WHERE covoiturage_id = :id";
-            $updateReservationsStmt = $pdo->prepare($updateReservationsQuery);
+            $updateReservationsStmt = $conn->prepare($updateReservationsQuery);
             $updateReservationsStmt->bindParam(':id', $id, PDO::PARAM_INT);
             $updateReservationsStmt->execute();
 
@@ -98,7 +98,7 @@ if (isset($data['id']) && isset($data['action']) && isset($data['type'])) {
 
     // Préparer et exécuter la requête principale
     try {
-        $stmt = $pdo->prepare($query);
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -116,7 +116,7 @@ if (isset($data['id']) && isset($data['action']) && isset($data['type'])) {
 
         // Supprimer les éléments associés après avoir mis à jour le statut
         if (!empty($deleteQuery)) {
-            $deleteStmt = $pdo->prepare($deleteQuery);
+            $deleteStmt = $conn->prepare($deleteQuery);
             $deleteStmt->bindParam(':id', $id, PDO::PARAM_INT);
             $deleteStmt->execute();
             error_log("Suppression effectuée pour l'ID : $id");

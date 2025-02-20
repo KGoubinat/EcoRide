@@ -18,7 +18,7 @@ $options = [
 ];
 
 try {
-    $pdo = new PDO($dsn, $username, $password, $options);
+    $conn = new PDO($dsn, $username, $password, $options);
 } catch (PDOException $e) {
     die("Impossible de se connecter à la base de données : " . $e->getMessage());
 }
@@ -54,7 +54,7 @@ if (isset($covoiturageId)) {
     $query = "SELECT statut FROM covoiturages WHERE id = ?";
     
     // Préparer la requête
-    $stmt = $pdo->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->execute([$covoiturageId]); // Exécuter la requête avec l'ID du covoiturage
     
     // Récupérer le statut du covoiturage

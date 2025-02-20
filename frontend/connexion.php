@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errorMessage = "Veuillez remplir tous les champs.";
     } else {
         // Vérifier si l'email existe dans la base de données
-        $stmt = $pdo->prepare("SELECT id, firstName, lastName, password, role FROM users WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id, firstName, lastName, password, role FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     } else {
                         $redirectUrl = $redirect; // Si déjà absolu, on garde tel quel
                     }
-                    header("Location: /frontend/accueil.php " . htmlspecialchars($redirectUrl)); // Sécurisation de l'URL
+                    header("Location:" . htmlspecialchars($redirectUrl)); // Sécurisation de l'URL
                 }
                 exit;
             } else {

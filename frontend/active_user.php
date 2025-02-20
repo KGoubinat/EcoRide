@@ -12,24 +12,29 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
     $userId = (int) $_GET['id'];
 
-    // Connexion à la base de données
-    $dsn = 'mysql:host=localhost;dbname=ecoride';
-    $username = 'root';
-    $password = 'nouveau_mot_de_passe';
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ];
+    // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
+$databaseUrl = getenv('JAWSDB_URL');
 
-    try {
-        $pdo = new PDO($dsn, $username, $password, $options);
-    } catch (PDOException $e) {
-        die("Impossible de se connecter à la base de données : " . $e->getMessage());
-    }
+// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
+$parsedUrl = parse_url($databaseUrl);
+
+// Définir les variables pour la connexion à la base de données
+$servername = $parsedUrl['host'];  // Hôte MySQL
+$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
+$password = $parsedUrl['pass'];  // Mot de passe MySQL
+$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+
+// Connexion à la base de données avec PDO
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connexion réussie à la base de données MySQL.";
+} catch (PDOException $e) {
+    echo "Erreur de connexion : " . $e->getMessage();
+}
 
     // Mettre à jour le statut de l'utilisateur pour l'activer'
-    $stmt = $pdo->prepare("UPDATE users SET etat = 'active' WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE users SET etat = 'active' WHERE id = ?");
     $stmt->execute([$userId]);
 
     // Rediriger vers la page de gestion des utilisateurs

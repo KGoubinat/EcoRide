@@ -36,7 +36,7 @@ $sql = "SELECT MONTH(date) AS month, YEAR(date) AS year, COUNT(*) AS count
         FROM covoiturages
         GROUP BY year, month
         ORDER BY year, month";
-$stmt = $pdo->query($sql);
+$stmt = $conn->query($sql);
 $ride_data = $stmt->fetchAll();
 $months = [];
 $counts = [];

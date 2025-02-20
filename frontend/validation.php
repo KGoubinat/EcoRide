@@ -42,7 +42,7 @@ if (isset($_GET['token'])) {
     $token = $_GET['token'];
 
     $query = "SELECT * FROM validation_tokens WHERE token = :token AND expiration > NOW() LIMIT 1";
-    $stmt = $pdo->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->execute(['token' => $token]);
     $validToken = $stmt->fetch();
 
@@ -59,7 +59,7 @@ if (isset($_GET['token'])) {
 
 // Récupérer les informations du trajet
 $query = "SELECT * FROM covoiturages WHERE id = :id";
-$stmt = $pdo->prepare($query);
+$stmt = $conn->prepare($query);
 $stmt->execute(['id' => $rideId]);
 $ride = $stmt->fetch();
 
@@ -75,11 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($feedback == "good") {
         // Mise à jour des crédits du chauffeur
         // Soumettre l'avis et la note
-        submitFeedback($pdo, $ride['user_id'], getUserId(), $rating, $comment, $utilisateurEmail); // Passage de $pdo en paramètre
-        updateChauffeurCredits($pdo, $ride['user_id'], 5);  // Passage de $pdo en paramètre
+        submitFeedback($conn, $ride['user_id'], getUserId(), $rating, $comment, $utilisateurEmail); 
+        updateChauffeurCredits($conn, $ride['user_id'], 5);  
     } else {
         // Si le feedback est "bad", on ajoute le commentaire dans 'troublesome_rides'
-        $result = addCommentForEmployee($pdo, $rideId, $comment); // Ajout dans troublesome_rides
+        $result = addCommentForEmployee($conn, $rideId, $comment); // Ajout dans troublesome_rides
         if ($result) {
             $_SESSION['confirmation_message'] = "Votre commentaire a été soumis pour examen.";
         } else {
@@ -109,24 +109,24 @@ function getUserId() {
     return $_SESSION['user_id']; // Assure-toi que l'ID est stocké dans la session
 }
 
-function updateChauffeurCredits($pdo, $conducteurId, $credits) {
+function updateChauffeurCredits($conn, $conducteurId, $credits) {
     // Mise à jour des crédits du chauffeur
     $query = "UPDATE users SET credits = credits + :credits WHERE id = :id";
-    $stmt = $pdo->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->execute(['credits' => $credits, 'id' => $conducteurId]);
 }
 
-function addCommentForEmployee($pdo, $rideId, $comment) {
+function addCommentForEmployee($conn, $rideId, $comment) {
     // Récupérer le covoiturage associé à l'ID
     $query = "SELECT * FROM covoiturages WHERE id = :ride_id";
-    $stmt = $pdo->prepare($query);
+    $stmt = $conn->prepare($query);
     $stmt->execute(['ride_id' => $rideId]);
     $ride = $stmt->fetch();
 
     if ($ride) {
         // Vérifier si l'ID du conducteur existe dans la table users
         $queryCheckUser = "SELECT id FROM users WHERE id = :conducteur_id";
-        $stmtCheckUser = $pdo->prepare($queryCheckUser);
+        $stmtCheckUser = $conn->prepare($queryCheckUser);
         $stmtCheckUser->execute(['conducteur_id' => $ride['user_id']]);
         $user = $stmtCheckUser->fetch();
 
@@ -134,7 +134,7 @@ function addCommentForEmployee($pdo, $rideId, $comment) {
             // Si le conducteur existe, insérer le commentaire dans la table 'troublesome_rides'
             $query = "INSERT INTO troublesome_rides (ride_id, user_id, driver_id, comment, status) 
                       VALUES (:ride_id, :user_id, :driver_id, :comment, 'en attente')";
-            $stmt = $pdo->prepare($query);
+            $stmt = $conn->prepare($query);
             $stmt->execute([
                 'ride_id' => $rideId,
                 'user_id' => getUserId(),
@@ -154,10 +154,10 @@ function addCommentForEmployee($pdo, $rideId, $comment) {
 
 
 
-function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, $utilisateurEmail) {
+function submitFeedback($conn, $conducteurId, $utilisateurId, $rating, $comment, $utilisateurEmail) {
     // Vérifier si l'utilisateur existe dans la table users
     $queryCheckUser = "SELECT id FROM users WHERE id = :utilisateur_id";
-    $stmtCheckUser = $pdo->prepare($queryCheckUser);
+    $stmtCheckUser = $conn->prepare($queryCheckUser);
     $stmtCheckUser->execute(['utilisateur_id' => $utilisateurId]);
     $user = $stmtCheckUser->fetch();
 
@@ -167,7 +167,7 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
             // Insérer l'avis dans la table 'reviews'
             $query = "INSERT INTO reviews (user_id, driver_id, rating, comment, status, created_at) 
                       VALUES (:utilisateur_id, :conducteur_id, :rating, :comment, 'pending', NOW())";
-            $stmt = $pdo->prepare($query);
+            $stmt = $conn->prepare($query);
             $stmt->execute([
                 'utilisateur_id' => $utilisateurId,
                 'conducteur_id' => $conducteurId,
@@ -223,7 +223,7 @@ function submitFeedback($pdo, $conducteurId, $utilisateurId, $rating, $comment, 
         } else {
             // Récupérer l'utilisateur connecté
             $user_email = $_SESSION['user_email'];
-            $stmtUser = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+            $stmtUser = $conn->prepare("SELECT * FROM users WHERE email = ?");
             $stmtUser->execute([$user_email]);
             $user = $stmtUser->fetch();
 

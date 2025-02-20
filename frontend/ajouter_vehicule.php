@@ -31,7 +31,7 @@ try {
 
 // Récupérer l'ID de l'utilisateur connecté
 $user_email = $_SESSION['user_email'];
-$stmtUser = $pdo->prepare("SELECT id, firstName, lastName FROM users WHERE email = ?");
+$stmtUser = $conn->prepare("SELECT id, firstName, lastName FROM users WHERE email = ?");
 $stmtUser->execute([$user_email]);
 $user = $stmtUser->fetch();
 
@@ -72,7 +72,7 @@ if (!filter_var($nb_places, FILTER_VALIDATE_INT) || $nb_places <= 0) {
 }
 
 // Insertion des données dans la table chauffeur_info
-$stmtInsert = $pdo->prepare("
+$stmtInsert = $conn->prepare("
     INSERT INTO chauffeur_info 
     (user_id, firstName, lastName, plaque_immatriculation, date_1ere_immat, modele, marque, nb_places_disponibles, preferences, smoker_preference, pet_preference, energie) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
