@@ -86,10 +86,11 @@ $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 
 $stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, credits) VALUES (?, ?, ?, ?, ?)");
-if ($stmt->execute([$firstName, $lastName, $email, $hashed_password,], 20)) {
+if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, 20])) {
     echo json_encode(["success" => true, "message" => "Inscription réussie"]);
 } else {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
 }
+
 ?>
