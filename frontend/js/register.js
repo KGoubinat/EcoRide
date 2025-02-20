@@ -28,18 +28,20 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Créer un FormData pour envoyer aussi l'image, seulement si elle est sélectionnée
-        const formData = new FormData();
+        // Création d'un objet contenant les données à envoyer
+        const formData = new URLSearchParams();
         formData.append("firstName", firstName);
         formData.append("lastName", lastName);
         formData.append("email", email);
         formData.append("password", password);
-        
 
         // Envoi des données avec fetch()
         fetch("/frontend/register.php", { 
             method: "POST",
-            body: formData // Utilisation de FormData pour l'image
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData.toString() // Convertir les données en format URL Encoded
         })
         .then(response => response.json())
         .then(data => {
