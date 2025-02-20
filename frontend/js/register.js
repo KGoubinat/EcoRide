@@ -39,9 +39,14 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/frontend/register.php", { 
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/json"
             },
-            body: formData.toString() // Convertir les données en format URL Encoded
+            body: JSON.stringify({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            }) // Convertir en JSON
         })
         .then(response => response.json())
         .then(data => {
