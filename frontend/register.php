@@ -1,95 +1,91 @@
 <?php
 session_start();
+header("Content-Type: application/json");
 
-header("Content-Type: application/json"); // Renvoie du JSON
-
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
+// Récupérer l'URL de la base de données
 $databaseUrl = getenv('JAWSDB_URL');
+if (!$databaseUrl) {
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Erreur : Variable d'environnement JAWSDB_URL non définie"]);
+    exit;
+}
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
 $parsedUrl = parse_url($databaseUrl);
+$servername = $parsedUrl['host'];
+$username = $parsedUrl['user'];
+$password = $parsedUrl['pass'];
+$dbname = ltrim($parsedUrl['path'], '/');
 
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
 } catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
+    http_response_code(500);
+    echo json_encode(["success" => false, "message" => "Erreur de connexion à la base de données"]);
+    exit;
 }
 
-// Lire les données envoyées en JSON
+// Lire et décoder le JSON
 $data = json_decode(file_get_contents("php://input"), true);
-
 if (!$data) {
     http_response_code(400);
     echo json_encode(["success" => false, "message" => "Format JSON invalide"]);
     exit;
 }
 
-// Vérifier si toutes les valeurs sont présentes
+// Vérification des champs requis
 if (!isset($data['firstName'], $data['lastName'], $data['email'], $data['password'])) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Tous les champs doivent être remplis"]);
+    echo json_encode(["success" => false, "message" => "Tous les champs sont obligatoires"]);
     exit;
 }
 
-// Récupérer et nettoyer les données
+// Nettoyage et validation des données
 $firstName = trim($data['firstName']);
 $lastName = trim($data['lastName']);
 $email = trim($data['email']);
 $password = trim($data['password']);
 
-// Vérification des champs vides
-if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
+if (!preg_match("/^[\p{L}\s'-]+$/u", $firstName) || strlen($firstName) < 2 || strlen($firstName) > 50) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Tous les champs doivent être remplis"]);
+    echo json_encode(["success" => false, "message" => "Prénom invalide"]);
     exit;
 }
-
-// Validation de l'email
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+if (!preg_match("/^[\p{L}\s'-]+$/u", $lastName) || strlen($lastName) < 2 || strlen($lastName) > 50) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "L'adresse email n'est pas valide"]);
+    echo json_encode(["success" => false, "message" => "Nom invalide"]);
+    exit;
+}
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Email invalide"]);
+    exit;
+}
+if (strlen($password) < 8 || strlen($password) > 32 ||
+    !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) ||
+    !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password)) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Mot de passe trop faible"]);
     exit;
 }
 
 // Vérifier si l'email existe déjà
 $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmt->execute([$email]);
-if ($stmt->rowCount() > 0) {
+$userExists = $stmt->fetch();
+
+if ($userExists) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Cet email est déjà utilisé"]);
+    echo json_encode(["success" => false, "message" => "Email déjà utilisé"]);
     exit;
 }
 
-// Vérification de la sécurité du mot de passe
-if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password)) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial"]);
-    exit;
-}
-
-// Hachage du mot de passe
+// Hachage du mot de passe et insertion
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-// Insérer l'utilisateur dans la base de données
 $stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)");
 if ($stmt->execute([$firstName, $lastName, $email, $hashed_password])) {
-    // Récupérer l'ID de l'utilisateur inséré
     $userId = $conn->lastInsertId();
-
-    // Insérer les 20 crédits dans la table des crédits (par exemple, credit_users)
-    $stmtCredits = $conn->prepare("INSERT INTO users_credit (user_id, credits) VALUES (?, ?)");
-    $stmtCredits->execute([$userId, 20]); // Attribuer 20 crédits à l'utilisateur
-
-    echo json_encode(["success" => true, "message" => "Inscription réussie !"]);
+    echo json_encode(["success" => true, "message" => "Inscription réussie", "user_id" => $userId]);
 } else {
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
