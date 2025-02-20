@@ -1,33 +1,69 @@
 <?php
-// Vérifier si un fichier a été téléchargé
-if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-    // Obtenir les informations du fichier
-    $fileTmpPath = $_FILES['photo']['tmp_name'];
-    $fileName = $_FILES['photo']['name'];
-    $fileSize = $_FILES['photo']['size'];
-    $fileType = $_FILES['photo']['type'];
+session_start();
+require_once '/Ecoride/cloudinary_php_master/src/Cloudinary.php';
 
-    // Définir le dossier où les photos seront enregistrées
-    $uploadDir = '/frontend/uploads/photos/';
-    $filePath = $uploadDir . basename($fileName);
+\Cloudinary::config(array(
+    "cloud_name" => "dj9iiquhw",
+    "api_key" => "191869388494711",
+    "api_secret" => "pjhNfoa_aSfLssECHSy_kpUliHQ"
+));
 
-    // Vérifier si le fichier est une image
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (in_array($fileType, $allowedTypes)) {
-        // Déplacer le fichier dans le dossier
-        if (move_uploaded_file($fileTmpPath, $filePath)) {
-            // Mettre à jour le chemin de la photo de profil dans la base de données
-            $stmt = $conn->prepare("UPDATE users SET photo = ? WHERE id = ?");
-            $stmt->execute([$filePath, $user['id']]);
-            echo "Photo de profil mise à jour avec succès!";
-            header('Location: /frontend/profil.php'); // Rediriger vers la page de profil pour voir les changements
-        } else {
-            echo "Erreur lors de l'upload de l'image.";
-        }
-    } else {
-        echo "Le fichier téléchargé n'est pas une image valide.";
+// Vérifier que l'utilisateur est connecté
+if (!isset($_SESSION['user_email'])) {
+    echo "Utilisateur non connecté.";
+    exit;
+}
+
+$user_email = $_SESSION['user_email'];
+
+// Vérifier si une photo a été téléchargée
+if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+    $photo = $_FILES['photo'];
+    
+    // Vérification du type et taille de l'image
+    if (!in_array($photo['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
+        echo "Format de fichier non autorisé. Veuillez télécharger une image JPEG, PNG ou GIF.";
+        exit;
     }
+    
+    // Envoi de l'image à Cloudinary
+    try {
+        $uploadResult = \Cloudinary\Uploader::upload($photo['tmp_name'], [
+            "folder" => "profile_pictures"  // Choisir un dossier pour l'image
+        ]);
+
+        // Récupérer l'URL de l'image téléchargée
+        $imageUrl = $uploadResult['secure_url'];
+
+        // Connexion à la base de données
+        $databaseUrl = getenv('JAWSDB_URL');
+        $parsedUrl = parse_url($databaseUrl);
+        
+        $servername = $parsedUrl['host'];
+        $username = $parsedUrl['user'];
+        $password = $parsedUrl['pass'];
+        $dbname = ltrim($parsedUrl['path'], '/');
+        
+        // Connexion à la base de données avec PDO
+        try {
+            $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
+            // Mise à jour de la photo dans la base de données
+            $stmtUpdatePhoto = $conn->prepare("UPDATE users SET photo = ? WHERE email = ?");
+            $stmtUpdatePhoto->execute([$imageUrl, $user_email]);
+
+            echo "Photo mise à jour avec succès.";
+
+        } catch (PDOException $e) {
+            echo "Erreur de connexion à la base de données : " . $e->getMessage();
+        }
+
+    } catch (Exception $e) {
+        echo "Erreur lors du téléchargement de la photo vers Cloudinary : " . $e->getMessage();
+    }
+
 } else {
-    echo "Aucun fichier téléchargé ou erreur lors de l'upload.";
+    echo "Aucune photo téléchargée ou erreur lors de l'upload.";
 }
 ?>
