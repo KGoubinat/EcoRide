@@ -859,6 +859,7 @@ body {
 .first-column, .second-column, .third-column {
     flex: 1;
     min-width: 280px; /* Assurer une certaine taille minimale */
+    height: auto; /* Hauteur ajustée au contenu */
 }
 
 /* Flexibilité pour les formulaires */
