@@ -881,7 +881,6 @@ h2, h3, h1 {
     font-size: 1.5em;
 }
 
-
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
     /* Empile les sections en colonne */
@@ -914,6 +913,16 @@ h2, h3, h1 {
     .first-column, .second-column, .third-column {
         width: 100%; /* Prennent toute la largeur */
         padding: 10px;
+    }
+
+    .first-column, .second-column, .third-column {
+        /* Empile les sections dans une seule colonne */
+        display: block;
+    }
+
+    main {
+        display: block; /* Assure-toi que le main s'affiche en bloc sur les petits écrans */
+        width: 100%; /* Tout prend la largeur de l'écran */
     }
 
     .presentation h2, .formulaire h2 {
