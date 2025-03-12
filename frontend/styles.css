@@ -882,6 +882,7 @@ h2, h3, h1 {
 }
 
 /* Style pour les petits écrans (moins de 768px) */
+
 @media screen and (max-width: 768px) {
     /* Empiler tous les éléments en une seule colonne */
     body {
@@ -913,21 +914,22 @@ h2, h3, h1 {
         margin: 10px 0; /* Espace entre les liens de navigation */
     }
 
-    /* Empile les sections en une seule colonne */
-    .first-column, .second-column, .third-column {
-        width: 100%; /* Prennent toute la largeur */
-        padding: 10px;
+    /* Supprimer les colonnes, tout mettre dans un bloc unique */
+    main {
+        display: block;
+        width: 100%;
+        padding: 20px;
         box-sizing: border-box; /* Prendre en compte le padding dans la largeur */
     }
 
-    /* S'assurer que main est en bloc */
-    main {
-        display: block; /* Assure que main s'affiche en bloc sur les petits écrans */
-        width: 100%; /* Prend toute la largeur */
+    .presentation, .formulaire, .details, .rejoindre {
+        margin-bottom: 20px; /* Espace entre les sections */
     }
 
-    .presentation, .formulaire, .details, .rejoindre {
-        margin-bottom: 20px; /* Ajout d'un espace entre les sections */
+    /* Empiler tout verticalement dans une seule colonne */
+    .presentation, .formulaire, .highlight, .rejoindre {
+        width: 100%; /* Prend toute la largeur */
+        text-align: center; /* Centrer le texte */
     }
 
     /* Ajustement des tailles de texte */
@@ -946,7 +948,7 @@ h2, h3, h1 {
         text-align: center; /* Centrer les sous-titres */
     }
 
-    /* Si tu as une image de fond, elle doit se redimensionner avec l'écran */
+    /* S'assurer que l'image de fond se redimensionne bien */
     body {
         background-size: cover;
         background-position: center;
