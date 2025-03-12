@@ -5,7 +5,7 @@ body {
     padding: 0;
     background: #d8f3dc;
     color: #333;
-    background-image: url('../Images/Fond.jpg');
+    background-image: url('/frontend/images/Fond.webp');
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
@@ -833,3 +833,123 @@ input[type="password"] {
     margin-bottom: 15px; /* Espacement pour les informations */
 }
 
+/* CSS de base pour rendre le layout responsive */
+
+/* Partie générale : s'assurer que le texte et les éléments sont adaptables */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Mise en page en colonnes pour les écrans larges */
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.first-column, .second-column, .third-column {
+    flex: 1;
+    min-width: 280px; /* Assurer une certaine taille minimale */
+}
+
+/* Flexibilité pour les formulaires */
+form input, form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Mise en forme pour les éléments de présentation */
+.presentation, .highlight, .rejoindre {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Réduire la taille des titres pour les petits écrans */
+h2, h3, h1 {
+    font-size: 1.5em;
+}
+
+.hamburger {
+    display: none;
+    font-size: 30px;
+}
+
+#navMenu ul {
+    display: flex;
+    list-style: none;
+}
+/* Utilisation de media queries pour ajuster le design selon la taille de l'écran */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;  /* Empiler les colonnes sur les petits écrans */
+    }
+
+    .logo {
+        text-align: center;
+    }
+
+    nav ul {
+        text-align: center;
+        padding: 0;
+    }
+
+    nav ul li {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    .rejoindre button {
+        width: 100%;
+    }
+    .hamburger {
+        display: block;  /* Afficher le bouton de menu hamburger sur les petits écrans */
+    }
+
+    #navMenu {
+        display: none;
+    }
+
+    #navMenu.open {
+        display: block;  /* Afficher le menu quand il est ouvert */
+    }
+
+    #navMenu ul {
+        flex-direction: column;
+    }
+}
+
+/* Pour les très petits écrans (mobiles en portrait) */
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.1em;
+    }
+
+    .first-column, .second-column, .third-column {
+        min-width: 100%;
+    }
+
+    nav ul {
+        padding: 0;
+    }
+
+    nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+}

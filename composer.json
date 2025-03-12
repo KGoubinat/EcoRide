@@ -1,9 +1,21 @@
 {
-    "name": "kgoubinat/ecoride",
-    "description": "EcoRide Covoiturage App",
+    "name": "goubco/eco-ride",
+    "description": "Site de covoiturage Plateforme de covoiturage écologique visant à réduire l'impact environnemental des déplacements.",
+    "type": "project",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Goubco\\EcoRide\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Goub",
+            "email": "kevingoub@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
     "require": {
-    "php": "^7.3 || ^8.0"
+        "phpmailer/phpmailer": "^6.9"
     }
-
-  }
-  
+}
