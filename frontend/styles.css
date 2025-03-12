@@ -881,15 +881,7 @@ h2, h3, h1 {
     font-size: 1.5em;
 }
 
-.hamburger {
-    display: none;
-    font-size: 30px;
-}
 
-#navMenu ul {
-    display: flex;
-    list-style: none;
-}
 /* Utilisation de media queries pour ajuster le design selon la taille de l'écran */
 @media (max-width: 768px) {
     .main-container {
@@ -916,21 +908,6 @@ h2, h3, h1 {
 
     .rejoindre button {
         width: 100%;
-    }
-    .hamburger {
-        display: block;  /* Afficher le bouton de menu hamburger sur les petits écrans */
-    }
-
-    #navMenu {
-        display: none;
-    }
-
-    #navMenu.open {
-        display: block;  /* Afficher le menu quand il est ouvert */
-    }
-
-    #navMenu ul {
-        flex-direction: column;
     }
 }
 

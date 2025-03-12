@@ -45,8 +45,8 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
             <div class="logo">
                 <h1>EcoRide</h1>
             </div>
-            <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <nav id="navMenu">
+            
+            <nav>
                 <ul>
                     <li><a href="/frontend/accueil.php">Accueil</a></li>
                     <li><a href="/frontend/contact_info.php">Contact</a></li>
