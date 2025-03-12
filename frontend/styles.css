@@ -883,23 +883,26 @@ h2, h3, h1 {
 
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
-    /* Empile les sections en colonne */
+    /* Empiler tous les éléments en une seule colonne */
     body {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: column; /* Passe tout en colonne */
+        align-items: stretch;  /* Permet d'étirer tous les éléments pour occuper toute la largeur */
     }
 
     header {
         width: 100%;
         padding: 10px;
+        text-align: center; /* Centrer le contenu du header */
     }
 
     .header-container {
+        width: 100%; /* Prend toute la largeur */
         flex-direction: column;
-        align-items: center;
+        align-items: center; /* Centre les éléments dans le header */
     }
 
     nav ul {
+        display: flex;
         flex-direction: column; /* Navigation en vertical */
         align-items: center;
         padding: 0;
@@ -910,35 +913,37 @@ h2, h3, h1 {
         margin: 10px 0; /* Espace entre les liens de navigation */
     }
 
+    /* Empile les sections en une seule colonne */
     .first-column, .second-column, .third-column {
         width: 100%; /* Prennent toute la largeur */
         padding: 10px;
+        box-sizing: border-box; /* Prendre en compte le padding dans la largeur */
     }
 
-    .first-column, .second-column, .third-column {
-        /* Empile les sections dans une seule colonne */
-        display: block;
-    }
-
+    /* S'assurer que main est en bloc */
     main {
-        display: block; /* Assure-toi que le main s'affiche en bloc sur les petits écrans */
-        width: 100%; /* Tout prend la largeur de l'écran */
+        display: block; /* Assure que main s'affiche en bloc sur les petits écrans */
+        width: 100%; /* Prend toute la largeur */
     }
 
+    .presentation, .formulaire, .details, .rejoindre {
+        margin-bottom: 20px; /* Ajout d'un espace entre les sections */
+    }
+
+    /* Ajustement des tailles de texte */
     .presentation h2, .formulaire h2 {
         font-size: 22px;
+        text-align: center; /* Centrer les titres */
     }
 
     .formulaire p, .highlight p, .rejoindre p {
         font-size: 16px;
+        text-align: center; /* Centrer les paragraphes */
     }
 
     .highlight h3, .details h3 {
         font-size: 18px;
-    }
-
-    .rejoindre {
-        text-align: center;
+        text-align: center; /* Centrer les sous-titres */
     }
 
     /* Si tu as une image de fond, elle doit se redimensionner avec l'écran */
