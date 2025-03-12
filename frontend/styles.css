@@ -882,78 +882,59 @@ h2, h3, h1 {
 }
 
 
-/* Utilisation de media queries pour ajuster le design selon la taille de l'écran */
-@media (max-width: 768px) {
+/* Style pour les petits écrans (moins de 768px) */
+@media screen and (max-width: 768px) {
+    /* Empile les sections en colonne */
     body {
-        flex-direction: column; /* Met tout en une seule colonne */
-        align-items: center; /* Centre le contenu */
+        flex-direction: column;
+        align-items: center;
     }
 
     header {
-        width: 100%; /* S'assure que le header prend toute la largeur */
-        padding: 10px; /* Ajouter un peu d'espace autour du header */
+        width: 100%;
+        padding: 10px;
     }
 
     .header-container {
-        flex-direction: column; /* Organise la partie logo et menu en colonne */
-        align-items: center; /* Centre le contenu dans l'en-tête */
-    }
-
-    .logo h1 {
-        font-size: 24px; /* Ajuster la taille du texte du logo */
+        flex-direction: column;
+        align-items: center;
     }
 
     nav ul {
-        flex-direction: column; /* Empile les éléments de navigation verticalement */
+        flex-direction: column; /* Navigation en vertical */
         align-items: center;
         padding: 0;
         margin: 0;
     }
 
     nav ul li {
-        margin: 10px 0; /* Espacement entre les éléments de menu */
+        margin: 10px 0; /* Espace entre les liens de navigation */
     }
 
     .first-column, .second-column, .third-column {
-        width: 100%; /* Assure que chaque section occupe toute la largeur */
+        width: 100%; /* Prennent toute la largeur */
         padding: 10px;
     }
 
-    /* Ajuste la taille des titres et paragraphes */
     .presentation h2, .formulaire h2 {
         font-size: 22px;
     }
 
-    .formulaire p {
+    .formulaire p, .highlight p, .rejoindre p {
         font-size: 16px;
     }
 
-    /* Réduire la taille du texte dans les colonnes de présentation et détails */
     .highlight h3, .details h3 {
         font-size: 18px;
     }
 
     .rejoindre {
-        text-align: center; /* Centre les éléments de la section rejoindre */
-    }
-}
-
-/* Pour les très petits écrans (mobiles en portrait) */
-@media (max-width: 480px) {
-    h2 {
-        font-size: 1.1em;
+        text-align: center;
     }
 
-    .first-column, .second-column, .third-column {
-        min-width: 100%;
-    }
-
-    nav ul {
-        padding: 0;
-    }
-
-    nav ul li {
-        display: block;
-        margin-bottom: 10px;
+    /* Si tu as une image de fond, elle doit se redimensionner avec l'écran */
+    body {
+        background-size: cover;
+        background-position: center;
     }
 }
