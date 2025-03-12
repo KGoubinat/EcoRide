@@ -884,30 +884,57 @@ h2, h3, h1 {
 
 /* Utilisation de media queries pour ajuster le design selon la taille de l'écran */
 @media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;  /* Empiler les colonnes sur les petits écrans */
+    body {
+        flex-direction: column; /* Met tout en une seule colonne */
+        align-items: center; /* Centre le contenu */
     }
 
-    .logo {
-        text-align: center;
+    header {
+        width: 100%; /* S'assure que le header prend toute la largeur */
+        padding: 10px; /* Ajouter un peu d'espace autour du header */
+    }
+
+    .header-container {
+        flex-direction: column; /* Organise la partie logo et menu en colonne */
+        align-items: center; /* Centre le contenu dans l'en-tête */
+    }
+
+    .logo h1 {
+        font-size: 24px; /* Ajuster la taille du texte du logo */
     }
 
     nav ul {
-        text-align: center;
+        flex-direction: column; /* Empile les éléments de navigation verticalement */
+        align-items: center;
         padding: 0;
+        margin: 0;
     }
 
     nav ul li {
-        display: inline-block;
-        margin-right: 20px;
+        margin: 10px 0; /* Espacement entre les éléments de menu */
     }
 
-    h2 {
-        font-size: 1.2em;
+    .first-column, .second-column, .third-column {
+        width: 100%; /* Assure que chaque section occupe toute la largeur */
+        padding: 10px;
     }
 
-    .rejoindre button {
-        width: 100%;
+    /* Ajuste la taille des titres et paragraphes */
+    .presentation h2, .formulaire h2 {
+        font-size: 22px;
+    }
+
+    .formulaire p {
+        font-size: 16px;
+    }
+
+    /* Réduire la taille du texte dans les colonnes de présentation et détails */
+    .highlight h3, .details h3 {
+        font-size: 18px;
+    }
+
+    .rejoindre {
+        text-align: center; /* Centre les éléments de la section rejoindre */
     }
 }
 
