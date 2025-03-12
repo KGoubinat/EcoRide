@@ -5,7 +5,7 @@ body {
     padding: 0;
     background: #d8f3dc;
     color: #333;
-    background-image: url('/frontend/images/Fond.webp');
+    background-image: url('/frontend/images/Fond.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
