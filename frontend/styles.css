@@ -961,7 +961,7 @@ h2, h3, h1 {
         width: 100%;
         height: 50px;
     }
-    
+
     nav ul {
         display: flex;
         flex-direction: column; /* Navigation en vertical */
@@ -989,6 +989,7 @@ h2, h3, h1 {
         text-align: center; /* Centrer le texte */
         max-width: 370px;
         margin-bottom: 20px; /* Espace entre les sections */
+        padding: 5px;
     }
 
     /* Ajustement des tailles de texte */
