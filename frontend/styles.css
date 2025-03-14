@@ -8,6 +8,8 @@ body {
     background-image: url('/frontend/images/Fond.jpg');
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center; /* Centre l'image */
+    min-height: 100vh; /* Assure que le fond couvre toute la hauteur de l'écran */
     display: flex;
     flex-direction: column;
     height: 100vh; /* Prend toute la hauteur de l'écran */
