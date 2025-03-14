@@ -987,6 +987,10 @@ h2, h3, h1 {
         padding: 5px;
     }
 
+    .intro{
+        padding: 5px;
+    }
+    
     .formulaire, .form, .highlight, .{
         margin: 0;
     }
