@@ -949,8 +949,7 @@ h2, h3, h1 {
 
     header {
         width: 100%;
-        padding-right: 0;
-        padding-left: 0;
+        padding: 0;
         text-align: center; /* Centrer le contenu du header */
     }
 
@@ -960,8 +959,7 @@ h2, h3, h1 {
 
     footer {
         width: 100%;
-        padding-right: 0;
-        padding-left: 0;
+        padding: 0;
     }
 
     nav ul {
