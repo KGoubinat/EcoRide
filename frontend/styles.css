@@ -1048,6 +1048,10 @@ h2, h3, h1 {
         padding: 15px;
     }
 
+    nav li{
+        height: 50px;
+    }
+
     nav.active {
         display: flex;
     }
