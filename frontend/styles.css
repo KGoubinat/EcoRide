@@ -972,9 +972,6 @@ h2, h3, h1 {
         gap:0;
     }
 
-    nav ul li {
-        margin: 10px 0; /* Espace entre les liens de navigation */
-    }
 
     /* Supprimer les colonnes, tout mettre dans un bloc unique */
     main {
@@ -1045,7 +1042,7 @@ h2, h3, h1 {
 
     nav ul li {
         text-align: center;
-        padding: 15px;
+        padding: 10px;
     }
 
     nav li{
