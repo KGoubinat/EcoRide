@@ -43,7 +43,6 @@ nav {
 nav ul {
     list-style: none;
     display: flex;
-    gap: 100px; /* Espacement entre les liens */
     margin: 0;
     padding: 0;
 }
@@ -897,8 +896,8 @@ h2, h3, h1 {
     flex-direction: column;
     background-color: #333;
     position: absolute;
-    top: 60px;
-    left: 0;
+    top: 50px;
+    right: 0;
     width: 100%;
     max-width: 200px;
     z-index: 1000;
@@ -925,11 +924,6 @@ h2, h3, h1 {
 
 #mobile-menu a:hover {
     background-color: #555;
-}
-
-/* Normaliser la présentation des éléments */
-ul, ol {
-    list-style: none; /* Supprime les puces par défaut */
 }
 
 /* Style pour les petits écrans (moins de 768px) */
@@ -1034,8 +1028,8 @@ ul, ol {
         flex-direction: column;
         background-color: #333;
         position: absolute;
-        top: 60px;
-        left: 0;
+        top: 50px;
+        right: 0;
         width: 100%;
     }
 
