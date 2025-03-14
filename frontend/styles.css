@@ -27,8 +27,9 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px;
     height: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 header h1 {
     color: black;
@@ -946,14 +947,9 @@ h2, h3, h1 {
 
     header {
         width: 100%;
-        padding: 0, 5px;
+        padding: 0, px;
         text-align: center; /* Centrer le contenu du header */
-    }
 
-    .header-container {
-        align-items: center; /* Centre les éléments dans le header */
-        padding-left: 10px;
-        padding-right: 10px;
     }
 
     footer {
