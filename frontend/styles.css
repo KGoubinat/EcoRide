@@ -907,6 +907,7 @@ h2, h3, h1 {
 #mobile-menu ul {
     list-style: none;
     padding: 0;
+    gap: 100px;
     margin: 0;
 }
 
