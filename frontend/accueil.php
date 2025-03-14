@@ -59,7 +59,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                 </ul>
             </nav>
         </div>
-        
+
         <!-- Menu mobile (caché par défaut) -->
         <nav id="mobile-menu">
             <ul>
@@ -76,7 +76,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
         <div class="first-column">
             <section class="presentation">
                 <div class="intro">
-                    <h2>Bienvenue sur EcoRide !</h2>
+                    <h2>Bienvenue sur EcoRide!</h2>
                     <p>Rejoignez la plateforme de covoiturage dédiée à la réduction de l'impact environnemental et à l'économie des déplacements. Chez EcoRide, nous facilitons les trajets en voiture partagée pour ceux qui souhaitent voyager de manière plus durable et économique. Que vous soyez conducteur ou passager, notre application vous aide à réduire votre empreinte carbone tout en économisant sur vos déplacements. Ensemble, faisons de chaque trajet un geste pour la planète !</p>
                 </div>
             </section>
