@@ -882,6 +882,12 @@ h2, h3, h1 {
     font-size: 1.5em;
 }
 
+.menu-toggle {
+    display: none;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+}
 /* Style pour les petits écrans (moins de 768px) */
 
 @media screen and (max-width: 768px) {
@@ -931,6 +937,7 @@ h2, h3, h1 {
     .presentation, .formulaire, .highlight, .rejoindre {
         width: 100%; /* Prend toute la largeur */
         text-align: center; /* Centrer le texte */
+        max-width: 500px;
     }
 
     /* Ajustement des tailles de texte */
@@ -953,5 +960,32 @@ h2, h3, h1 {
     body {
         background-size: cover;
         background-position: center;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    nav {
+        display: none;
+        flex-direction: column;
+        background-color: #333;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        text-align: center;
+        padding: 15px;
+    }
+
+    nav.active {
+        display: flex;
     }
 }
