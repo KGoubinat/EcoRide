@@ -18,7 +18,7 @@ body {
 header {
     background: #0077b6;
     color: black;
-    padding: 0px;
+    padding: 0, 20px;
     height: 50px; 
     margin: 0;
 
