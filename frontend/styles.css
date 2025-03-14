@@ -900,7 +900,7 @@ h2, h3, h1 {
     top: 60px;
     left: 0;
     width: 100%;
-    padding: 10px 0;
+    max-width: 200px;
     z-index: 1000;
     box-sizing: border-box;
 }
@@ -934,6 +934,19 @@ ul, ol {
 
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
+
+    ul {
+        /* Réinitialiser la liste */
+        display: block; /* Affiche le ul en bloc (défaut du navigateur) */
+        list-style-type: none; /* Supprime les puces par défaut */
+        margin-block-start: 0; /* Réinitialise la marge avant */
+        margin-block-end: 0; /* Réinitialise la marge après */
+        margin-inline-start: 0; /* Réinitialise la marge à gauche */
+        margin-inline-end: 0; /* Réinitialise la marge à droite */
+        padding-inline-start: 0; /* Réinitialise le padding à gauche */
+        unicode-bidi: normal; /* Réinitialise les propriétés de texte */
+    }
+    
     /* Empiler tous les éléments en une seule colonne */
     body {
         flex-direction: column; /* Passe tout en colonne */
