@@ -45,6 +45,7 @@ nav ul {
     display: flex;
     margin: 0;
     padding: 0;
+    gap: 100px;
 }
 
 nav ul li {
@@ -907,7 +908,6 @@ h2, h3, h1 {
 #mobile-menu ul {
     list-style: none;
     padding: 0;
-    gap: 100px;
     margin: 0;
 }
 
