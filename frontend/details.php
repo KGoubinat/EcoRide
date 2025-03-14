@@ -92,17 +92,27 @@ if ($isLoggedIn) {
         <div class="logo">
             <h1>Détail du covoiturage</h1>
         </div>
-        <nav>
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+        <nav id="navbar">
             <ul>
                 <li><a href="/frontend/accueil.php">Accueil</a></li>
                 <li><a href="/frontend/contact-info">Contact</a></li>
                 <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
-
             </ul>
         </nav>
     </div>
+    <!-- Menu mobile (caché par défaut) -->
+    <nav id="mobile-menu">
+            <ul>
+                <li><a href="/frontend/accueil.php">Accueil</a></li>
+                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
+                <li><a href="/frontend/contact_info.php">Contact</a></li>
+                <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+            </ul>
+        </nav>
 </header>
 
 <main class="covoit">

@@ -42,7 +42,8 @@ try {
     <header>
         <div class="header-container">
             <h1>Bienvenue, Administrateur</h1>
-            <nav>
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
                     <li><a href="/frontend/create_employee.php">Ajouter un Employé</a></li>
@@ -52,6 +53,16 @@ try {
                 </ul>
             </nav>
         </div>
+        <!-- Menu mobile (caché par défaut) -->
+        <nav id="mobile-menu">
+            <ul>
+                <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                <li><a href="/frontend/create_employee.php">Ajouter un Employé</a></li>
+                <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
+                <li><a href="/frontend/logout.php">Déconnexion</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main class=covoit>

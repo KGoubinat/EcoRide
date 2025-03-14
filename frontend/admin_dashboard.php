@@ -112,7 +112,10 @@ $totalCredits = $totalCovoiturages * 2;
     <header>
     <div class="header-container">
         <h1>Bienvenue, Administrateur</h1>
-            <nav>
+
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+
+            <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
                     <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
@@ -122,6 +125,17 @@ $totalCredits = $totalCovoiturages * 2;
                 </ul>
             </nav>
         </div>
+
+        <!-- Menu mobile (caché par défaut) -->
+        <nav id="mobile-menu">
+            <ul>
+                <li><a href="/frontend/accueil.php">Accueil</a></li>
+                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
+                <li><a href="/frontend/contact_info.php">Contact</a></li>
+                <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+            </ul>
+        </nav>
     </header>
 
     <main class=adaptation>

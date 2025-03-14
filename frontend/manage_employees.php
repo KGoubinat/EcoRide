@@ -45,7 +45,8 @@ $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM use
         <header>
         <div class="header-container">
             <h1>Gestion des Employés</h1>
-            <nav>
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
                     <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
@@ -55,6 +56,15 @@ $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM use
                 </ul>
             </nav>
             </div>
+        <!-- Menu mobile (caché par défaut) -->
+        <nav id="mobile-menu">
+            <ul>
+                <li><a href="/frontend/employee_dashboard.php">Tableau de bord</a></li>
+                <li><a href="/frontend/employee_reviews.php">Gérer les Avis</a></li>
+                <li><a href="/frontend/employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
+                <li><a href="/frontend/logout.php">Déconnexion</a></li>
+            </ul>
+        </nav>
         </header>
     
 

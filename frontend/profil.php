@@ -161,7 +161,8 @@ if (!empty($reservations)) {
                 <h1>Bienvenue sur votre profil, <?php echo $isLoggedIn ? htmlspecialchars($user['lastName']) : 'Utilisateur'; ?> !</h1>
 
             </div>
-            <nav>
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/accueil.php">Accueil</a></li>
                     <li><a href="/frontend/contact-info.php">Contact</a></li>
@@ -171,6 +172,16 @@ if (!empty($reservations)) {
                 </ul>
             </nav>
         </div>
+        <!-- Menu mobile (caché par défaut) -->
+        <nav id="mobile-menu">
+            <ul>
+                <li><a href="/frontend/accueil.php">Accueil</a></li>
+                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
+                <li><a href="/frontend/contact-info.php">Contact</a></li>
+                <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+            </ul>
+        </nav>
     </header>
 
     <main class=adaptation>

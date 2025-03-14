@@ -59,12 +59,11 @@ foreach ($ride_data as $data) {
 
 </head>
 <body>
-
-    <!-- Entête -->
     <header>
         <div class="header-container">
             <h1>Bienvenue dans votre Espace Employé, <?php echo $employee_name; ?>!</h1>
-            <nav>
+            <div class="menu-toggle" id="menu-toggle">☰</div>
+            <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/employee_dashboard.php">Tableau de bord</a></li>
                     <li><a href="/frontend/employee_reviews.php">Gérer les Avis</a></li>
@@ -73,6 +72,15 @@ foreach ($ride_data as $data) {
                 </ul>
             </nav>
         </div>
+        <!-- Menu mobile (caché par défaut) -->
+        <nav id="mobile-menu">
+            <ul>
+                <li><a href="/frontend/employee_dashboard.php">Tableau de bord</a></li>
+                <li><a href="/frontend/employee_reviews.php">Gérer les Avis</a></li>
+                <li><a href="/frontend/employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
+                <li><a href="/frontend/logout.php">Déconnexion</a></li>
+            </ul>
+        </nav>
     </header>
 
     <!-- Contenu Principal -->
