@@ -5,8 +5,7 @@ body {
     padding: 0;
     background: #d8f3dc;
     color: #333;
-    background: linear-gradient(to bottom, #4CAF50, #2E7D32), 
-                url('/frontend/images/Fond.jpg') no-repeat center center;
+    background-image: url('/frontend/images/Fond.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; /* Centre l'image */
