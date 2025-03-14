@@ -865,7 +865,6 @@ body {
 form input, form button {
     padding: 10px;
     margin-bottom: 10px;
-    font-size: 1rem;
     box-sizing: border-box;
 }
 
@@ -989,7 +988,7 @@ h2, h3, h1 {
         padding: 5px;
     }
 
-    .formulaire, .form, .hightlight{
+    .formulaire, .form, .highlight, .{
         margin: 0;
     }
 
