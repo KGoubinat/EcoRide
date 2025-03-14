@@ -6,7 +6,7 @@ body {
     background: #d8f3dc;
     color: #333;
     background: linear-gradient(to bottom, #0077b6, #26A69A, #00BFA5, #ccc),
-                url('/frontend/images/Fond.jpg');
+                url('/frontend/images/Fond.jpg') no-repeat center center fixed;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; /* Centre l'image */
