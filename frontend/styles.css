@@ -989,9 +989,11 @@ h2, h3, h1 {
         padding: 5px;
     }
 
-    .formulaire{
-        marrgin: 0;
+    .formulaire, .form, .hightlight{
+        margin: 0;
     }
+
+
     /* Ajustement des tailles de texte */
     .presentation h2, .formulaire h2 {
         font-size: 22px;
