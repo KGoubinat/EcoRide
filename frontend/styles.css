@@ -979,7 +979,7 @@ h2, h3, h1 {
     }
 
     /* Empiler tout verticalement dans une seule colonne */
-    .presentation, .formulaire, .highlight, .rejoindre, .form, .details {
+    .presentation, .formulaire, .highlight, .rejoindre, .form, .details, .user-info, .user-status, .chauffeur-info, .user-reservations, .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies {
         width: 100%; /* Prend toute la largeur */
         text-align: center; /* Centrer le texte */
         max-width: 370px;

@@ -1,19 +1,4 @@
-// Gestion du menu burger
-const menuToggle = document.getElementById("menu-toggle");
-const mobileMenu = document.getElementById("mobile-menu");
 
-if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener("click", function () {
-        mobileMenu.classList.toggle("active");
-    });
-
-    // Fermer le menu après un clic sur un lien
-    document.querySelectorAll("#mobile-menu a").forEach(link => {
-        link.addEventListener("click", function () {
-            mobileMenu.classList.remove("active");
-        });
-    });
-}
 // Sélectionner les éléments
 (function() {
 const cancelButtons = document.querySelectorAll('.btn-danger'); 

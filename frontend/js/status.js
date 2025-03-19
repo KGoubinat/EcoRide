@@ -1,22 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Gestion du menu burger
-    const menuToggle = document.getElementById("menu-toggle");
-    const mobileMenu = document.getElementById("mobile-menu");
-
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener("click", function () {
-            mobileMenu.classList.toggle("active");
-        });
-
-        // Fermer le menu après un clic sur un lien
-        document.querySelectorAll("#mobile-menu a").forEach(link => {
-            link.addEventListener("click", function () {
-                mobileMenu.classList.remove("active");
-            });
-        });
-    }
-    
 // Gérer la soumission du formulaire de statut
 const statusForm = document.getElementById("status-form");
 if (statusForm) {
