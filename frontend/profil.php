@@ -163,8 +163,8 @@ if (!empty($reservations)) {
             <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact-info.php">Contact</a></li>
-                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/contact_info.php">Contact</a></li>
+                    <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -175,7 +175,7 @@ if (!empty($reservations)) {
             <ul>
                 <li><a href="/frontend/accueil.php">Accueil</a></li>
                 <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact-info.php">Contact</a></li>
+                <li><a href="/frontend/contact_info.php">Contact</a></li>
                 <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
             </ul>
