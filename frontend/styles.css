@@ -935,7 +935,7 @@ h2, h3, h1 {
         justify-content: center;
         width: 100%;
     }
-    
+
     .container {
         display: flex;
         flex-direction: column;
@@ -946,102 +946,91 @@ h2, h3, h1 {
         margin: 0 auto; /* Centre le conteneur horizontalement */
         padding: 20px;
     }
-    
+
     .user-info, .user-status, .user-reservations, .user-offered-rides {
         width: 100%;
         text-align: center;
-        max-width: 350px;
     }
-    
+
     .profile-img {
-        box-sizing: content-box;
-        margin: 0;
+        box-sizing: border-box;
+        margin: 0 auto;
         padding: 0;
         border: none;
-        max-width: 350px;
-        }
+        max-width: 100%; /* Ajustement pour éviter les débordements */
+        height: auto;
+    }
 
     ul {
-        /* Réinitialiser la liste */
-        display: block; /* Affiche le ul en bloc (défaut du navigateur) */
-        list-style-type: none; /* Supprime les puces par défaut */
-        margin-block-start: 0; /* Réinitialise la marge avant */
-        margin-block-end: 0; /* Réinitialise la marge après */
-        margin-inline-start: 0; /* Réinitialise la marge à gauche */
-        margin-inline-end: 0; /* Réinitialise la marge à droite */
-        padding-inline-start: 0; /* Réinitialise le padding à gauche */
-        unicode-bidi: normal; /* Réinitialise les propriétés de texte */
+        list-style: none;
+        margin: 0;
+        padding: 0;
     }
-    
+
     /* Empiler tous les éléments en une seule colonne */
     body {
-        flex-direction: column; /* Passe tout en colonne */
-        align-items: stretch;  /* Permet d'étirer tous les éléments pour occuper toute la largeur */
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    header {
+    header, footer {
         width: 100%;
-        padding: 0px;
-        text-align: center; /* Centrer le contenu du header */
-
-    }
-
-    footer {
-        width: 100%;
-        padding: 0;
+        text-align: center;
+        padding: 10px 0;
     }
 
     nav ul {
         display: flex;
-        flex-direction: column; /* Navigation en vertical */
+        flex-direction: column;
         align-items: center;
         padding: 0;
         margin: 0;
-        gap:0;
+        gap: 0;
     }
 
-
-    /* Supprimer les colonnes, tout mettre dans un bloc unique */
+    /* Supprimer les colonnes, tout mettre en un bloc unique */
     main {
         display: block;
         width: 100%;
         padding: 20px;
-        box-sizing: border-box; /* Prendre en compte le padding dans la largeur */
+        box-sizing: border-box;
         align-items: center;
     }
 
-    /* Empiler tout verticalement dans une seule colonne */
-    
-.button, .presentation, .formulaire, .highlight, .rejoindre, .form, .details, .user-status, .chauffeur-info, .user-reservations, .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies, .container, .info-card {
-        text-align: center; /* Centrer le texte */
+    /* Appliquer un style uniforme aux sections */
+    .button, .presentation, .formulaire, .highlight, .rejoindre, .form, .details, 
+    .user-status, .chauffeur-info, .user-reservations, .user-offered-rides, 
+    .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, 
+    .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies, 
+    .container, .info-card {
+        text-align: center;
         max-width: 370px;
-        margin-bottom: 20px; /* Espace entre les sections */
+        margin-bottom: 20px;
         padding: 5px;
     }
 
-    .intro{
+    .intro {
         padding: 5px;
     }
 
-    .formulaire, .form, .highlight{
+    .formulaire, .form, .highlight {
         margin: 0;
     }
-
 
     /* Ajustement des tailles de texte */
     .presentation h2, .formulaire h2 {
         font-size: 22px;
-        text-align: center; /* Centrer les titres */
+        text-align: center;
     }
 
     .formulaire p, .highlight p, .rejoindre p {
         font-size: 16px;
-        text-align: center; /* Centrer les paragraphes */
+        text-align: center;
     }
 
     .highlight h3, .details h3 {
         font-size: 18px;
-        text-align: center; /* Centrer les sous-titres */
+        text-align: center;
     }
 
     /* S'assurer que l'image de fond se redimensionne bien */
@@ -1055,7 +1044,7 @@ h2, h3, h1 {
     }
 
     #navbar {
-        display: none; /* Cacher le menu classique */
+        display: none;
     }
 
     /* Affichage du menu mobile quand actif */
@@ -1083,18 +1072,20 @@ h2, h3, h1 {
         padding: 10px;
     }
 
-    nav li{
+    nav li {
         height: 50px;
     }
 
     nav.active {
         display: flex;
     }
-        /* Normaliser la présentation des éléments */
+
+    /* Normalisation des listes */
     ul, ol {
-        list-style: none; /* Supprime les puces par défaut */
+        list-style: none;
     }
-    .form-group{
+
+    .form-group {
         display: flex;
         flex-direction: column;
         align-items: center;
