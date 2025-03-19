@@ -379,7 +379,7 @@ footer a:hover {
     justify-content: center;
     background: white;
     border-radius: 50px;
-    padding: 0px; /* Plus d'espace autour du contenu */
+    padding: 10px; /* Plus d'espace autour du contenu */
     width: 550px;
     height: auto; /* Hauteur ajustée au contenu */
 }
@@ -724,6 +724,7 @@ button {
     display: flex;
     align-items: center; /* Aligner verticalement le texte et la case */
     margin-bottom: 15px; /* Espacement entre les groupes */
+    justify-content: center;
 }
 
 /* Espacement entre le label et la case à cocher */

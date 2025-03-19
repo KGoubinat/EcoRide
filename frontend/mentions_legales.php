@@ -2,13 +2,6 @@
 <?php
 session_start(); // Commencer la session
 
-if (isset($_SESSION['user_email'])) {
-    echo "Utilisateur connecté : " . $_SESSION['user_email'];
-} else {
-    echo "Aucun utilisateur connecté.";
-}
-
-
 // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
 $databaseUrl = getenv('JAWSDB_URL');
 
@@ -76,7 +69,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     
     <main class=covoit>
         <div class=contact>
-        <h3>Mentions Légales :</h3>
+        <h3>Mentions Légales</h3>
 
         <h4>Éditeur du site</h4>
         <p>EcoRide, société à responsabilité limitée (SARL) au capital de 100 000 €</p>
