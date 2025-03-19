@@ -928,17 +928,6 @@ h2, h3, h1 {
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
 
-    .user-info {
-        width: 100%; /* Assure qu'elle ne dépasse pas */
-        max-width: 100%; /* Empêche tout débordement */
-        box-sizing: border-box; /* Inclut padding et border dans la taille */
-        margin: 0; /* Supprime toute marge éventuelle */
-        padding: 0; /* Supprime tout padding éventuel */
-        border: none; /* Vérifie qu'aucune bordure ne cause un dépassement */
-        overflow: hidden; /* Évite les dépassements invisibles */
-    }
-    
-
     main.adaptation {
         display: flex;
         flex-direction: column;
