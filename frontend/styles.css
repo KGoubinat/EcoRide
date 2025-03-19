@@ -928,10 +928,8 @@ h2, h3, h1 {
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
 
-    .user-info{
-        max-width: 370px;
-    }
-    .profile-img {
+   
+    .profile-img, .user-info {
         box-sizing: content-box;
         margin: 0;
         padding: 0;
