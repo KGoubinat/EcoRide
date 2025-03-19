@@ -117,8 +117,6 @@ if (!empty($reservations)) {
 
     $stmtReservations->execute([$user['id']]);
     $reservations = $stmtReservations->fetchAll();
-} else {
-    echo "Utilisateur non connecté.";
 }
 
     // Récupérer les covoiturages proposés
@@ -158,7 +156,7 @@ if (!empty($reservations)) {
     <header>
         <div class="header-container">
             <div class="logo">
-                <h1>Bienvenue sur votre profil, <?php echo $isLoggedIn ? htmlspecialchars($user['lastName']) : 'Utilisateur'; ?> !</h1>
+                <h1>Bienvenue <?php echo $isLoggedIn ? htmlspecialchars($user['lastName']) : 'Utilisateur'; ?> !</h1>
 
             </div>
             <div class="menu-toggle" id="menu-toggle">☰</div>
