@@ -673,7 +673,7 @@ footer a:hover {
     justify-items: center;
     width: fit-content;
     height: fit-content;
-    margin: 30px;
+    margin-bottom: 30px;
     padding: 15px;
     background-color: white;
 }
@@ -693,9 +693,7 @@ footer a:hover {
     justify-content: center;
     justify-items: center;
 }
-.chauffeur-info{
-    width: 100%;
-}
+
 input[type="text"], input[type="number"], input[type="date"], textarea, select {
     box-sizing: border-box; /* Assure que la largeur de l'élément inclut le padding */
 }
@@ -929,6 +927,13 @@ h2, h3, h1 {
 
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
+
+    .profil-image {
+        box-sizing: content-box;
+        margin: 0;
+        padding: 0;
+        border: none;
+        }
 
     ul {
         /* Réinitialiser la liste */
