@@ -928,11 +928,7 @@ h2, h3, h1 {
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box; /* Assure un bon dimensionnement */
-    }
+    
 
     body {
         flex-direction: column;
