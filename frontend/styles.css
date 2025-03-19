@@ -929,7 +929,14 @@ h2, h3, h1 {
 @media screen and (max-width: 768px) {
 
 
-    *, *::before, *::after {
+      /* Réinitialisation globale sauf pour header, footer et .adaptation */
+      * {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Appliquer box-sizing: border-box à tous les éléments sauf header, footer et .adaptation */
+    *:not(header):not(footer):not(.adaptation) {
         box-sizing: border-box;
     }
 
