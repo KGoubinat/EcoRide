@@ -930,6 +930,7 @@ h2, h3, h1 {
 
     .user-info, .container{
         max-width: 370px;
+        box-sizing: content-box;
     }
     .profile-img {
         box-sizing: content-box;
