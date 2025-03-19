@@ -928,6 +928,20 @@ h2, h3, h1 {
 /* Style pour les petits écrans (moins de 768px) */
 @media screen and (max-width: 768px) {
 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box; /* Assure un bon dimensionnement */
+    }
+
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        overflow-x: hidden; /* Empêche tout débordement horizontal */
+        background-size: cover;
+        background-position: center;
+    }
+
     main.adaptation {
         display: flex;
         flex-direction: column;
@@ -942,22 +956,23 @@ h2, h3, h1 {
         align-items: center;
         justify-content: center;
         width: 100%;
-        max-width: 375px; /* Ajuste la taille selon tes besoins */
-        margin: 0 auto; /* Centre le conteneur horizontalement */
+        max-width: 370px; /* Uniformisation de la largeur */
+        margin: 0 auto; /* Centre le conteneur */
         padding: 20px;
     }
 
     .user-info, .user-status, .user-reservations, .user-offered-rides {
         width: 100%;
+        max-width: 370px; /* Correction de la largeur */
         text-align: center;
     }
 
     .profile-img {
-        box-sizing: border-box;
+        display: block;
         margin: 0 auto;
         padding: 0;
         border: none;
-        max-width: 100%; /* Ajustement pour éviter les débordements */
+        max-width: 100%;
         height: auto;
     }
 
@@ -965,12 +980,6 @@ h2, h3, h1 {
         list-style: none;
         margin: 0;
         padding: 0;
-    }
-
-    /* Empiler tous les éléments en une seule colonne */
-    body {
-        flex-direction: column;
-        align-items: stretch;
     }
 
     header, footer {
@@ -988,13 +997,13 @@ h2, h3, h1 {
         gap: 0;
     }
 
-    /* Supprimer les colonnes, tout mettre en un bloc unique */
+    /* Supprimer les colonnes, tout en un seul bloc */
     main {
         display: block;
         width: 100%;
         padding: 20px;
         box-sizing: border-box;
-        align-items: center;
+        text-align: center;
     }
 
     /* Appliquer un style uniforme aux sections */
@@ -1033,12 +1042,6 @@ h2, h3, h1 {
         text-align: center;
     }
 
-    /* S'assurer que l'image de fond se redimensionne bien */
-    body {
-        background-size: cover;
-        background-position: center;
-    }
-
     .menu-toggle {
         display: block;
     }
@@ -1070,6 +1073,7 @@ h2, h3, h1 {
     nav ul li {
         text-align: center;
         padding: 10px;
+        width: 100%;
     }
 
     nav li {
