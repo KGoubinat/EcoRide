@@ -282,7 +282,7 @@ if (empty($covoiturages)) {
                         Durée du trajet : <?= date('H\h i\m', strtotime($covoiturage['duree'])) ?><br>
                         Voyage écologique : <?= $covoiturage['ecologique'] ? 'Oui' : 'Non' ?></p>
 
-                        <a href="http://localhost/ecoride/frontend/details.php?id=<?= $covoiturage['id'] ?>&start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($date) ?>&passengers=<?= urlencode($passengers) ?>&ecolo=<?= urlencode($ecolo) ?>&prix=<?= urlencode($prix) ?>&duree=<?= urlencode($duree) ?>&note=<?= urlencode($note) ?>" class="btn-detail">+ d'informations</a>
+                        <a href="details.php?id=<?= $covoiturage['id'] ?>&start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($date) ?>&passengers=<?= urlencode($passengers) ?>&ecolo=<?= urlencode($ecolo) ?>&prix=<?= urlencode($prix) ?>&duree=<?= urlencode($duree) ?>&note=<?= urlencode($note) ?>" class="btn-detail">+ d'informations</a>
 
                     </div>
                 </div>
