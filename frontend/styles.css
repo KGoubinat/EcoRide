@@ -665,6 +665,41 @@ footer a:hover {
     background-color: #c0392b;
 }
 
+.stats, .comptes {
+    margin-bottom: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.chart-container {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+table th {
+    background-color: #333;
+    color: white;
+}
+
 .user-info,.user-status,.chauffeur-info,.user-reservations,.user-offered-rides, .saisir-voyage, .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies{
 
     border: 3px solid black;
