@@ -294,8 +294,8 @@ if (empty($covoiturages)) {
                     <a href="?start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($suggestedRide['date'])?>" class="btn">Voir ce trajet</a>
                 </div>
             <?php else: ?>
-                <div>
-                    <p class="no-results">Aucun covoiturage trouvé avec ces critères.</p>
+                <div class="no-results">
+                    <p>Aucun covoiturage trouvé avec ces critères.</p>
                 </div>
             <?php endif; ?>
 
