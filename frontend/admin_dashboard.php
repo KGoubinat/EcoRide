@@ -129,11 +129,11 @@ $totalCredits = $totalCovoiturages * 2;
         <!-- Menu mobile (caché par défaut) -->
         <nav id="mobile-menu">
             <ul>
-                <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact_info.php">Contact</a></li>
-                <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-                <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
+                <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
+                <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
+                <li><a href="/frontend/logout.php">Déconnexion</a></li>
             </ul>
         </nav>
     </header>
@@ -273,36 +273,6 @@ $totalCredits = $totalCovoiturages * 2;
                     mobileMenu.classList.remove("active");
                 });
             });
-        }
-
-        // Gestion de l'authentification utilisateur
-        const authButton = document.getElementById('authButton');
-        const profilButton = document.getElementById('profilButton');
-        const authButtonMobile = document.getElementById('authButtonMobile');
-        const profilButtonMobile = document.getElementById('profilButtonMobile');
-
-        if (authButton && profilButton) {
-            const isLoggedIn = authButton.getAttribute('data-logged-in') === 'true';
-
-            console.log("Is user logged in? " + isLoggedIn); // Debug console
-
-            if (isLoggedIn) {
-                authButton.innerHTML = '<a href="/frontend/deconnexion.php">Déconnexion</a>';
-                profilButton.innerHTML = '<a href="/frontend/profil.php">Profil</a>';
-
-                if (authButtonMobile && profilButtonMobile) {
-                    authButtonMobile.innerHTML = '<a href="/frontend/deconnexion.php">Déconnexion</a>';
-                    profilButtonMobile.innerHTML = '<a href="/frontend/profil.php">Profil</a>';
-                }
-            } else {
-                authButton.innerHTML = '<a href="/frontend/connexion.html">Connexion</a>';
-                profilButton.style.display = 'none';  // Masquer le bouton Profil
-
-                if (authButtonMobile && profilButtonMobile) {
-                    authButtonMobile.innerHTML = '<a href="/frontend/connexion.html">Connexion</a>';
-                    profilButtonMobile.style.display = 'none';  // Masquer le bouton Profil
-                }
-            }
         }
     });
     </script>

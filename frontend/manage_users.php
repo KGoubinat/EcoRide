@@ -69,40 +69,42 @@ try {
         <section class=manageUsers>
             <h2>Gérer les Utilisateurs</h2>
             <h3>Liste des Utilisateurs</h3>
-            <!-- Tableau des utilisateurs avec options pour suspendre leurs comptes -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Email</th>
-                        <th>Rôle</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    // Récupérer les utilisateurs de la base de données
-                    $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM users");
-                    while ($row = $stmt->fetch()) {
-                        echo "<tr>";
-                        echo "<td>" . $row['id'] . "</td>";
-                        echo "<td>" . $row['firstName'] . " " . $row['lastName'] . "</td>";
-                        echo "<td>" . $row['email'] . "</td>";
-                        echo "<td>" . $row['role'] . "</td>";
-                        echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
-                        if ($row['etat'] === 'active') {
-                            echo "<td><a href='/frontend/suspend_user.php?id=" . $row['id'] . "'>Suspendre</a></td>";
-                        } else {
-                            echo "<td><a href='/frontend/active_user.php?id=" . $row['id'] . "'>Activer</a></td>";
+            <div class="table-container">
+                <!-- Tableau des utilisateurs avec options pour suspendre leurs comptes -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Récupérer les utilisateurs de la base de données
+                        $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM users");
+                        while ($row = $stmt->fetch()) {
+                            echo "<tr>";
+                            echo "<td>" . $row['id'] . "</td>";
+                            echo "<td>" . $row['firstName'] . " " . $row['lastName'] . "</td>";
+                            echo "<td>" . $row['email'] . "</td>";
+                            echo "<td>" . $row['role'] . "</td>";
+                            echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
+                            if ($row['etat'] === 'active') {
+                                echo "<td><a href='/frontend/suspend_user.php?id=" . $row['id'] . "'>Suspendre</a></td>";
+                            } else {
+                                echo "<td><a href='/frontend/active_user.php?id=" . $row['id'] . "'>Activer</a></td>";
+                            }
+                            echo "</tr>";
+                            echo "</tr>";
                         }
-                        echo "</tr>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
     <footer>
