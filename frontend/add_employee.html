@@ -25,15 +25,16 @@
             </div>
 
             <!-- Menu mobile (caché par défaut) -->
-        <nav id="mobile-menu">
-            <ul>
-                <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact_info.php">Contact</a></li>
-                <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-                <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-            </ul>
-        </nav>
+                <nav id="mobile-menu">
+                    <ul>
+                        <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                        <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
+                        <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                        <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
+                        <li><a href="/frontend/logout.php">Déconnexion</a></li>
+                    </ul>
+
+                </nav>
         </header>
     <main class="covoit">
         <div class="addEmployee">
@@ -58,5 +59,25 @@
     <footer>
         <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            // Gestion du menu burger
+            const menuToggle = document.getElementById("menu-toggle");
+            const mobileMenu = document.getElementById("mobile-menu");
+
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener("click", function () {
+                    mobileMenu.classList.toggle("active");
+                });
+
+                // Fermer le menu après un clic sur un lien
+                document.querySelectorAll("#mobile-menu a").forEach(link => {
+                    link.addEventListener("click", function () {
+                        mobileMenu.classList.remove("active");
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

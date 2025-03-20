@@ -61,7 +61,7 @@ foreach ($ride_data as $data) {
 <body>
     <header>
         <div class="header-container">
-            <h1>Bienvenue dans votre Espace Employé, <?php echo $employee_name; ?>!</h1>
+            <h1>Espace Employé de <?php echo $employee_name; ?></h1>
             <div class="menu-toggle" id="menu-toggle">☰</div>
             <nav id="navbar">
                 <ul>
@@ -101,7 +101,27 @@ foreach ($ride_data as $data) {
     </main>
     <footer>
     <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
-</footer>
+    </footer>
+        <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                // Gestion du menu burger
+                const menuToggle = document.getElementById("menu-toggle");
+                const mobileMenu = document.getElementById("mobile-menu");
+
+                if (menuToggle && mobileMenu) {
+                    menuToggle.addEventListener("click", function () {
+                        mobileMenu.classList.toggle("active");
+                    });
+
+                    // Fermer le menu après un clic sur un lien
+                    document.querySelectorAll("#mobile-menu a").forEach(link => {
+                        link.addEventListener("click", function () {
+                            mobileMenu.classList.remove("active");
+                        });
+                    });
+                }
+            });
+        </script>
 </body>
 
 </html>
