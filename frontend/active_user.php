@@ -7,37 +7,42 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur
     exit;
 }
 
+// Vérifier si l'ID de l'utilisateur est présent et valide
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID utilisateur invalide.");
+}
 
-    $userId = (int) $_GET['id'];
+// Convertir l'ID en entier pour éviter les injections SQL
+$userId = (int) $_GET['id'];
 
-    // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
+// Récupérer l'URL de la base de données depuis JAWSDB_URL
 $databaseUrl = getenv('JAWSDB_URL');
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
+if (!$databaseUrl) {
+    die("Erreur : La variable d'environnement JAWSDB_URL n'est pas définie.");
+}
 
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+// Extraire les informations de connexion depuis l'URL
+$parsedUrl = parse_url($databaseUrl);
+$servername = $parsedUrl['host'];
+$username = $parsedUrl['user'];
+$password = $parsedUrl['pass'];
+$dbname = ltrim($parsedUrl['path'], '/');
 
 // Connexion à la base de données avec PDO
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
-
-    // Mettre à jour le statut de l'utilisateur pour l'activer'
+    
+    // Mettre à jour l'état de l'utilisateur pour l'activer
     $stmt = $conn->prepare("UPDATE users SET etat = 'active' WHERE id = ?");
     $stmt->execute([$userId]);
 
     // Rediriger vers la page de gestion des utilisateurs
     header("Location: /frontend/manage_users.php");
     exit;
+
+} catch (PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
 }
 ?>
