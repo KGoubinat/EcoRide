@@ -1,10 +1,13 @@
 <?php
 session_start();
 
+// Régénérer l'ID de session à chaque nouvelle connexion pour éviter la fixation de session
+session_regenerate_id(true);
 
+// Vérifier si l'utilisateur est connecté
 $isLoggedIn = isset($_SESSION['user_email']);
-
 $user_credit = 0;
+
 // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
 $databaseUrl = getenv('JAWSDB_URL');
 
@@ -21,9 +24,10 @@ $dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enl
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
 } catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
+    error_log("Erreur de connexion : " . $e->getMessage());
+    echo "Une erreur est survenue. Veuillez réessayer plus tard.";
+    exit;
 }
 
 // Vérifier si un ID de covoiturage est passé dans l'URL
@@ -39,7 +43,8 @@ $stmt->execute([$id]);
 $covoiturage = $stmt->fetch();
 
 if (!$covoiturage) {
-    die("Covoiturage non trouvé.");
+    echo "Covoiturage non trouvé.";
+    exit;
 }
 
 // Récupérer les avis du conducteur
@@ -57,12 +62,15 @@ $stmtAvis = $conn->prepare("
 $stmtAvis->execute([$covoiturage['user_id']]);
 $avis = $stmtAvis->fetchAll();
 
-$isLoggedIn = isset($_SESSION['user_email']);
-$users_credit = 0; // Initialisation de la variable $users_credit
-
+// Récupérer les crédits de l'utilisateur si connecté
 if ($isLoggedIn) {
-    // Récupérer l'ID de l'utilisateur
-    $userEmail = $_SESSION['user_email'];
+    // Validation de l'email utilisateur pour éviter les injections
+    $userEmail = filter_var($_SESSION['user_email'], FILTER_VALIDATE_EMAIL);
+    if ($userEmail === false) {
+        echo "Adresse e-mail invalide.";
+        exit;
+    }
+
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$userEmail]);
     $user = $stmt->fetch();
@@ -72,9 +80,13 @@ if ($isLoggedIn) {
         $stmtCredit = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
         $stmtCredit->execute([$user['id']]);
         $creditData = $stmtCredit->fetch();
-        $users_credit = $creditData ? $creditData['credit'] : 0; // Si aucun crédit trouvé, définir $users_credit à 0
+        $user_credit = $creditData ? $creditData['credit'] : 0;
     }
 }
+
+// Gérer le jeton CSRF
+$csrf_token = bin2hex(random_bytes(32)); // Générer un nouveau jeton CSRF
+$_SESSION['csrf_token'] = $csrf_token;
 
 ?>
 
@@ -99,20 +111,10 @@ if ($isLoggedIn) {
                 <li><a href="/frontend/contact-info">Contact</a></li>
                 <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-                <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
+                <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>" data-user-email="<?= $_SESSION['user_email'] ?? ''; ?>"></li>
             </ul>
         </nav>
     </div>
-    <!-- Menu mobile (caché par défaut) -->
-    <nav id="mobile-menu">
-            <ul>
-                <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact_info.php">Contact</a></li>
-                <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-                <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
-            </ul>
-        </nav>
 </header>
 
 <main class="covoit">
@@ -153,41 +155,39 @@ if ($isLoggedIn) {
         
         <?php if (!$isLoggedIn): ?>
             <p><a href="/frontend/connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
-        <?php elseif ($covoiturage['places_restantes'] > 0 && $users_credit >= $covoiturage['prix']): ?>
+        <?php elseif ($covoiturage['places_restantes'] > 0 && $user_credit >= $covoiturage['prix']): ?>
             <button class="participer" id="btnParticiper" data-id="<?= $covoiturage['id'] ?>" data-prix="<?= $covoiturage['prix'] ?>">
                 Participer
             </button>
         <?php else: ?>
             <p style="color: red;">Impossible de participer (pas assez de crédits).</p>
         <?php endif; ?>
-        
     </div>
-
-    
 
     <!-- Modale 1 - Confirmation du prix -->
     <div id="modalConfirmation1" class="modal">
-    <div class="modal-content">
-        <h2>Confirmer</h2>
-        <p id="modalMessage1"></p>
-        <div class="modal-actions">
-        <button id="modalConfirm1" class="btn-confirm">Oui</button>
-        <button id="modalCancel1" class="btn-cancel">Non</button>
+        <div class="modal-content">
+            <h2>Confirmer</h2>
+            <p id="modalMessage1"></p>
+            <div class="modal-actions">
+                <button id="modalConfirm1" class="btn-confirm">Oui</button>
+                <button id="modalCancel1" class="btn-cancel">Non</button>
+            </div>
         </div>
-    </div>
     </div>
 
     <!-- Modale 2 - Confirmation finale -->
     <div id="modalConfirmation2" class="modal">
-    <div class="modal-content">
-        <h2>Confirmer</h2>
-        <p>Êtes-vous sûr(e) de vouloir utiliser vos crédits pour ce covoiturage ?</p>
-        <div class="modal-actions">
-        <button id="modalConfirm2" class="btn-confirm">Oui</button>
-        <button id="modalCancel2" class="btn-cancel">Non</button>
+        <div class="modal-content">
+            <h2>Confirmer</h2>
+            <p>Êtes-vous sûr(e) de vouloir utiliser vos crédits pour ce covoiturage ?</p>
+            <div class="modal-actions">
+                <button id="modalConfirm2" class="btn-confirm">Oui</button>
+                <button id="modalCancel2" class="btn-cancel">Non</button>
+            </div>
         </div>
     </div>
-    </div>
+
     <!-- Modale 3 - Réservation effectuée avec succès -->
     <div id="modalReservationReussie" class="modal">
         <div class="modal-content">
@@ -198,15 +198,13 @@ if ($isLoggedIn) {
             </div>
         </div>
     </div>
-
-    
-
-
 </main>
 
 <footer>
     <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
 </footer>
+
 <script src="/frontend/js/details.js"></script>
+
 </body>
 </html>
