@@ -1050,11 +1050,17 @@ h2, h3, h1 {
     /* Appliquer un style uniforme aux sections */
     .button, .presentation, .formulaire, .highlight, .rejoindre, .form, .details, 
     .user-status, .chauffeur-info, .user-reservations, .user-offered-rides, 
-    .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, 
+    .feedbackForm, .stats, .addEmployee, .listEmployee, .manageUsers, 
     .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies, 
     .container, .info-card {
         text-align: center;
         max-width: 370px;
+        margin-bottom: 20px;
+        padding: 5px;
+    }
+    .comptes{
+        text-align: center;
+        max-width: 350px;
         margin-bottom: 20px;
         padding: 5px;
     }
