@@ -59,9 +59,10 @@ $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM use
         <!-- Menu mobile (caché par défaut) -->
         <nav id="mobile-menu">
             <ul>
-                <li><a href="/frontend/employee_dashboard.php">Tableau de bord</a></li>
-                <li><a href="/frontend/employee_reviews.php">Gérer les Avis</a></li>
-                <li><a href="/frontend/employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
+                <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
+                <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
+                <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
+                <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
                 <li><a href="/frontend/logout.php">Déconnexion</a></li>
             </ul>
         </nav>
@@ -72,41 +73,63 @@ $stmt = $conn->query("SELECT id, firstName, lastName, email, role, etat FROM use
     <main class=covoit>
         <section class=listEmployee>
             <h2>Liste des Employés</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Email</th>
-                        <th>Rôle</th>
-                        <th>État</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    while ($row = $stmt->fetch()) {
-                        echo "<tr>";
-                        echo "<td>" . $row['id'] . "</td>";
-                        echo "<td>" . $row['firstName'] . " " . $row['lastName'] . "</td>";
-                        echo "<td>" . $row['email'] . "</td>";
-                        echo "<td>" . $row['role'] . "</td>";
-                        echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
-                        if ($row['etat'] === 'active') {
-                            echo "<td><a href='/frontend/suspend_employee.php?id=" . $row['id'] . "'>Suspendre</a> | <a href='/frontend/edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
-                        } else {
-                            echo "<td><a href='/frontend/activate_employee.php?id=" . $row['id'] . "'>Activer</a> | <a href='/frontend/edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>État</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        while ($row = $stmt->fetch()) {
+                            echo "<tr>";
+                            echo "<td>" . $row['id'] . "</td>";
+                            echo "<td>" . $row['firstName'] . " " . $row['lastName'] . "</td>";
+                            echo "<td>" . $row['email'] . "</td>";
+                            echo "<td>" . $row['role'] . "</td>";
+                            echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
+                            if ($row['etat'] === 'active') {
+                                echo "<td><a href='/frontend/suspend_employee.php?id=" . $row['id'] . "'>Suspendre</a> | <a href='/frontend/edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
+                            } else {
+                                echo "<td><a href='/frontend/activate_employee.php?id=" . $row['id'] . "'>Activer</a> | <a href='/frontend/edit_employee.php?id=" . $row['id'] . "'>Modifier</a></td>";
+                            }
+                            echo "</tr>";
                         }
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 
     <footer>
         <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
     </footer>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            // Gestion du menu burger
+            const menuToggle = document.getElementById("menu-toggle");
+            const mobileMenu = document.getElementById("mobile-menu");
+
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener("click", function () {
+                    mobileMenu.classList.toggle("active");
+                });
+
+                // Fermer le menu après un clic sur un lien
+                document.querySelectorAll("#mobile-menu a").forEach(link => {
+                    link.addEventListener("click", function () {
+                        mobileMenu.classList.remove("active");
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
