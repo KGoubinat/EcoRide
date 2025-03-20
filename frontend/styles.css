@@ -327,10 +327,6 @@ footer a:hover {
 }
 
 
-.card-body-filters select {
-    width: 350px;
-}
-
 .card-body-filters {
     padding: 0px;
     text-align: left;
@@ -450,6 +446,7 @@ footer a:hover {
     background-color: #f8f9fa;
     border-radius: 50px;
     outline: 3px solid black !important;
+    padding: 10px;
 }
 .adaptation {
     display: grid;
