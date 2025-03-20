@@ -294,7 +294,9 @@ if (empty($covoiturages)) {
                     <a href="?start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($suggestedRide['date'])?>" class="btn">Voir ce trajet</a>
                 </div>
             <?php else: ?>
-                <p class="no-results">Aucun covoiturage trouvé avec ces critères.</p>
+                <div>
+                    <p class="no-results">Aucun covoiturage trouvé avec ces critères.</p>
+                </div>
             <?php endif; ?>
 
     </main>
@@ -305,5 +307,25 @@ if (empty($covoiturages)) {
 
     <!-- Script JavaScript -->
     <script src="/frontend/js/filtres.js"></script>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            // Gestion du menu burger
+            const menuToggle = document.getElementById("menu-toggle");
+            const mobileMenu = document.getElementById("mobile-menu");
+
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener("click", function () {
+                    mobileMenu.classList.toggle("active");
+                });
+
+                // Fermer le menu après un clic sur un lien
+                document.querySelectorAll("#mobile-menu a").forEach(link => {
+                    link.addEventListener("click", function () {
+                        mobileMenu.classList.remove("active");
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1141,4 +1141,9 @@ h2, h3, h1 {
         flex-direction: column;
         align-items: center;
     }
+    .card {
+        display: inline-block;
+        width: 45%;
+        margin: 20px 2%;
+    }
 }
