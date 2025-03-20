@@ -1149,4 +1149,9 @@ h2, h3, h1 {
         width: 100%;
         margin: 20px;
     }
+    select {
+        width: 100%; /* Permet au select de prendre toute la largeur disponible */
+        box-sizing: border-box; /* Inclut les bordures dans la largeur totale */
+    }
+    
 }
