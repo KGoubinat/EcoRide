@@ -685,6 +685,10 @@ canvas {
     max-width: 100%;
     height: auto !important;
 }
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
 table {
     width: 100%;
     border-collapse: collapse;
