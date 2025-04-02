@@ -10,32 +10,28 @@ $user_credit = 0;
 
 // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
 $databaseUrl = getenv('JAWSDB_URL');
-
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
 $parsedUrl = parse_url($databaseUrl);
 
 // Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+$servername = $parsedUrl['host'];
+$username = $parsedUrl['user'];
+$password = $parsedUrl['pass'];
+$dbname = ltrim($parsedUrl['path'], '/');
 
-// Connexion à la base de données avec PDO
+// Connexion sécurisée à la base de données avec PDO
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     error_log("Erreur de connexion : " . $e->getMessage());
-    echo "Une erreur est survenue. Veuillez réessayer plus tard.";
-    exit;
+    exit("Une erreur est survenue. Veuillez réessayer plus tard.");
 }
 
-// Vérifier si un ID de covoiturage est passé dans l'URL
-$id = isset($_GET['id']) ? intval($_GET['id']) : null;  // Vérification de l'existence de l'ID
-if ($id === null) {
-    echo "Aucun ID de covoiturage fourni.";
-    exit;
+// Vérifier et valider l'ID de covoiturage
+if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
+    exit("ID invalide.");
 }
+$id = (int)$_GET['id'];
 
 // Récupérer les détails du covoiturage
 $stmt = $conn->prepare("SELECT * FROM covoiturages WHERE id = ?");
@@ -43,51 +39,37 @@ $stmt->execute([$id]);
 $covoiturage = $stmt->fetch();
 
 if (!$covoiturage) {
-    echo "Covoiturage non trouvé.";
-    exit;
+    exit("Covoiturage non trouvé.");
 }
 
 // Récupérer les avis du conducteur
-$stmtAvis = $conn->prepare("
-    SELECT 
-        u.firstName, 
-        u.lastName, 
-        ac.commentaire, 
-        ac.note, 
-        ac.date_avis
-    FROM avis_conducteurs ac
-    JOIN users u ON ac.utilisateur_id = u.id
-    WHERE ac.conducteur_id = ?
-");
+$stmtAvis = $conn->prepare("SELECT u.firstName, u.lastName, ac.commentaire, ac.note, ac.date_avis FROM avis_conducteurs ac JOIN users u ON ac.utilisateur_id = u.id WHERE ac.conducteur_id = ?");
 $stmtAvis->execute([$covoiturage['user_id']]);
 $avis = $stmtAvis->fetchAll();
 
 // Récupérer les crédits de l'utilisateur si connecté
 if ($isLoggedIn) {
-    // Validation de l'email utilisateur pour éviter les injections
     $userEmail = filter_var($_SESSION['user_email'], FILTER_VALIDATE_EMAIL);
-    if ($userEmail === false) {
-        echo "Adresse e-mail invalide.";
-        exit;
-    }
+    if ($userEmail) {
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$userEmail]);
+        $user = $stmt->fetch();
 
-    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-    $stmt->execute([$userEmail]);
-    $user = $stmt->fetch();
-
-    if ($user) {
-        // Récupérer les crédits de l'utilisateur
-        $stmtCredit = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
-        $stmtCredit->execute([$user['id']]);
-        $creditData = $stmtCredit->fetch();
-        $user_credit = $creditData ? $creditData['credit'] : 0;
+        if ($user) {
+            $stmtCredit = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
+            $stmtCredit->execute([$user['id']]);
+            $creditData = $stmtCredit->fetch();
+            $user_credit = $creditData ? $creditData['credit'] : 0;
+        }
     }
 }
 
 // Gérer le jeton CSRF
-$csrf_token = bin2hex(random_bytes(32)); // Générer un nouveau jeton CSRF
+$csrf_token = bin2hex(random_bytes(32));
 $_SESSION['csrf_token'] = $csrf_token;
 
+// Sécuriser l'URL de redirection
+$redirectUrl = htmlspecialchars(filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL));
 ?>
 
 <!DOCTYPE html>
