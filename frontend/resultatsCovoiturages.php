@@ -281,9 +281,8 @@ if (empty($covoiturages)) {
                         Le : <?= date('d/m/Y', strtotime($covoiturage['date'])) ?> à <?= date('H:i', strtotime($covoiturage['heure_depart'])) ?><br> <!-- Affichage de l'heure de départ -->
                         Durée du trajet : <?= date('H\h i\m', strtotime($covoiturage['duree'])) ?><br>
                         Voyage écologique : <?= $covoiturage['ecologique'] ? 'Oui' : 'Non' ?></p>
-
+                        <a href="details.php?id=<?= $covoiturage['id'] ?>&start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($date) ?>&passengers=<?= urlencode($passengers) ?>&ecolo=<?= urlencode($ecolo) ?>&prix=<?= urlencode($prix) ?>&duree=<?= urlencode($duree) ?>&note=<?= urlencode($note) ?>" class="btn-detail">+ d'informations</a>
                     </div>
-                    <a href="details.php?id=<?= $covoiturage['id'] ?>&start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>&date=<?= urlencode($date) ?>&passengers=<?= urlencode($passengers) ?>&ecolo=<?= urlencode($ecolo) ?>&prix=<?= urlencode($prix) ?>&duree=<?= urlencode($duree) ?>&note=<?= urlencode($note) ?>" class="btn-detail">+ d'informations</a>
                 </div>
             <?php endforeach; ?>
             <?php elseif ($suggestedRide): ?>
