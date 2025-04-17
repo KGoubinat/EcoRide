@@ -1,76 +1,117 @@
-# Nom du projet
+# EcoRide
 
-Description courte et concise de ton projet. Par exemple : 
-"Application de covoiturage permettant aux utilisateurs de publier et de réserver des trajets."
+**Application de covoiturage** permettant aux utilisateurs de publier et de réserver des trajets facilement. L’objectif est de faciliter les déplacements tout en réduisant les coûts et l’empreinte écologique.
+
+🌍 [Voir la démo en ligne](https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/)
 
 ---
 
 ## Table des matières
 
 1. [Introduction](#introduction)
-2. [Technologies utilisées](#technologies-utilisées)
-3. [Installation](#installation)
-4. [Utilisation](#utilisation)
-5. [Structure du projet](#structure-du-projet)
-6. [Base de données](#base-de-données)
-7. [Contribuer](#contribuer)
-8. [Licence](#licence)
+2. [Aperçu](#aperçu)
+3. [Technologies utilisées](#technologies-utilisées)
+4. [Installation](#installation)
+5. [Utilisation](#utilisation)
+6. [Structure du projet](#structure-du-projet)
+7. [Base de données](#base-de-données)
+8. [Contribuer](#contribuer)
+9. [Licence](#licence)
 
 ---
 
 ## Introduction
 
-L’application de covoiturage développée permet aux utilisateurs de partager des trajets en voiture afin de faciliter leurs déplacements tout en réduisant les coûts et l’empreinte écologique. Elle offre une solution de transport économique et pratique en mettant en relation conducteurs et passagers.
+EcoRide est une application web responsive de covoiturage. Elle permet aux utilisateurs :
+- de s’inscrire et se connecter,
+- de publier des trajets (départ, destination, date, heure, places disponibles),
+- de rechercher des trajets et réserver une place,
+- d’échanger via un système de messagerie intégré.
 
-Les utilisateurs ont la possibilité de créer un compte, se connecter et proposer des trajets, en renseignant des informations essentielles telles que le lieu de départ, la destination, la date et l'heure de départ, ainsi que le nombre de places disponibles dans leur véhicule. Les passagers, de leur côté, peuvent rechercher des trajets en fonction de leur destination et réserver une place. Un système de messagerie intégré permet également aux utilisateurs d’échanger des informations et de confirmer les détails des trajets.
+Le projet est développé en PHP pour le backend, HTML/CSS pour l'interface utilisateur, et MySQL pour la base de données. Il est déployé sur **Heroku** pour offrir un accès en ligne.
 
-Le développement de l'application repose sur les technologies HTML, CSS et PHP pour le frontend et le backend, tandis que MySQL est utilisé pour la gestion des données. Le projet est déployé localement sur un serveur XAMPP, permettant une configuration rapide et simple pendant la phase de développement.
+---
 
-L'objectif principal de ce projet est d’encourager le covoiturage afin de rendre les déplacements plus accessibles et écologiques. L’application est conçue pour être responsive, offrant ainsi une expérience fluide sur tous types d'appareils.
+## Aperçu
 
+
+![Aperçu de l'application](./docs/screenshot.png)
 
 ---
 
 ## Technologies utilisées
 
-Liste des technologies que tu as utilisées pour développer ce projet. Par exemple :
-
-- **HTML** : Structure des pages web.
-- **CSS** : Mise en page et design des pages.
-- **PHP** : Traitement côté serveur pour la gestion des utilisateurs, des trajets et des réservations.
-- **MySQL** : Base de données pour stocker les utilisateurs, les trajets, et les réservations.
-- **XAMPP** : Environnement de développement local avec serveur Apache et base de données MySQL.
+- **HTML/CSS** : Structure et design des pages.
+- **PHP** : Logique métier et traitement des données.
+- **MySQL** : Stockage des utilisateurs, trajets, réservations.
+- **Tailwind CSS** : Framework CSS pour le style.
+- **Docker** : Conteneurisation de l'environnement.
+- **XAMPP** (optionnel) : Développement local.
+- **Heroku** : Déploiement en ligne.
 
 ---
 
 ## Installation
 
+1. Cloner le dépôt
+git clone https://github.com/ton-utilisateur/ecoride.git
+cd ecoride
 
-1. **Cloner le dépôt** :
-    ```bash
-    git clone https://lien-vers-ton-depot.git
-    ```
+2. Installer XAMPP et démarrer Apache + MySQL
 
-2. **Installer XAMPP** et démarrer les serveurs Apache et MySQL.
+3. Créer la base de données
+Accède à http://localhost/phpmyadmin
 
-3. **Créer la base de données** :
-   - Ouvre phpMyAdmin via `http://localhost/phpmyadmin/`.
-   - Création  d'une nouvelle base de données, `Ecoride`.
+Crée une nouvelle base appelée Ecoride
 
-4. **Configurer les fichiers PHP** :
-   - Modifie le fichier `includes/db.php` pour y mettre tes paramètres de connexion à la base de données si nécessaire (si tu utilises des identifiants différents de ceux par défaut de XAMPP).
+4. Importer la structure de la base
+Utilise le fichier docs/ecoride.sql 
 
+5. Configurer la connexion DB
+Modifie includes/db.php si tes identifiants MySQL diffèrent :
 
----
+php
+$host = 'localhost';
+$db = 'Ecoride';
+$user = 'root';
+$pass = '';
+Utilisation
+Accède à http://localhost/ecoride/index.php ou le site Heroku
 
-## Utilisation
+Inscris-toi ou connecte-toi.
 
+Publie ou recherche un trajet.
 
-1. Ouvre le fichier `index.php` dans ton navigateur.
-2. Crée un compte utilisateur ou connecte-toi avec un compte existant.
-3. Publie un trajet en renseignant les informations de départ et d'arrivée.
-4. Recherche et réserve un trajet disponible.
+Réserve une place et échange avec les conducteurs.
 
----
+Structure du projet
+
+Ecoride/
+├── backend/
+├── cloudinary_php-master/
+├── docs/
+│   └── ecoride.sql
+├── frontend/
+├── node_modules/
+├── src/
+├── vendor/
+├── index.php
+├── .env
+├── docker-compose.yml
+├── package.json
+├── composer.json
+├── tailwind.config.js
+└── test.js
+
+Base de données
+La base contient plusieurs tables principales :
+
+users : infos des utilisateurs.
+
+rides : trajets publiés.
+
+bookings : réservations effectuées.
+
+messages : échanges entre utilisateurs.
 
 
