@@ -209,8 +209,8 @@ function submitFeedback($conn, $conducteurId, $utilisateurId, $rating, $comment,
         <nav id="navbar">
             <ul>
                 <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/contact-info">Contact</a></li>
-                <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
+                <li><a href="/frontend/contact_info.php">Contact</a></li>
+                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
                 <li id="profilButton" data-logged-in="<?= isset($_SESSION['user_email']) ? 'true' : 'false'; ?>"></li>
                 <li id="authButton" data-logged-in="<?= isset($_SESSION['user_email']) ? 'true' : 'false'; ?>" data-user-email="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ''; ?>"></li>
             </ul>

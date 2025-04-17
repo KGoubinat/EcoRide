@@ -137,8 +137,8 @@ if (empty($covoiturages)) {
             <nav id="navbar">
                 <ul>
                     <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact-info">Contact</a></li>
-                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/contact_info">Contact</a></li>
+                    <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>

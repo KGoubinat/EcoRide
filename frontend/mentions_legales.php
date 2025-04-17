@@ -48,7 +48,7 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                 <ul>
                     <li><a href="/frontend/accueil.php">Accueil</a></li>
                     <li><a href="/frontend/contact_info.php">Contact</a></li>
-                    <li><a href="/frontend/Covoiturages.php">Covoiturages</a></li>
+                    <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
