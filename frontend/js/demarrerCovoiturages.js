@@ -29,33 +29,40 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.endTrip = function(rideId) {
-    sendTripAction(rideId, 'end')
-      .then(data => {
-        if (data.success) {
-          document.getElementById('end-trip-' + rideId).style.display = 'none';
-          alert('Covoiturage terminé !');
-          return fetch('/frontend/arreter_covoiturage.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-          });
-        } else {
-          alert('Erreur: ' + data.message);
-          throw new Error(data.message);
-        }
-      })
-      .then(response => response.json())
-      .then(emailData => {
+  sendTripAction(rideId, 'end')
+    .then(data => {
+      if (data.success) {
+        document.getElementById('end-trip-' + rideId).style.display = 'none';
+        alert('Covoiturage terminé !');
+        return fetch('/frontend/arreter_covoiturage.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } else {
+        alert('Erreur: ' + data.message);
+        throw new Error(data.message);
+      }
+    })
+    .then(response => response.text())  // <- modifié ici pour récupérer la réponse brute
+    .then(text => {
+      try {
+        const emailData = JSON.parse(text);
         if (emailData.success) {
           alert('Emails envoyés aux participants.');
         } else {
           alert('Erreur lors de l’envoi des emails.');
         }
-      })
-      .catch(error => {
-        console.error(error);
-        alert('Erreur lors de la requête.');
-      });
-  };
+      } catch (e) {
+        console.error('Erreur de parsing JSON:', e);
+        console.error('Réponse brute:', text);
+        alert('Erreur inattendue. Voir console pour détails.');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      alert('Erreur lors de la requête.');
+    });
+};
 
   function checkRideStatus(rideId) {
     fetch('/frontend/check_ride_status.php', {
