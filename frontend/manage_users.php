@@ -57,7 +57,7 @@ try {
         <nav id="mobile-menu">
             <ul>
                 <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
-                <li><a href="/frontend/create_employee.php">Ajouter un Employé</a></li>
+                <li><a href="/frontend/add_employee.php">Ajouter un Employé</a></li>
                 <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
                 <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
                 <li><a href="/frontend/logout.php">Déconnexion</a></li>
