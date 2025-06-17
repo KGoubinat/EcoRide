@@ -63,7 +63,7 @@ if ($isLoggedIn) {
         $user = $stmt->fetch();
 
         if ($user) {
-            $stmtCredit = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
+            $stmtCredit = $conn->prepare("SELECT credits FROM users WHERE user_id = ?");
             $stmtCredit->execute([$user['id']]);
             $creditData = $stmtCredit->fetch();
             $user_credit = $creditData ? $creditData['credit'] : 0;
@@ -144,7 +144,7 @@ $redirectUrl = htmlspecialchars(filter_var($_SERVER['REQUEST_URI'], FILTER_SANIT
         
         <?php if (!$isLoggedIn): ?>
             <p><a href="/frontend/connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
-        <?php elseif ($covoiturage['places_restantes'] > 0 && $user_credit >= $covoiturage['prix']): ?>
+        <?php elseif ($covoiturage['places_restantes'] > 0 && $credits >= $covoiturage['prix']): ?>
             <button class="participer" id="btnParticiper" data-id="<?= $covoiturage['id'] ?>" data-prix="<?= $covoiturage['prix'] ?>">
                 Participer
             </button>
