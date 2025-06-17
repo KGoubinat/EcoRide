@@ -33,9 +33,9 @@ try {
     exit;
 }
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/ecoride/backend/emails/PHPMailer-master/src/Exception.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/ecoride/backend/emails/PHPMailer-master/src/PHPMailer.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/ecoride/backend/emails/PHPMailer-master/src/SMTP.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/emails/PHPMailer-master/src/Exception.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/emails/PHPMailer-master/src/PHPMailer.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/emails/PHPMailer-master/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
