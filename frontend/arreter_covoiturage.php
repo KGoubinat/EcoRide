@@ -87,6 +87,12 @@ function sendValidationEmail($toEmail, $rideId, $userId) {
         <a href='$validationLink'>Cliquez ici pour valider votre participation</a>
         ";
 
+    // DEBUG SMTP VERBEUX DANS LES LOGS
+    $mail->SMTPDebug = 2;
+    $mail->Debugoutput = function($str, $level) {
+        error_log("SMTP Debug level $level; message: $str");
+    };
+    
         return $mail->send();
     } catch (Exception $e) {
         error_log('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
