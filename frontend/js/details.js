@@ -42,56 +42,43 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    const btnParticiper = document.getElementById('btnParticiper');
+      const btnParticiper = document.getElementById('btnParticiper');
     const modalConfirmation1 = document.getElementById('modalConfirmation1');
     const modalConfirmation2 = document.getElementById('modalConfirmation2');
     const modalMessage1 = document.getElementById('modalMessage1');
-    
-    // Nouvelle modale pour la réservation réussie
     const modalReservationReussie = document.getElementById('modalReservationReussie');
 
     if (btnParticiper) {
         btnParticiper.addEventListener("click", function () {
-            console.log("bouton cliqué")
             const idCovoiturage = this.getAttribute("data-id");
             const prixCovoiturage = this.getAttribute("data-prix");
 
-            // Récupérer le nombre de passagers depuis l'URL
             const urlParams = new URLSearchParams(window.location.search);
-            const passengers = urlParams.get('passengers');  // Récupérer la valeur des passagers depuis l'URL
+            const passengers = urlParams.get('passengers');
 
             if (!passengers) {
                 alert("Le nombre de passagers n'est pas défini.");
                 return;
             }
 
-            // Affichage de la première modale avec le prix
             modalMessage1.textContent = `Ce covoiturage coûte ${prixCovoiturage} crédits. Voulez-vous continuer ?`;
             modalConfirmation1.style.display = 'flex';
 
-            // Gestion de la première confirmation (oui/non)
-            document.getElementById('modalConfirm1').onclick = function() {
+            document.getElementById('modalConfirm1').onclick = function () {
                 modalConfirmation1.style.display = 'none';
                 modalConfirmation2.style.display = 'flex';
             };
 
-            document.getElementById('modalCancel1').onclick = function() {
+            document.getElementById('modalCancel1').onclick = function () {
                 modalConfirmation1.style.display = 'none';
             };
         });
     }
 
-    // Gestion de la deuxième confirmation (oui/non)
-    document.getElementById('modalConfirm2').onclick = function() {
+    document.getElementById('modalConfirm2').onclick = function () {
         const idCovoiturage = btnParticiper.getAttribute("data-id");
+        const csrfToken = btnParticiper.getAttribute("data-token");
 
-        // Vérifier si l'email de l'utilisateur est disponible
-        if (!userEmail) {
-            alert("Utilisateur non connecté.");
-            return;
-        }
-
-        // S'assurer que la variable 'passengers' est définie ici avant de l'utiliser
         const urlParams = new URLSearchParams(window.location.search);
         const passengers = urlParams.get('passengers');
 
@@ -100,36 +87,39 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Envoi de la requête pour participer au covoiturage
-        fetch("/frontend/participer.php", {
+        fetch("/backend/reserver.php", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `id=${encodeURIComponent(idCovoiturage)}&user_email=${encodeURIComponent(userEmail)}&passengers=${encodeURIComponent(passengers)}`
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": csrfToken
+            },
+            body: JSON.stringify({
+                ride_id: idCovoiturage,
+                passengers: passengers
+            })
         })
         .then(response => response.json())
         .then(data => {
+            modalConfirmation2.style.display = 'none';
+
             if (data.success) {
-                if (data.message === "Réservation effectuée avec succès.") {
-                    modalReservationReussie.style.display = 'flex';
-                }
+                modalReservationReussie.style.display = 'flex';
             } else {
-                alert(data.message);  // Affiche le message d'erreur
+                alert("Erreur : " + data.message);
             }
-            modalConfirmation2.style.display = 'none'; // Fermer la modale de confirmation finale
-            // Rediriger vers la page profil.php après la fermeture de la modale
-            window.location.href = '/frontend/profil.php';
         })
-        .catch(error => console.error("Erreur :", error));
+        .catch(error => {
+            console.error("Erreur :", error);
+            alert("Erreur de communication avec le serveur.");
+        });
     };
 
-    // Fermer la deuxième modale en cas de "Non"
-    document.getElementById('modalCancel2').onclick = function() {
+    document.getElementById('modalCancel2').onclick = function () {
         modalConfirmation2.style.display = 'none';
     };
 
-    // Fermeture de la modale de réservation réussie lorsque l'utilisateur clique sur "OK"
-    document.getElementById('modalConfirmReservation').onclick = function() {
+    document.getElementById('modalConfirmReservation').onclick = function () {
         modalReservationReussie.style.display = 'none';
-        location.reload();  // Optionnel : recharge la page pour voir les modifications
+        location.reload();
     };
 });
