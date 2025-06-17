@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   function sendTripAction(rideId, action) {
-    return fetch('/frontend/demarrer_covoiturage.php', {
+    return fetch('https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/frontend/demarrer_covoiturage.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: rideId, type: 'covoiturage', action })
