@@ -1,4 +1,5 @@
 <?php
+error_log('Début script envoi mails');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -131,6 +132,7 @@ $response = [
 ];
 
 if ($covoiturage && isset($covoiturage['id'])) {
+    error_log('Début envoi mails aux participants');
     $rideId = $covoiturage['id'];
     $participants = getParticipantsForRide($rideId);
 
