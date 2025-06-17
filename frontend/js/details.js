@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-      const btnParticiper = document.getElementById('btnParticiper');
+    const btnParticiper = document.getElementById('btnParticiper');
     const modalConfirmation1 = document.getElementById('modalConfirmation1');
     const modalConfirmation2 = document.getElementById('modalConfirmation2');
     const modalMessage1 = document.getElementById('modalMessage1');

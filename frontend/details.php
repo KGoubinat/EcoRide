@@ -133,7 +133,31 @@ if ($isLoggedIn && filter_var($_SESSION['user_email'], FILTER_VALIDATE_EMAIL)) {
 <footer>
     <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
 </footer>
+    <!-- Modale 1 : Confirmation du prix -->
+    <div id="modalConfirmation1" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px; border-radius:5px; max-width:400px; text-align:center;">
+        <p id="modalMessage1"></p>
+        <button id="modalConfirm1">Oui</button>
+        <button id="modalCancel1">Non</button>
+    </div>
+    </div>
 
+    <!-- Modale 2 : Confirmation participation -->
+    <div id="modalConfirmation2" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px; border-radius:5px; max-width:400px; text-align:center;">
+        <p>Voulez-vous confirmer votre participation ?</p>
+        <button id="modalConfirm2">Oui</button>
+        <button id="modalCancel2">Non</button>
+    </div>
+    </div>
+
+    <!-- Modale réservation réussie -->
+    <div id="modalReservationReussie" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px; border-radius:5px; max-width:400px; text-align:center;">
+        <p>Réservation effectuée avec succès.</p>
+        <button id="modalConfirmReservation">OK</button>
+    </div>
+</div>
 <script src="/frontend/js/details.js"></script>
 </body>
 </html>
