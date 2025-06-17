@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json; charset=utf-8');
 
 // Vérifier si un utilisateur est connecté
 if (!isset($_SESSION['user_email'])) {
