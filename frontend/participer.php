@@ -57,7 +57,7 @@ try {
     }
 
     // Vérifier les crédits de l'utilisateur
-    $stmtCredits = $conn->prepare("SELECT credit FROM users_credit WHERE user_id = ?");
+    $stmtCredits = $conn->prepare("SELECT credits FROM users WHERE id = ?");
     $stmtCredits->execute([$user_id]);
     $userCredits = $stmtCredits->fetch();
 
@@ -94,7 +94,7 @@ try {
         $stmtUpdatePassagers->execute([$passengers, $covoiturage_id]);
 
         // Déduire les crédits de l'utilisateur
-        $stmtDeductCredits = $conn->prepare("UPDATE users_credit SET credit = credit - ? WHERE user_id = ?");
+        $stmtDeductCredits = $conn->prepare("UPDATE users SET credits = credits - ? WHERE id = ?");
         $stmtDeductCredits->execute([$covoiturage['prix'] * $passengers, $user_id]);
 
         // Commit la transaction
