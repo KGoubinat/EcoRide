@@ -66,7 +66,7 @@ if ($isLoggedIn) {
             $stmtCredit = $conn->prepare("SELECT credits FROM users WHERE id = ?");
             $stmtCredit->execute([$user['id']]);
             $creditData = $stmtCredit->fetch();
-            $user_credit = $creditData ? $creditData['credit'] : 0;
+            $user_credit = $creditData ? $creditData['credits'] : 0;
         }
     }
 }
