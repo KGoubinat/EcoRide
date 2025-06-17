@@ -92,10 +92,16 @@ function sendValidationEmail($toEmail, $rideId, $userId) {
     $mail->Debugoutput = function($str, $level) {
         error_log("SMTP Debug level $level; message: $str");
     };
-    
-        return $mail->send();
+
+        // Envoi
+        $result = $mail->send();
+        if (!$result) {
+            error_log("PHPMailer send() failed: " . $mail->ErrorInfo);
+        }
+        return $result;
+
     } catch (Exception $e) {
-        error_log('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
+        error_log('Exception PHPMailer: ' . $e->getMessage());
         return false;
     }
 }
