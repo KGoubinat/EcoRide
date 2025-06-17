@@ -67,7 +67,7 @@ try {
     }
 
     // Vérifier si l'utilisateur a suffisamment de crédits et s'il y a des places disponibles
-    if ($userCredits['credit'] < $covoiturage['prix'] * $passengers) {
+    if ($userCredits['credits'] < $covoiturage['prix'] * $passengers) {
         echo json_encode(["success" => false, "message" => "Crédits insuffisants pour effectuer la réservation."]);
         exit;
     }
