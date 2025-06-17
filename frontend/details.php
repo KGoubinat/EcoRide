@@ -141,7 +141,14 @@ $redirectUrl = htmlspecialchars(filter_var($_SERVER['REQUEST_URI'], FILTER_SANIT
         <?php else: ?>
             <p>Aucun avis pour ce conducteur.</p>
         <?php endif; ?>
-        
+        <?php 
+var_dump($user_credit, $covoiturage['prix']);
+if ($user_credit >= $covoiturage['prix']) {
+    echo "Condition crédit OK";
+} else {
+    echo "Crédit insuffisant selon condition";
+}
+?>
         <?php if (!$isLoggedIn): ?>
             <p><a href="/frontend/connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
         <?php elseif ($covoiturage['places_restantes'] > 0 && $user_credits >= $covoiturage['prix']): ?>
