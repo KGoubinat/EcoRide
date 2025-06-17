@@ -1,41 +1,39 @@
 <?php
 session_start();
+ob_start(); // Active le buffer de sortie pour éviter les erreurs avec header()
 
-// Vérifier si un utilisateur est connecté
+// Vérifie si un utilisateur est connecté
 if (!isset($_SESSION['user_email'])) {
     echo "Aucun utilisateur connecté.";
     exit;
 }
 
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
+// Vérifie que l'ID de la réservation est passé via POST
+if (!isset($_POST['reservation_id']) || !is_numeric($_POST['reservation_id'])) {
+    echo "Erreur : ID de réservation invalide ou manquant.";
+    exit;
+}
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
+$reservationId = intval($_POST['reservation_id']); // Sécurise l'entrée
+
+// Connexion à la base de données via JAWSDB_URL
+$databaseUrl = getenv('JAWSDB_URL');
 $parsedUrl = parse_url($databaseUrl);
 
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+$servername = $parsedUrl['host'];
+$username = $parsedUrl['user'];
+$password = $parsedUrl['pass'];
+$dbname = ltrim($parsedUrl['path'], '/');
 
-// Connexion à la base de données avec PDO
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
 } catch (PDOException $e) {
     echo "Erreur de connexion : " . $e->getMessage();
+    exit;
 }
 
-// Vérifier que l'ID de la réservation est passé via POST
-if (!isset($_POST['reservation_id']) || empty($_POST['reservation_id'])) {
-    die("Erreur : ID de réservation manquant.");
-}
-
-$reservationId = $_POST['reservation_id'];
-
-// Récupérer les informations de l'utilisateur
+// Récupérer les informations de l'utilisateur connecté
 $user_email = $_SESSION['user_email'];
 $stmtUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmtUser->execute([$user_email]);
@@ -46,52 +44,61 @@ if (!$user) {
     exit;
 }
 
-// Récupérer l'ID de la course associée à cette réservation
-$stmtReservation = $conn->prepare("SELECT covoiturage_id FROM reservations WHERE id = :id AND user_id = :user_id");
+// Récupérer le covoiturage associé à la réservation
+$stmtReservation = $conn->prepare("SELECT covoiturage_id, places_reservees FROM reservations WHERE id = :id AND user_id = :user_id");
 $stmtReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
 $stmtReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
 $stmtReservation->execute();
 $reservation = $stmtReservation->fetch();
 
 if (!$reservation) {
-    echo "Erreur : Aucune réservation trouvée avec cet ID ou vous n'êtes pas autorisé à annuler cette réservation.";
+    echo "Erreur : Réservation non trouvée ou accès non autorisé.";
     exit;
 }
 
 $rideId = $reservation['covoiturage_id'];
+$placesReservees = $reservation['places_reservees'];
 
-// Récupérer le nombre actuel de places restantes dans la table 'covoiturage'
-$stmtCovoiturage = $conn->prepare("SELECT places_restantes FROM covoiturages WHERE id = :ride_id");
+// Récupérer les données actuelles du covoiturage
+$stmtCovoiturage = $conn->prepare("SELECT places_restantes, passagers FROM covoiturages WHERE id = :ride_id");
 $stmtCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
 $stmtCovoiturage->execute();
 $covoiturage = $stmtCovoiturage->fetch();
 
 if (!$covoiturage) {
-    echo "Erreur : Course non trouvée dans la table covoiturage.";
+    echo "Erreur : Covoiturage introuvable.";
     exit;
 }
 
-$newPassagers = $covoiturage['passengers'] - 1;  // Réduire le nombre de passagers
-$newPlacesRestantes = $covoiturage['places_restantes'] + 1;
-// Mettre à jour le nombre de passagers et de places restantes
-$stmtUpdateCovoiturage = $conn->prepare("UPDATE covoiturages SET passengers = :passengers, places_restantes = :places_restantes WHERE id = :ride_id");
-$stmtUpdateCovoiturage->bindParam(':passengers', $newPassagers, PDO::PARAM_INT);
-$stmtUpdateCovoiturage->bindParam(':places_restantes', $newPlacesRestantes, PDO::PARAM_INT);
-$stmtUpdateCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
-$stmtUpdateCovoiturage->execute();
-// Supprimer la réservation
-$stmtDeleteReservation = $conn->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
-$stmtDeleteReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
-$stmtDeleteReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
-$stmtDeleteReservation->execute();
+// Mettre à jour les données du covoiturage
+$newPassagers = $covoiturage['passagers'] - $placesReservees;
+$newPlacesRestantes = $covoiturage['places_restantes'] + $placesReservees;
 
-// Vérifie si l'annulation a réussi
-if ($stmtDeleteReservation->rowCount() > 0) {
-    // Rediriger vers la page du profil avec un message de succès
+try {
+    $conn->beginTransaction();
+
+    // Mise à jour du covoiturage
+    $stmtUpdateCovoiturage = $conn->prepare("UPDATE covoiturages SET passagers = :passagers, places_restantes = :places_restantes WHERE id = :ride_id");
+    $stmtUpdateCovoiturage->bindParam(':passagers', $newPassagers, PDO::PARAM_INT);
+    $stmtUpdateCovoiturage->bindParam(':places_restantes', $newPlacesRestantes, PDO::PARAM_INT);
+    $stmtUpdateCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
+    $stmtUpdateCovoiturage->execute();
+
+    // Suppression de la réservation
+    $stmtDeleteReservation = $conn->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
+    $stmtDeleteReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
+    $stmtDeleteReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
+    $stmtDeleteReservation->execute();
+
+    $conn->commit();
+
+    // Redirection après succès
     header('Location: /frontend/profil.php?message=Annulation réussie');
     exit;
-} else {
-    // Si aucune ligne n'a été supprimée
-    echo "Erreur : Aucune réservation trouvée avec cet ID ou vous n'êtes pas autorisé à annuler cette réservation.";
+
+} catch (Exception $e) {
+    $conn->rollBack();
+    echo "Erreur lors de l'annulation : " . $e->getMessage();
+    exit;
 }
 ?>
