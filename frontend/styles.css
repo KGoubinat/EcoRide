@@ -199,15 +199,7 @@ form input{
 .details, .rejoindre, .form, .presentation, .card, .card-filtres, .login-container, .signup-form-container {
     border: 3px solid black;
 }
-/* Footer */
-footer {
-    background: #0077b6;
-    color: black;
-    text-align: center;
-    font-weight: bold;
-    padding: 0px;
-    height: 50px;
-}
+
 
 button {
     background-color: #26A69A;
@@ -231,6 +223,15 @@ button:hover {
     color: #26A69A;
 }
 
+/* Footer */
+footer {
+    background: #0077b6;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    padding: 0px;
+    height: 50px;
+}
 footer a {
     color: black; /* Couleur du lien en noir */
     text-decoration: none; /* Supprime le soulignement */

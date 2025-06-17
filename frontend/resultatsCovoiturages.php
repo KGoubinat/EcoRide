@@ -39,7 +39,7 @@ $villesFrance = [
 $start = isset($_GET['start']) ? trim($_GET['start']) : '';
 $end = isset($_GET['end']) ? trim($_GET['end']) : '';
 $passengers = isset($_GET['passengers']) ? intval($_GET['passengers']) : 1;
-$date = isset($_GET['date']) ? $_GET['date'] : '';  // Nouveau champ "date"
+$date = isset($_GET['date']) ? $_GET['date'] : ''; 
 $ecolo = isset($_GET['ecolo']) ? $_GET['ecolo'] : '';
 $prix = isset($_GET['prix']) ? $_GET['prix'] : '';
 $duree = isset($_GET['duree']) ? $_GET['duree'] : '';
@@ -61,7 +61,7 @@ if ($end) {
     $params[] = "%$end%";
 }
 
-// Filtre date (nouveau filtre)
+// Filtre date 
 if ($date) {
     $sql .= " AND date = ?";
     $params[] = $date;

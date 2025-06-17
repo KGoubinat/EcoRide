@@ -14,3 +14,4 @@ document.addEventListener("DOMContentLoaded", function() {
         profilButton.style.display = 'none';  // Masquer le bouton Profil
     }
 });
+
