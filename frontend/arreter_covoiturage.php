@@ -142,9 +142,15 @@ if ($covoiturage && isset($covoiturage['id'])) {
             $email = $participant['email'];
             $participantId = $participant['id'];
 
+            error_log('MAIL_PASSWORD: ' . getenv('MAIL_PASSWORD')); 
+
+            error_log("Envoi mail à $email pour covoiturage $rideId");
+
             if (sendValidationEmail($email, $rideId, $participantId)) {
+                 error_log("Mail envoyé à $email");
                 $response['emails_sent'][] = $email;
             } else {
+                error_log("Échec envoi mail à $email");
                 $response['emails_failed'][] = $email;
             }
         }
