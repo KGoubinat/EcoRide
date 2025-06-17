@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Données envoyées :", { id: rideId, type: 'covoiturage', action: 'start' });
 
         // Envoi de la requête pour démarrer le covoiturage
-        fetch('/ecoride/frontend/demarrer_covoiturage.php', {
+        fetch('/frontend/demarrer_covoiturage.php', {
             method: 'POST',
             body: JSON.stringify({ id: rideId, type: 'covoiturage', action: 'start' }),           
             headers: { 'Content-Type': 'application/json' }
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fonction pour terminer le covoiturage
 window.endTrip = function (rideId) {
-    fetch('/ecoride/frontend/demarrer_covoiturage.php', {
+    fetch('/frontend/demarrer_covoiturage.php', {
         method: 'POST',
         body: JSON.stringify({ id: rideId, type: 'covoiturage', action: 'end' }),
         headers: { 'Content-Type': 'application/json' }

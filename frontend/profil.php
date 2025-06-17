@@ -298,10 +298,6 @@ if (!empty($reservations)) {
                                             onclick="endTrip(<?php echo $ride['ride_id']; ?>)" style="display: <?php echo $endButtonStyle; ?>;">
                                             Arrivée à destination
                                         </button>
-
-
-                                        
-
                                     </div>
                                     <hr>
                                 <?php endforeach; ?>
