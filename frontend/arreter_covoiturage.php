@@ -60,14 +60,14 @@ function sendValidationEmail($toEmail, $rideId, $userId) {
     ];
     
     $token = generateToken($userId, $rideId);
-    $validationLink = "http://localhost/ecoride/frontend/validation.php?ride_id=$rideId&token=$token";
+    $validationLink = "https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/frontend/validation.php?ride_id=$rideId&token=$token";
 
     try {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'kevingoub@gmail.com';
-        $mail->Password = 'otpl hcnf ityj jhwb';  // Pense à sécuriser ce mot de passe ailleurs !
+        $mail->Password = getenv('MAIL_PASSWORD');
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
