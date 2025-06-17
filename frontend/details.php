@@ -151,7 +151,7 @@ if ($user_credit >= $covoiturage['prix']) {
 ?>
         <?php if (!$isLoggedIn): ?>
             <p><a href="/frontend/connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
-        <?php elseif ($covoiturage['places_restantes'] > 0 && $user_credits >= $covoiturage['prix']): ?>
+        <?php elseif ($covoiturage['places_restantes'] > 0 && (float)$user_credits >= (float)$covoiturage['prix']): ?>
             <button class="participer" id="btnParticiper" data-id="<?= $covoiturage['id'] ?>" data-prix="<?= $covoiturage['prix'] ?>">
                 Participer
             </button>
