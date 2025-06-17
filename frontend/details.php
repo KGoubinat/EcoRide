@@ -144,7 +144,7 @@ $redirectUrl = htmlspecialchars(filter_var($_SERVER['REQUEST_URI'], FILTER_SANIT
         
         <?php if (!$isLoggedIn): ?>
             <p><a href="/frontend/connexion.html?redirect=<?= urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour participer.</p>
-        <?php elseif ($covoiturage['places_restantes'] > 0 && $credits >= $covoiturage['prix']): ?>
+        <?php elseif ($covoiturage['places_restantes'] > 0 && $user_credits >= $covoiturage['prix']): ?>
             <button class="participer" id="btnParticiper" data-id="<?= $covoiturage['id'] ?>" data-prix="<?= $covoiturage['prix'] ?>">
                 Participer
             </button>
@@ -187,6 +187,9 @@ $redirectUrl = htmlspecialchars(filter_var($_SERVER['REQUEST_URI'], FILTER_SANIT
             </div>
         </div>
     </div>
+    <p>Crédits utilisateur : <?= htmlspecialchars($user_credit) ?></p>
+    <p>Prix du trajet : <?= htmlspecialchars($covoiturage['prix']) ?></p>
+
 </main>
 
 <footer>
