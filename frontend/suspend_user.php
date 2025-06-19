@@ -5,6 +5,7 @@ session_start();
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
     header("Location: accueil.php");
     exit;
+
 }
 
 if (isset($_GET['id'])) {

@@ -51,8 +51,10 @@ echo "ID de covoiturage reçu : " . htmlspecialchars($covoiturageId);
 
 // Prépare et exécute la suppression du covoiturage
 $stmt = $conn->prepare("DELETE FROM covoiturages WHERE id = :id AND user_id = :user_id");
+// Liaison des paramètres pour sécuriser la requête
 $stmt->bindParam(':id', $covoiturageId, PDO::PARAM_INT);
 $stmt->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
+// Exécution de la requête
 $stmt->execute();
 
 // Vérifie si l'annulation a réussi

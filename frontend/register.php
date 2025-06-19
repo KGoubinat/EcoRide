@@ -25,7 +25,7 @@ try {
     exit;
 }
 
-// Lire et décoder le JSON
+// Décodage JSON sécurisé et vérification de la requête
 $data = json_decode(file_get_contents("php://input"), true);
 if (!$data) {
     http_response_code(400);
@@ -61,6 +61,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
     echo json_encode(["success" => false, "message" => "Email invalide"]);
     exit;
 }
+// Vérification de la force du mot de passe
 if (strlen($password) < 8 || strlen($password) > 32 ||
     !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) ||
     !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password)) {
@@ -84,7 +85,7 @@ if ($userExists) {
 // Hachage du mot de passe
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-
+// Requête préparée pour éviter les injections SQL
 $stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, credits) VALUES (?, ?, ?, ?, ?)");
 if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, 20])) {
     echo json_encode(["success" => true, "message" => "Inscription réussie"]);

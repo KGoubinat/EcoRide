@@ -35,7 +35,7 @@ $villesFrance = [
     "Saint-Étienne", "Toulon", "Grenoble", "Dijon", "Angers", "Nîmes", "Villeurbanne"
 ];
 
-// Récupération et nettoyage des entrées
+// Récupération et nettoyage des paramètres GET
 $start = isset($_GET['start']) ? trim($_GET['start']) : '';
 $end = isset($_GET['end']) ? trim($_GET['end']) : '';
 $passengers = isset($_GET['passengers']) ? intval($_GET['passengers']) : 1;

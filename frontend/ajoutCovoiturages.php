@@ -58,13 +58,13 @@ $stmtVilles = $conn->query("SELECT nom FROM villes");
 $villes = $stmtVilles->fetchAll(PDO::FETCH_COLUMN);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Vérifie que tous les champs nécessaires sont présents
     if (!isset($_POST['depart'], $_POST['destination'], $_POST['prix'], $_POST['vehicule_id'], $_POST['heure_depart'], $_POST['duree'], $_POST['date'])) {
         echo json_encode(['status' => 'error', 'message' => 'Des champs sont manquants dans le formulaire.']);
         exit;
     }
-
     // Récupération des données
-    $depart = $_POST['depart']; // Le "depart" est une ville ou autre donnée textuelle
+    $depart = $_POST['depart']; 
     $destination = $_POST['destination'];
     $prix = (float) $_POST['prix'];
     $vehicule_id = (int) $_POST['vehicule_id'];

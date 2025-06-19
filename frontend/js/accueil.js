@@ -45,4 +45,49 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     }
+    
+     // Validation formulaire recherche
+    const rechercheForm = document.getElementById('rechercheForm');
+    if (rechercheForm) {
+        rechercheForm.addEventListener('submit', function(event) {
+            const start = document.getElementById('start').value.trim();
+            const end = document.getElementById('end').value.trim();
+            const passengers = parseInt(document.getElementById('passengers').value, 10);
+            const date = document.getElementById('date').value;
+
+            if (!start || !end) {
+                alert("Veuillez remplir les champs Départ et Destination.");
+                event.preventDefault();
+                return;
+            }
+
+            if (start === end) {
+                alert("Le départ et la destination doivent être différents.");
+                event.preventDefault();
+                return;
+            }
+
+            if (isNaN(passengers) || passengers < 1) {
+                alert("Veuillez entrer un nombre valide de passagers (minimum 1).");
+                event.preventDefault();
+                return;
+            }
+
+            if (!date) {
+                alert("Veuillez sélectionner une date.");
+                event.preventDefault();
+                return;
+            }
+
+            // Optionnel : vérifier que la date n'est pas dans le passé
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            if (selectedDate < today) {
+                alert("La date doit être aujourd'hui ou dans le futur.");
+                event.preventDefault();
+                return;
+            }
+        });
+    }
 });

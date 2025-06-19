@@ -40,7 +40,7 @@ if ($isLoggedIn) {
     }
 
   
-        // Récupérer le statut du covoiturage depuis la base de données
+// Récupérer le statut du covoiturage depuis la base de données
    
     // Si l'utilisateur a des réservations
 if (!empty($reservations)) {
