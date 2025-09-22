@@ -1639,3 +1639,4 @@ main { padding-bottom: 12px; } /* un petit padding pour séparer proprement */
 
 /* Si un composant au-dessus du footer a de gros margin-bottom, on peut le lisser */
 .section, .presentation, .third-column, .rejoindre, .details { margin-bottom: 16px; } /* adapte à ton design */
+

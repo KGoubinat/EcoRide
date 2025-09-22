@@ -129,7 +129,7 @@ $consent = getConsent();
                 <p>Large choix de trajets adaptés à vos besoins.</p>
                 <p>Des conducteurs et passagers vérifiés.</p>
                 <div class="button">
-                    <a href="register.html"><button type="button" id="rejoindreBtn">Rejoignez nous!</button></a>
+                    <a href="register.php"><button type="button" id="rejoindreBtn">Rejoignez nous!</button></a>
                 </div>
             </div>
         </section>
