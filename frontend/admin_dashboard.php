@@ -1,280 +1,287 @@
 <?php
-session_start();
+// admin_dashboard.php (ex.)
+require __DIR__ . '/init.php'; // ← démarre la session, définit BASE_URL, fournit $pdo = getPDO()
 
+header('X-Robots-Tag: noindex, nofollow', true);
 
-// Vérifier si l'utilisateur est connecté et si c'est un administrateur
+// 1) Autorisation admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header("Location: accueil.php");
+    header('Location: ' . BASE_URL . 'accueil.php');
     exit;
 }
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
-
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
-// Fonction pour récupérer le nombre de covoiturages par jour
-function getCarpoolData($conn) {
-    $stmt = $conn->query("
-        SELECT DATE(date) AS jour, COUNT(*) AS total_covoiturages
+// 2) Fonctions data
+function getCarpoolData(PDO $pdo): array {
+    $sql = "
+        SELECT DATE(`date`) AS jour, COUNT(*) AS total_covoiturages
         FROM covoiturages
         GROUP BY jour
         ORDER BY jour ASC
-    ");
-
-    $data = [];
-    while ($row = $stmt->fetch()) {
-        $data[] = [
-            'jour' => $row['jour'],
-            'total_covoiturages' => $row['total_covoiturages']
-        ];
-    }
-    return $data;
+    ";
+    return $pdo->query($sql)->fetchAll();
 }
 
-// Récupérer les données pour le graphique du nombre de covoiturages
-$carpoolData = getCarpoolData($conn);
-
-// Formatage des données pour Chart.js
-$carpoolLabels = [];
-$carpoolValues = [];
-foreach ($carpoolData as $data) {
-    $carpoolLabels[] = $data['jour'];  // Liste des dates
-    $carpoolValues[] = $data['total_covoiturages'];  // Liste des nombres de covoiturages
-}
-
-// Fonction pour récupérer les crédits gagnés par jour
-function getCreditsData($conn) {
-    $stmt = $conn->query("
-        SELECT DATE(date) AS jour, COUNT(*) * 2 AS total_credits
+function getCreditsData(PDO $pdo): array {
+    $sql = "
+        SELECT DATE(`date`) AS jour, COUNT(*) * 2 AS total_credits
         FROM covoiturages
         WHERE statut = 'terminé'
         GROUP BY jour
         ORDER BY jour ASC
-    ");
-
-    $data = [];
-    while ($row = $stmt->fetch()) {
-        $data[] = [
-            'jour' => $row['jour'],
-            'total_credits' => $row['total_credits']
-        ];
-    }
-    return $data;
+    ";
+    return $pdo->query($sql)->fetchAll();
 }
 
-// Récupérer les données pour le graphique des crédits
-$creditsData = getCreditsData($conn);
-
-// Formatage des données pour Chart.js
-$creditsLabels = [];
-$creditsValues = [];
-foreach ($creditsData as $data) {
-    $creditsLabels[] = $data['jour'];  // Liste des dates
-    $creditsValues[] = $data['total_credits'];  // Liste des crédits gagnés
+function getTotalCredits(PDO $pdo): int {
+    $row = $pdo->query("
+        SELECT COUNT(*) AS total_covoiturages
+        FROM covoiturages
+        WHERE statut = 'terminé'
+    ")->fetch();
+    return (int)$row['total_covoiturages'] * 2;
 }
 
-// Requête pour calculer le total des crédits
-$stmt = $conn->query("SELECT COUNT(*) as total_covoiturages FROM covoiturages WHERE statut = 'terminé'");
-$row = $stmt->fetch();
-$totalCovoiturages = $row['total_covoiturages'];
+// 3) Récupération des datasets
+try {
+    $carpoolData   = getCarpoolData($pdo);
+    $creditsData   = getCreditsData($pdo);
+    $totalCredits  = getTotalCredits($pdo);
 
-// Chaque covoiturage terminé rapporte 2 crédits
-$totalCredits = $totalCovoiturages * 2;
+    // Utilisateurs
+    $users = $pdo->query("SELECT id, firstName, lastName, etat, email, role FROM users ORDER BY id ASC")->fetchAll();
+} catch (Throwable $e) {
+    http_response_code(500);
+    exit('Erreur lors du chargement des statistiques.');
+}
+
+// 4) Prépare pour Chart.js
+$carpoolLabels = array_column($carpoolData, 'jour');
+$carpoolValues = array_map('intval', array_column($carpoolData, 'total_covoiturages'));
+$creditsLabels = array_column($creditsData, 'jour');
+$creditsValues = array_map('intval', array_column($creditsData, 'total_credits'));
+
+// Prépare le paramètre back pour revenir ici après l'action
+$back = 'admin_dashboard.php';
+if (isset($_GET['role'])) {
+    $back .= '?role=' . urlencode((string)$_GET['role']);
+}
+$backParam = urlencode($back);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- base dynamique, marche en local & Heroku (assure un slash final) -->
+    <base href="<?= htmlspecialchars(rtrim(BASE_URL, '/').'/', ENT_QUOTES) ?>">
+    <link rel="stylesheet" href="styles.css" />
     <title>Tableau de bord Administrateur</title>
-
-    <!-- Bibliothèque pour les graphiques -->
+    <meta name="description" content="Tableau de bord administrateur EcoRide : statistiques des covoiturages, crédits gagnés par jour, et gestion des comptes (employés & utilisateurs).">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="<?= htmlspecialchars(rtrim(BASE_URL,'/').'/admin_dashboard.php', ENT_QUOTES) ?>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <header>
+<header>
     <div class="header-container">
         <h1>Bienvenue, Administrateur</h1>
 
         <div class="menu-toggle" id="menu-toggle">☰</div>
 
-            <nav id="navbar">
-                <ul>
-                    <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
-                    <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
-                    <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
-                    <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
-                    <li><a href="/frontend/logout.php">Déconnexion</a></li>
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Menu mobile (caché par défaut) -->
-        <nav id="mobile-menu">
+        <nav id="navbar">
             <ul>
-                <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
-                <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
-                <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
-                <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
-                <li><a href="/frontend/logout.php">Déconnexion</a></li>
+                <li><a href="admin_dashboard.php">Tableau de bord</a></li>
+                <li><a href="add_employee.html">Ajouter un Employé</a></li>
+                <li><a href="manage_employees.php">Gérer les Employés</a></li>
+                <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
+                <li><a href="logout.php">Déconnexion</a></li>
             </ul>
         </nav>
-    </header>
+    </div>
 
-    <main class=adaptation>
-        <section class=stats>
-            <h2>Statistiques de la plateforme</h2>
-            <!-- Graphiques -->
-            <div>
-                <h3>Nombre de Covoiturages par Jour</h3>
-                <canvas id="carpoolChart" width="800" height="400"></canvas>
-            </div>
-            <div>
-                <h3>Crédit Gagné par Jour</h3>
-                <canvas id="creditChart" width="800" height="400"></canvas>
-            </div>
-            <div>
-                <h3>Total de Crédit Gagné par la Plateforme</h3>
-                <p id="totalCredits"></p>
-            </div>
-        </section>
+    <nav id="mobile-menu">
+        <ul>
+            <li><a href="admin_dashboard.php">Tableau de bord</a></li>
+            <li><a href="add_employee.html">Ajouter un Employé</a></li>
+            <li><a href="manage_employees.php">Gérer les Employés</a></li>
+            <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
+            <li><a href="logout.php">Déconnexion</a></li>
+        </ul>
+    </nav>
+</header>
 
-        <section class=comptes>
-            <h2>Gérer les Comptes</h2>
-            <div class="table-container">
-                <h3>Liste des Employés et Utilisateurs</h3>
-                <!-- Tableau des utilisateurs avec options pour suspendre leurs comptes -->
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Rôle</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Liste des utilisateurs avec option de suspension -->
-                        <?php
-                        // Connexion à la base de données pour récupérer les utilisateurs
-                        // Exemple de requête pour afficher les utilisateurs
-                        $stmt = $conn->query("SELECT id, firstName, lastName, etat, email, role FROM users");
-                        while ($row = $stmt->fetch()) {
-                            echo "<tr>";
-                            echo "<td>" . $row['id'] . "</td>"; 
-                            echo "<td>" . $row['firstName'] . " " . $row['lastName'] . "</td>";
-                            echo "<td>" . $row['email'] . "</td>";
-                            echo "<td>" . $row['role'] . "</td>";
-                            echo "<td>" . ucfirst($row['etat']) . "</td>"; // Affiche 'Active' ou 'Suspended'
-                            if ($row['etat'] === 'active') {
-                                echo "<td><a href='/frontend/suspend_user.php?id=" . $row['id'] . "'>Suspendre</a></td>";
-                            } else {
-                                echo "<td><a href='/frontend/active_user.php?id=" . $row['id'] . "'>Activer</a></td>";
-                            }
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
-    <footer>
-        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
-    </footer>
+<main class="adaptation">
+    <section class="stats">
+        <h2>Statistiques de la plateforme</h2>
 
-    <script>
-        //Graphiques avec Chart.js
-        const carpoolChartData = {
-            labels: <?php echo json_encode($carpoolLabels); ?>,
-            datasets: [{
-                label: 'Nombre de Covoiturages',
-                data: <?php echo json_encode($carpoolValues); ?>,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        };
+        <div>
+            <h3>Nombre de Covoiturages par Jour</h3>
+            <canvas id="carpoolChart" width="800" height="400"></canvas>
+        </div>
 
-        const creditChartData = {
-            labels: <?php echo json_encode($creditsLabels); ?>,
-            datasets: [{
-                label: 'Crédit Gagné',
-                data: <?php echo json_encode($creditsValues); ?>,
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-            }]
-        };
+        <div>
+            <h3>Crédit Gagné par Jour</h3>
+            <canvas id="creditChart" width="800" height="400"></canvas>
+        </div>
 
-        const ctx1 = document.getElementById('carpoolChart').getContext('2d');
-        const carpoolChart = new Chart(ctx1, {
-            type: 'bar',
-            data: carpoolChartData,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+        <div>
+            <h3>Total de Crédit Gagné par la Plateforme</h3>
+            <p id="totalCredits"></p>
+        </div>
+    </section>
+
+    <section class="comptes">
+        <h2>Gérer les Comptes</h2>
+        <div class="table-container">
+            <h3>Liste des Employés et Utilisateurs</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>État</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($users as $u): ?>
+                    <tr>
+                        <td><?= (int)$u['id'] ?></td>
+                        <td><?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?></td>
+                        <td><?= htmlspecialchars($u['email']) ?></td>
+                        <td><?= htmlspecialchars($u['role']) ?></td>
+                        <td><?= htmlspecialchars(ucfirst($u['etat'])) ?></td>
+                        <td>
+                            <?php if ($u['etat'] === 'active'): ?>
+                                <a href="update_user_status.php?id=<?= (int)$u['id'] ?>&status=suspended&back=<?= $backParam ?>">Suspendre</a>
+                            <?php else: ?>
+                                <a href="update_user_status.php?id=<?= (int)$u['id'] ?>&status=active&back=<?= $backParam ?>">Activer</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+</footer>
+
+<script>
+    // Graphiques Chart.js
+    const carpoolLabels = <?= json_encode($carpoolLabels, JSON_UNESCAPED_UNICODE) ?>;
+    const carpoolValues = <?= json_encode($carpoolValues, JSON_UNESCAPED_UNICODE) ?>;
+
+    const creditsLabels = <?= json_encode($creditsLabels, JSON_UNESCAPED_UNICODE) ?>;
+    const creditsValues = <?= json_encode($creditsValues, JSON_UNESCAPED_UNICODE) ?>;
+
+    new Chart(document.getElementById('carpoolChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: carpoolLabels,
+        datasets: [{
+            label: 'Nombre de Covoiturages',
+            data: carpoolValues,
+            borderWidth: 1,
+            backgroundColor: '#1b46beff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                labels: { color: "#ffffff" }
+            },
+            title: {
+                display: true,
+                text: "Nombre de Covoiturages par Jour",
+                color: "#ffffff"
+            },
+            tooltip: {
+                bodyColor: "#ffffff",
+                titleColor: "#ffffff"
             }
-        });
-
-        const ctx2 = document.getElementById('creditChart').getContext('2d');
-        const creditChart = new Chart(ctx2, {
-            type: 'line',
-            data: creditChartData,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+        },
+        scales: {
+            x: {
+                ticks: { color: "#ffffff" },
+                grid: { color: "rgba(255,255,255,0.2)" }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: { color: "#ffffff" },
+                grid: { color: "rgba(255,255,255,0.2)" }
             }
-        });
+        }
+    }
+});
 
-        // Afficher le total de crédit gagné
-        const totalCredits = <?php echo $totalCredits; ?>;
-        document.getElementById("totalCredits").textContent = "Total des crédits gagnés: " + totalCredits + " crédits";
+    new Chart(document.getElementById('creditChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: creditsLabels,
+        datasets: [{
+            label: 'Crédit Gagné',
+            data: creditsValues,
+            borderWidth: 2,
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34,197,94,0.5)'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                labels: { color: "#ffffff" }
+            },
+            title: {
+                display: true,
+                text: "Crédit Gagné par Jour",
+                color: "#ffffff"
+            },
+            tooltip: {
+                bodyColor: "#ffffff",
+                titleColor: "#ffffff"
+            }
+        },
+        scales: {
+            x: {
+                ticks: { color: "#ffffff" },
+                grid: { color: "rgba(255,255,255,0.2)" }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: { color: "#ffffff" },
+                grid: { color: "rgba(255,255,255,0.2)" }
+            }
+        }
+    }
+});
 
-        document.addEventListener("DOMContentLoaded", function () {
-        // Gestion du menu burger
+
+    // Total des crédits
+    const totalCredits = <?= (int)$totalCredits ?>;
+    document.getElementById("totalCredits").textContent =
+        "Total des crédits gagnés: " + totalCredits + " crédits";
+
+    // Menu burger
+    document.addEventListener("DOMContentLoaded", function () {
         const menuToggle = document.getElementById("menu-toggle");
         const mobileMenu = document.getElementById("mobile-menu");
-
         if (menuToggle && mobileMenu) {
             menuToggle.addEventListener("click", function () {
                 mobileMenu.classList.toggle("active");
             });
-
-            // Fermer le menu après un clic sur un lien
             document.querySelectorAll("#mobile-menu a").forEach(link => {
-                link.addEventListener("click", function () {
-                    mobileMenu.classList.remove("active");
-                });
+                link.addEventListener("click", () => mobileMenu.classList.remove("active"));
             });
         }
     });
-    </script>
+</script>
 </body>
 </html>

@@ -1,46 +1,71 @@
 <?php
-// Connexion à la base de données avec PDO
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
+declare(strict_types=1);
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
+require __DIR__ . '/init.php'; // session_start + BASE_URL + getPDO()
 
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+header('X-Robots-Tag: noindex, nofollow', true);
 
-// Connexion à la base de données avec PDO
+
+// Autorisation : admin uniquement
+if (($_SESSION['user_role'] ?? null) !== 'administrateur') {
+    header('Location: ' . BASE_URL . 'admin_dashboard.php?error=forbidden');
+    exit;
+}
+
+// Méthode requise
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    header('Location: ' . BASE_URL . 'add_employee.html?error=method');
+    exit;
+}
+
+// Récupération / validation
+$lastName  = trim($_POST['lastName']  ?? '');
+$firstName = trim($_POST['firstName'] ?? '');
+$email     = trim($_POST['email']     ?? '');
+$pwdPlain  = (string)($_POST['password'] ?? '');
+
+$errs = [];
+if ($lastName === '')  $errs[] = 'nom';
+if ($firstName === '') $errs[] = 'prenom';
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errs[] = 'email';
+if ($pwdPlain === '' || strlen($pwdPlain) < 6) $errs[] = 'password';
+
+if ($errs) {
+    header('Location: ' . BASE_URL . 'add_employee.html?error=invalid&fields=' . urlencode(implode(',', $errs)));
+    exit;
+}
+
+// Hash du mot de passe
+$pwdHash = password_hash($pwdPlain, PASSWORD_DEFAULT);
+
+// Insertion
+$pdo = function_exists('getPDO') ? getPDO() : ($pdo ?? null);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$sql = "INSERT INTO users (lastName, firstName, email, password, role)
+        VALUES (:lastName, :firstName, :email, :password, :role)";
+
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':lastName'  => $lastName,
+        ':firstName' => $firstName,
+        ':email'     => $email,
+        ':password'  => $pwdHash,
+        ':role'      => 'employe',
+    ]);
+
+    // Succès → retour à la gestion des employés (ou dashboard)
+    header('Location: ' . BASE_URL . 'manage_employees.php?success=1');
+    exit;
+
 } catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $lastName = $_POST['lastName'];
-    $firstName = $_POST['firstName']; 
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $role = 'employe'; // On définit directement le rôle ici
-
-    $sql = "INSERT INTO users (lastName, firstName, email, password, role) VALUES (:lastName, :firstName, :email, :password, :role)";
-
-    try {
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':lastName' => $lastName,
-            ':firstName' => $firstName,
-            ':email' => $email,
-            ':password' => $password,
-            ':role' => $role // Le rôle est bien défini ici
-        ]);
-        echo json_encode(["message" => "Employé ajouté avec succès avec le statut d'employé."]);
-    } catch (PDOException $e) {
-        echo json_encode(["error" => "Erreur : " . $e->getMessage()]);
+    if ($e->getCode() === '23000') {
+        // Conflit (email déjà utilisé)
+        header('Location: ' . BASE_URL . 'add_employee.html?error=email');
+    } else {
+        header('Location: ' . BASE_URL . 'add_employee.html?error=server');
+        // error_log($e->getMessage());
     }
+    exit;
 }
-?>

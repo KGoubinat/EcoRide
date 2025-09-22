@@ -1,104 +1,135 @@
 <?php
-session_start();
-ob_start(); // Active le buffer de sortie pour éviter les erreurs avec header()
+require __DIR__ . '/init.php'; // session_start + BASE_URL + $pdo=getPDO()
 
-// Vérifie si un utilisateur est connecté
-if (!isset($_SESSION['user_email'])) {
-    echo "Aucun utilisateur connecté.";
-    exit;
+// 1) Auth obligatoire
+if (empty($_SESSION['user_email'])) {
+    http_response_code(401);
+    exit('Aucun utilisateur connecté.');
 }
 
-// Vérifie que l'ID de la réservation est passé via POST
-if (!isset($_POST['reservation_id']) || !is_numeric($_POST['reservation_id'])) {
-    echo "Erreur : ID de réservation invalide ou manquant.";
-    exit;
+// 2) Méthode POST uniquement
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    http_response_code(405);
+    exit('Méthode non autorisée.');
 }
 
-$reservationId = intval($_POST['reservation_id']); // Sécurise l'entrée
-
-// Connexion à la base de données via JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-$parsedUrl = parse_url($databaseUrl);
-
-$servername = $parsedUrl['host'];
-$username = $parsedUrl['user'];
-$password = $parsedUrl['pass'];
-$dbname = ltrim($parsedUrl['path'], '/');
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-    exit;
+// 3) CSRF
+if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    exit('Token CSRF invalide.');
 }
 
-// Récupérer les informations de l'utilisateur connecté
-$user_email = $_SESSION['user_email'];
-$stmtUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
-$stmtUser->execute([$user_email]);
+// 4) Valider l'ID de réservation
+$reservationId = filter_input(INPUT_POST, 'reservation_id', FILTER_VALIDATE_INT);
+if (!$reservationId) {
+    http_response_code(400);
+    exit('ID de réservation invalide ou manquant.');
+}
+
+// 5) Récupérer l'utilisateur courant
+$stmtUser = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+$stmtUser->execute([$_SESSION['user_email']]);
 $user = $stmtUser->fetch();
-
 if (!$user) {
-    echo "Utilisateur non trouvé.";
-    exit;
+    http_response_code(404);
+    exit('Utilisateur non trouvé.');
 }
-
-// Récupérer le covoiturage associé à la réservation
-$stmtReservation = $conn->prepare("SELECT covoiturage_id, places_reservees FROM reservations WHERE id = :id AND user_id = :user_id");
-$stmtReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
-$stmtReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
-$stmtReservation->execute();
-$reservation = $stmtReservation->fetch();
-
-if (!$reservation) {
-    echo "Erreur : Réservation non trouvée ou accès non autorisé.";
-    exit;
-}
-
-$rideId = $reservation['covoiturage_id'];
-$placesReservees = $reservation['places_reservees'];
-
-// Récupérer les données actuelles du covoiturage
-$stmtCovoiturage = $conn->prepare("SELECT places_restantes, passagers FROM covoiturages WHERE id = :ride_id");
-$stmtCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
-$stmtCovoiturage->execute();
-$covoiturage = $stmtCovoiturage->fetch();
-
-if (!$covoiturage) {
-    echo "Erreur : Covoiturage introuvable.";
-    exit;
-}
-
-// Mettre à jour les données du covoiturage
-$newPassagers = $covoiturage['passagers'] - $placesReservees;
-$newPlacesRestantes = $covoiturage['places_restantes'] + $placesReservees;
 
 try {
-    $conn->beginTransaction();
+    $pdo->beginTransaction();
 
-    // Mise à jour du covoiturage
-    $stmtUpdateCovoiturage = $conn->prepare("UPDATE covoiturages SET passagers = :passagers, places_restantes = :places_restantes WHERE id = :ride_id");
-    $stmtUpdateCovoiturage->bindParam(':passagers', $newPassagers, PDO::PARAM_INT);
-    $stmtUpdateCovoiturage->bindParam(':places_restantes', $newPlacesRestantes, PDO::PARAM_INT);
-    $stmtUpdateCovoiturage->bindParam(':ride_id', $rideId, PDO::PARAM_INT);
-    $stmtUpdateCovoiturage->execute();
+    // 6) Charger la réservation (appartenant à l'utilisateur)
+    $stmtReservation = $pdo->prepare("
+        SELECT id, covoiturage_id, places_reservees, statut
+        FROM reservations
+        WHERE id = ? AND user_id = ?
+        FOR UPDATE
+    ");
+    $stmtReservation->execute([$reservationId, $user['id']]);
+    $reservation = $stmtReservation->fetch();
 
-    // Suppression de la réservation
-    $stmtDeleteReservation = $conn->prepare("DELETE FROM reservations WHERE id = :id AND user_id = :user_id");
-    $stmtDeleteReservation->bindParam(':id', $reservationId, PDO::PARAM_INT);
-    $stmtDeleteReservation->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
-    $stmtDeleteReservation->execute();
+    if (!$reservation) {
+        $pdo->rollBack();
+        http_response_code(403);
+        exit('Réservation non trouvée ou accès non autorisé.');
+    }
 
-    $conn->commit();
+    $rideId          = (int)$reservation['covoiturage_id'];
+    $placesReservees = (int)$reservation['places_reservees'];
 
-    // Redirection après succès
-    header('Location: /frontend/profil.php?message=Annulation réussie');
+    // 7) Charger le covoiturage pour ajuster les compteurs
+    $stmtCovoiturage = $pdo->prepare("
+        SELECT id, passagers, places_restantes, nb_places_disponibles, statut, date, heure_depart, prix
+        FROM covoiturages
+        WHERE id = ?
+        FOR UPDATE
+    ");
+    $stmtCovoiturage->execute([$rideId]);
+    $covoiturage = $stmtCovoiturage->fetch();
+
+    if (!$covoiturage) {
+        $pdo->rollBack();
+        http_response_code(404);
+        exit('Covoiturage introuvable.');
+    }
+
+    $statutRide = strtolower(trim((string)$covoiturage['statut']));
+    if ($statutRide === 'en cours' || $statutRide === 'terminé') {
+        $pdo->rollBack();
+        http_response_code(409);
+        exit("Vous ne pouvez plus annuler : le covoiturage a déjà démarré (ou est terminé).");
+        }
+
+    $passagers           = (int)$covoiturage['passagers'];
+    $placesRestantes     = (int)$covoiturage['places_restantes'];
+    $nbPlacesDisponibles = (int)$covoiturage['nb_places_disponibles'];
+    
+    //) Politique simple : rembourser si le trajet n’a pas commencé
+        $refund = false;
+        $prix      = (float)$covoiturage['prix'];
+        $places    = (int)$reservation['places_reservees'];
+        $refundAmt = $prix * $places;
+
+        // Exemple : rembourser si statut 'en attente'
+        if ($statutRide === 'en attente') {
+        $refund = true;
+        }
+
+        if ($refund) {
+        $stRefund = $pdo->prepare("UPDATE users SET credits = credits + ? WHERE id = ?");
+        $stRefund->execute([$refundAmt, (int)$user['id']]);
+        }
+
+    // 8) Calculs sécurisés
+    $newPassagers       = max(0, $passagers - $placesReservees);
+    $newPlacesRestantes = min($nbPlacesDisponibles, $placesRestantes + $placesReservees);
+
+    // 9) Mettre à jour le covoiturage
+    $stmtUpdate = $pdo->prepare("
+        UPDATE covoiturages
+        SET passagers = ?, places_restantes = ?
+        WHERE id = ?
+    ");
+    $stmtUpdate->execute([$newPassagers, $newPlacesRestantes, $rideId]);
+
+    // 10) Supprimer la réservation
+    $stmtDelete = $pdo->prepare("DELETE FROM reservations WHERE id = ? AND user_id = ?");
+    $stmtDelete->execute([$reservationId, $user['id']]);
+
+    if ($stmtDelete->rowCount() !== 1) {
+        $pdo->rollBack();
+        http_response_code(409);
+        exit("Annulation impossible (déjà annulée ?).");
+    }
+
+    $pdo->commit();
+
+    header('Location: ' . BASE_URL . 'profil.php?message=' . urlencode('Annulation réussie'));
     exit;
 
-} catch (Exception $e) {
-    $conn->rollBack();
-    echo "Erreur lors de l'annulation : " . $e->getMessage();
-    exit;
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    http_response_code(500);
+    exit("Erreur lors de l'annulation de la réservation.");
 }
-?>
+

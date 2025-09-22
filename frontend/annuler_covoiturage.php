@@ -1,68 +1,98 @@
 <?php
-session_start();
+declare(strict_types=1);
+require __DIR__ . '/init.php'; // session + getPDO()
+header('Content-Type: text/html; charset=UTF-8');
 
-// Vérifier si un utilisateur est connecté
-if (!isset($_SESSION['user_email'])) {
-    echo "Aucun utilisateur connecté.";
-    exit;
+// 1) Auth
+if (empty($_SESSION['user_email'])) {
+    http_response_code(401);
+    exit("Aucun utilisateur connecté.");
 }
 
-
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
-
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
+// 2) Méthode POST uniquement
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    http_response_code(405);
+    exit("Méthode non autorisée.");
 }
 
-// Récupérer les informations de l'utilisateur
-$user_email = $_SESSION['user_email'];
-$stmtUser = $conn->prepare("SELECT id, firstName, lastName, email, credits, status FROM users WHERE email = ?");
-$stmtUser->execute([$user_email]);
-$user = $stmtUser->fetch();
+// 3) User + CSRF + id trajet
+$pdo = getPDO();
 
+$stmtUser = $pdo->prepare("SELECT id, firstName, lastName, email, credits FROM users WHERE email = ?");
+$stmtUser->execute([$_SESSION['user_email']]);
+$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
 if (!$user) {
-    echo "Utilisateur non trouvé.";
-    exit;
+    http_response_code(404);
+    exit("Utilisateur non trouvé.");
 }
 
-// Vérifie que l'ID du covoiturage est passé via GET et n'est pas vide
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    die("Erreur : ID de covoiturage manquant.");
+$rideId = filter_input(INPUT_POST, 'covoiturage_id', FILTER_VALIDATE_INT);
+if (!$rideId) {
+    http_response_code(400);
+    exit("ID de covoiturage manquant ou invalide.");
 }
 
-// Récupère l'ID du covoiturage envoyé dans l'URL
-$covoiturageId = $_GET['id'];
-echo "ID de covoiturage reçu : " . htmlspecialchars($covoiturageId);
+if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    exit("Token CSRF invalide.");
+}
 
-// Prépare et exécute la suppression du covoiturage
-$stmt = $conn->prepare("DELETE FROM covoiturages WHERE id = :id AND user_id = :user_id");
-// Liaison des paramètres pour sécuriser la requête
-$stmt->bindParam(':id', $covoiturageId, PDO::PARAM_INT);
-$stmt->bindParam(':user_id', $user['id'], PDO::PARAM_INT);
-// Exécution de la requête
-$stmt->execute();
+try {
+    $pdo->beginTransaction();
 
-// Vérifie si l'annulation a réussi
-if ($stmt->rowCount() > 0) {
-    // Rediriger vers la page du profil avec un message de succès
-    header('Location: /frontend/profil.php?message=Annulation réussie');
+    // 4) Charger et verrouiller le trajet du conducteur
+    $st = $pdo->prepare("
+        SELECT id, user_id, `date`, statut
+        FROM covoiturages
+        WHERE id = ? AND user_id = ?
+        FOR UPDATE
+    ");
+    $st->execute([$rideId, (int)$user['id']]);
+    $ride = $st->fetch(PDO::FETCH_ASSOC);
+    if (!$ride) {
+        $pdo->rollBack();
+        http_response_code(403);
+        exit("Aucun covoiturage trouvé avec cet ID ou non autorisé.");
+    }
+
+    // 5) Si déjà terminé/en cours, on refuse (à adapter selon ta règle)
+    if ($ride['statut'] === 'terminé') {
+        $pdo->rollBack();
+        http_response_code(409);
+        exit("Impossible d’annuler : trajet déjà terminé.");
+    }
+
+    // 6) Règle de remboursement (ex. si le trajet n’a pas encore eu lieu)
+    $refund = false;
+    if (!empty($ride['date'])) {
+        $refund = (strtotime($ride['date']) >= strtotime(date('Y-m-d')));
+    }
+
+    // 7) Marquer annulé (trajet + réservations)
+    $pdo->prepare("UPDATE covoiturages SET statut = 'annulé' WHERE id = ?")->execute([$rideId]);
+    $pdo->prepare("UPDATE reservations SET statut = 'annulé' WHERE covoiturage_id = ?")->execute([$rideId]);
+
+    // 8) Remboursement éventuel
+    if ($refund) {
+        $pdo->prepare("UPDATE users SET credits = credits + 2 WHERE id = ?")->execute([(int)$user['id']]);
+    }
+
+    $pdo->commit();
+
+    // 9) Notifications (Mailtrap via notifyRideEvent)
+    require_once __DIR__ . '/../backend/lib/ride_notifications.php';
+    try {
+        notifyRideEvent($pdo, $rideId, 'cancel', (int)$user['id'], true);
+    } catch (\Throwable $e) {
+        // On ignore une erreur d’envoi pour ne pas bloquer l’UX
+    }
+
+    // 10) Redirection propre
+    header('Location: ' . BASE_URL . 'profil.php?message=' . urlencode('Annulation réussie'));
     exit;
-} else {
-    // Si aucune ligne n'a été supprimée
-    echo "Erreur : Aucun covoiturage trouvé avec cet ID ou vous n'êtes pas autorisé à annuler ce covoiturage.";
+
+} catch (\Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    http_response_code(500);
+    exit("Erreur lors de l’annulation du covoiturage.");
 }

@@ -1,70 +1,84 @@
 <?php
+// add_review.php
+require __DIR__ . '/init.php'; // ← lance session + BASE_URL + $pdo = getPDO()
 
-session_start();
-
-// Vérification si l'utilisateur est connecté
-if (!isset($_SESSION['user_email'])) {
+// 1) Doit être connecté
+if (empty($_SESSION['user_email'])) {
+    http_response_code(401);
     echo "Veuillez vous connecter pour laisser un avis.";
-    exit(); // Sortir du script si l'utilisateur n'est pas connecté
+    exit;
 }
 
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
+// 2) Méthode POST uniquement
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo "Méthode non autorisée.";
+    exit;
+}
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
+// 3) Récupération + validations
+$driver_id = filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT); // id du conducteur évalué
+$note      = filter_input(INPUT_POST, 'note', FILTER_VALIDATE_INT);
+$comment   = trim($_POST['commentaire'] ?? '');
 
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
+$errors = [];
+if (!$driver_id)                { $errors['user_id'] = 'Conducteur invalide.'; }
+if ($note === false || $note < 1 || $note > 5) { $errors['note'] = 'Note entre 1 et 5.'; }
+if ($comment === '')            { $errors['commentaire'] = 'Commentaire requis.'; }
 
-// Connexion à la base de données avec PDO
+if ($errors) {
+    http_response_code(422);
+    echo "Erreur de validation : " . implode(' ', $errors);
+    exit;
+}
+
+$email_utilisateur = $_SESSION['user_email'];
+
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
+    // 4) Récupérer l'ID de l'utilisateur connecté
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->execute([$email_utilisateur]);
+    $me = $stmt->fetch();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Récupérer les données du formulaire
-    $conducteur_id = $_POST['user_id'];
-    $email_utilisateur = $_SESSION['user_email']; // Utiliser l'email de l'utilisateur connecté
-    $note = $_POST['note'];
-    $commentaire = $_POST['commentaire'];
-
-    // Validation basique des entrées
-    if (empty($conducteur_id) || empty($note) || empty($commentaire)) {
-        echo "Tous les champs sont requis.";
-        exit();
+    if (!$me) {
+        http_response_code(404);
+        echo "Utilisateur non trouvé.";
+        exit;
     }
 
-    // Récupérer l'ID de l'utilisateur à partir de son email
-    try {
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email_utilisateur]);
-        $user = $stmt->fetch();
+    $user_id = (int)$me['id']; // auteur de l'avis
 
-        if ($user) {
-            $utilisateur_id = $user['id']; // Récupérer l'ID de l'utilisateur
-
-            // Insertion de l'avis dans la base de données
-            $stmt = $conn->prepare("INSERT INTO reviews (user_id, driver_id, rating, comment, status) VALUES (?, ?, ?, ?, 'pending')");
-            $stmt->execute([$conducteur_id, $utilisateur_id, $note, $commentaire]);
-
-            // Redirection vers les détails du covoiturage
-            header("Location: /frontend/details.php?id=" . $conducteur_id);
-            exit();
-        } else {
-            echo "L'utilisateur n'existe pas.";
-            exit();
-        }
-    } catch (PDOException $e) {
-        echo "Erreur lors de l'ajout de l'avis : " . $e->getMessage();
-        exit();
+    // (optionnel) empêcher l’auto-avis
+    if ($user_id === $driver_id) {
+        http_response_code(400);
+        echo "Vous ne pouvez pas laisser un avis sur vous-même.";
+        exit;
     }
+
+    // (optionnel) éviter les doublons (un avis par paire user/driver)
+    $check = $pdo->prepare("SELECT 1 FROM reviews WHERE user_id = ? AND driver_id = ? LIMIT 1");
+     $check->execute([$user_id, $driver_id]);
+     if ($check->fetch()) {
+         http_response_code(409);
+         echo "Vous avez déjà laissé un avis pour ce conducteur.";
+         exit;
+    // }
+
+    // 5) Insertion (ordre des colonnes corrigé : user_id = auteur, driver_id = conducteur évalué)
+    $ins = $pdo->prepare("
+        INSERT INTO reviews (user_id, driver_id, rating, comment, status)
+        VALUES (?, ?, ?, ?, 'pending')
+    ");
+    $ins->execute([$user_id, $driver_id, $note, $comment]);
+
+    // 6) Redirection
+    header('Location: ' . BASE_URL . 'details.php?id=' . $driver_id);
+    exit;
+
+} }
+catch (Throwable $e) {
+    // En dev, loggue $e->getMessage()
+    http_response_code(500);
+    echo "Erreur lors de l'ajout de l'avis.";
+    exit;
 }
-?>

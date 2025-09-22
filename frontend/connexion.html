@@ -3,8 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoRide - Connexion</title>
-    <link rel="stylesheet" href="/frontend/styles.css">
+    <title>Connexion | EcoRide</title>
+    <meta name="description" content="Connectez-vous à votre compte EcoRide pour gérer vos covoiturages et accéder à vos informations personnelles.">
+    <link rel="canonical" href="https://localhost/MesGrossesCouilles/frontend/connexion.php">
+
+    <!-- Demander aux moteurs de recherche de NE PAS indexer -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph (utile si quelqu’un partage le lien par erreur) -->
+    <meta property="og:title" content="Connexion | EcoRide">
+    <meta property="og:description" content="Accédez à votre espace EcoRide et retrouvez vos covoiturages en toute sécurité.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://localhost/MesGrossesCouilles/frontend/connexion.php">
+    <meta property="og:image" content="https://localhost/MesGrossesCouilles/frontend/images/cover.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <base href="https://localhost/MesGrossesCouilles/frontend/">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      .alert{padding:12px;margin:10px 0;border-radius:6px;font-weight:bold}
+      .alert-danger{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+    </style>
 </head>
 <body>
     <header>
@@ -17,19 +35,18 @@
 
             <nav id="navbar">
                 <ul>
-                    <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact_info.php">Contact</a></li>
-                    <li><a href="/frontend/covoiturages.html">Covoiturages</a></li>
+                    <li><a href="accueil.php">Accueil</a></li>
+                    <li><a href="contact_info.php">Contact</a></li>
+                    <li><a href="covoiturages.php">Covoiturages</a></li>
                 </ul>
             </nav>
         </div>
 
-        <!-- Menu mobile (caché par défaut) -->
         <nav id="mobile-menu">
             <ul>
-                <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact_info.php">Contact</a></li>
+                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="covoiturages.php">Covoiturages</a></li>
+                <li><a href="contact_info.php">Contact</a></li>
             </ul>
         </nav>
     </header>
@@ -37,9 +54,13 @@
     <main class="no-columns">       
         <div class="login-container">
             <h2>Connexion</h2>
-            <!-- Formulaire de connexion avec action correcte vers le fichier PHP -->
-            <form id="loginForm" action="/frontend/connexion.php" method="POST">
-                <input type="hidden" name="redirect" id="redirectInput" value="/frontend/accueil.php">
+
+            <!-- Zone d'alerte -->
+            <div id="alertBox" class="alert alert-danger" style="display:none;"></div>
+
+            <!-- Formulaire -->
+            <form id="loginForm" action="connexion.php" method="POST">
+                <input type="hidden" name="redirect" id="redirectInput" value="accueil.php">
                 <div class="form-group">
                     <label for="email">Adresse email :</label>
                     <input type="email" id="email" name="email" placeholder="Entrez votre email" required>
@@ -54,41 +75,52 @@
                 <button type="submit">Se connecter</button>
             </form>
             
-            <p>Pas encore inscrit ? <a href="/frontend/register.html">Créer un compte</a></p>
+            <p>Pas encore inscrit ? <a href="register.php">Créer un compte</a></p>
         </div>
     </main>
 
     <footer>
-        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
+
     <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    // Gestion du menu burger
-            const menuToggle = document.getElementById("menu-toggle");
-            const mobileMenu = document.getElementById("mobile-menu");
+      document.addEventListener("DOMContentLoaded", function () {
+        // Menu burger
+        const menuToggle = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+        if (menuToggle && mobileMenu) {
+          menuToggle.addEventListener("click", function () {
+            mobileMenu.classList.toggle("active");
+          });
+          document.querySelectorAll("#mobile-menu a").forEach(link => {
+            link.addEventListener("click", function () {
+              mobileMenu.classList.remove("active");
+            });
+          });
+        }
 
-            if (menuToggle && mobileMenu) {
-                menuToggle.addEventListener("click", function () {
-                    mobileMenu.classList.toggle("active");
-                });
+        // Gestion redirect
+        const params = new URLSearchParams(window.location.search);
+        let redirectUrl = params.get("redirect") || "accueil.php";
+        document.getElementById('redirectInput').value = redirectUrl;
 
-                // Fermer le menu après un clic sur un lien
-                document.querySelectorAll("#mobile-menu a").forEach(link => {
-                    link.addEventListener("click", function () {
-                        mobileMenu.classList.remove("active");
-                    });
-                });
-            }
-            const params = new URLSearchParams(window.location.search);
-            let redirectUrl = params.get("redirect") || "/frontend/accueil.php";  // Valeur par défaut si pas de redirect dans l'URL
-    
-            // Remplir le champ caché avec la redirection
-            document.getElementById('redirectInput').value = redirectUrl;
-            console.log("Redirect envoyé :", redirectUrl); // Vérification dans la console
-        });
+        // Alerte en fonction de ?error=...
+        const error = params.get('error');
+        const alertBox = document.getElementById('alertBox');
+        if (error) {
+          const messages = {
+            inactive:   "Votre compte est suspendu. Merci de contacter l’administrateur.",
+            credentials:"Identifiants incorrects.",
+            missing:    "Veuillez remplir tous les champs.",
+            internal:   "Erreur interne, réessayez plus tard."
+          };
+          const msg = messages[error] || "";
+          if (msg) {
+            alertBox.textContent = msg;
+            alertBox.style.display = "block";
+          }
+        }
+      });
     </script>
-    
-    
 </body>
-
 </html>

@@ -1,125 +1,67 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btnParticiper");
+  if (!btn) return;
 
-    // Gestion du menu burger
-    const menuToggle = document.getElementById("menu-toggle");
-    const mobileMenu = document.getElementById("mobile-menu");
+  btn.addEventListener("click", async () => {
+    const id = Number(btn.dataset.id || 0);
+    const csrf = btn.dataset.token || "";
+    const passengers =
+      Number(new URLSearchParams(location.search).get("passengers")) || 1;
 
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener("click", function () {
-            mobileMenu.classList.toggle("active");
-        });
-
-        // Fermer le menu après un clic sur un lien
-        document.querySelectorAll("#mobile-menu a").forEach(link => {
-            link.addEventListener("click", function () {
-                mobileMenu.classList.remove("active");
-            });
-        });
-    }
-    
-    const authButton = document.getElementById('authButton');
-    const profilButton = document.getElementById('profilButton');
-
-    // Récupérer l'email de l'utilisateur depuis l'attribut 'data-user-email'
-    const userEmail = authButton.getAttribute('data-user-email');
-
-    if (!userEmail) {
-        console.log("Aucun email utilisateur trouvé.");
-    } else {
-        console.log("Email utilisateur trouvé :", userEmail);
+    if (!id || !csrf) {
+      alert("Données manquantes (id/csrf).");
+      return;
     }
 
-    // Autres parties du code
-    if (authButton && profilButton) {
-        const isLoggedIn = authButton.getAttribute('data-logged-in') === 'true';
-        
-        if (isLoggedIn) {
-            authButton.innerHTML = '<a href="/frontend/deconnexion.php">Déconnexion</a>';
-            profilButton.innerHTML = '<a href="/frontend/profil.php">Profil</a>';
-        } else {
-            authButton.innerHTML = '<a href="/frontend/connexion.html">Connexion</a>';
-            profilButton.style.display = 'none'; // Masquer le bouton Profil
-        }
+    if (!confirm(`Confirmer la réservation pour ${passengers} passager(s) ?`)) {
+      return;
     }
 
-    const btnParticiper = document.getElementById('btnParticiper');
-    const modalConfirmation1 = document.getElementById('modalConfirmation1');
-    const modalConfirmation2 = document.getElementById('modalConfirmation2');
-    const modalMessage1 = document.getElementById('modalMessage1');
-    const modalReservationReussie = document.getElementById('modalReservationReussie');
+    const oldTxt = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Veuillez patienter…";
 
-    if (btnParticiper) {
-        btnParticiper.addEventListener("click", function () {
-            const idCovoiturage = this.getAttribute("data-id");
-            const prixCovoiturage = this.getAttribute("data-prix");
+    // URL robuste par rapport à <base href=".../frontend/">
+    const apiUrl = new URL(
+      "participer_covoiturage.php",
+      document.baseURI
+    ).toString();
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const passengers = urlParams.get('passengers');
+    try {
+      const resp = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrf, // + dans l’en-tête
+        },
+        body: JSON.stringify({ id, passengers, csrf_token: csrf }), // et dans le body
+      });
 
-            if (!passengers) {
-                alert("Le nombre de passagers n'est pas défini.");
-                return;
-            }
+      const raw = await resp.text();
+      let data = null;
+      try {
+        data = JSON.parse(raw);
+      } catch {}
 
-            modalMessage1.textContent = `Ce covoiturage coûte ${prixCovoiturage} crédits. Voulez-vous continuer ?`;
-            modalConfirmation1.style.display = 'flex';
-
-            document.getElementById('modalConfirm1').onclick = function () {
-                modalConfirmation1.style.display = 'none';
-                modalConfirmation2.style.display = 'flex';
-            };
-
-            document.getElementById('modalCancel1').onclick = function () {
-                modalConfirmation1.style.display = 'none';
-            };
-        });
+      if (resp.ok && data?.success) {
+        // Redirige proprement en respectant <base href="...">
+        const target = new URL("profil.php", document.baseURI);
+        // (optionnel) passer un message flash
+        target.searchParams.set("message", "reservation_ok");
+        window.location.href = target.toString();
+        return;
+      } else {
+        console.error("Réponse brute:", raw);
+        alert(data?.message || `Erreur HTTP: ${resp.status}`);
+        btn.disabled = false;
+        btn.textContent = oldTxt;
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Erreur réseau.");
+      btn.disabled = false;
+      btn.textContent = oldTxt;
     }
-
-    document.getElementById('modalConfirm2').onclick = function () {
-        const idCovoiturage = btnParticiper.getAttribute("data-id");
-        const csrfToken = btnParticiper.getAttribute("data-token");
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const passengers = urlParams.get('passengers');
-
-        if (!passengers) {
-            alert("Le nombre de passagers est manquant.");
-            return;
-        }
-
-        fetch("/backend/reserver.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": csrfToken
-            },
-            body: JSON.stringify({
-                ride_id: idCovoiturage,
-                passengers: passengers
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            modalConfirmation2.style.display = 'none';
-
-            if (data.success) {
-                modalReservationReussie.style.display = 'flex';
-            } else {
-                alert("Erreur : " + data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Erreur :", error);
-            alert("Erreur de communication avec le serveur.");
-        });
-    };
-
-    document.getElementById('modalCancel2').onclick = function () {
-        modalConfirmation2.style.display = 'none';
-    };
-
-    document.getElementById('modalConfirmReservation').onclick = function () {
-        modalReservationReussie.style.display = 'none';
-        location.reload();
-    };
+  });
 });

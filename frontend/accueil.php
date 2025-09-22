@@ -1,33 +1,20 @@
 <?php
-session_start(); // Commencer la session
+require __DIR__ . '/init.php';  // <-- une ligne pour tout initialiser
 
-// Connexion à la base de données
+// Vérifie si l'utilisateur est connecté
+$isLoggedIn = isset($_SESSION['user_id']); 
 
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
-
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
+function getConsent(): array {
+  $name = 'ecoride_consent_v1';
+  if (empty($_COOKIE[$name])) return [];
+  $raw = urldecode($_COOKIE[$name]); // très important
+  $data = json_decode($raw, true);
+  return is_array($data) ? $data : [];
 }
 
 
-
-// Vérifie si l'utilisateur est connecté
-$isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en fonction de la connexion
+$consent = getConsent();
+// Exemple : n’initialise pas un SDK pub si !$consent['marketing']
 ?>
 
 
@@ -37,7 +24,22 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Accueil</title>
-    <link rel="stylesheet" href="/frontend/styles.css">
+    <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Partagez vos trajets et réduisez votre empreinte carbone avec EcoRide. Rejoignez une communauté qui covoiture près de chez vous.">
+    <link rel="canonical" href="https://localhost/MesGrossesCouilles/frontend/accueil.php">
+    <meta property="og:title" content="EcoRide — Covoiturage écologique et solidaire">
+    <meta property="og:description" content="Partagez vos trajets et réduisez votre empreinte carbone avec EcoRide.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://localhost/MesGrossesCouilles/frontend/accueil.php">
+    <meta property="og:image" content="https://localhost/MesGrossesCouilles/frontend/images/cover.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- dans <head>, AVANT styles.css -->
+    <link rel="preload" as="image" href="images/Fond-768.jpg"  type="image/jpg" media="(max-width: 767px)"  fetchpriority="high">
+    <link rel="preload" as="image" href="images/Fond-1280.jpg" type="image/jpg" media="(min-width: 768px) and (max-width: 1279px)" fetchpriority="high">
+    <link rel="preload" as="image" href="images/Fond-1920.jpg" type="image/jpg" media="(min-width: 1280px)" fetchpriority="high">
+
+
 </head>
 <body>
     <header>
@@ -51,9 +53,9 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
 
             <nav id="navbar">
                 <ul>
-                    <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact_info.php">Contact</a></li>
-                    <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
+                    <li><a href="accueil.php">Accueil</a></li>
+                    <li><a href="contact_info.php">Contact</a></li>
+                    <li><a href="covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                     <li id="authButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 </ul>
@@ -63,9 +65,9 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
         <!-- Menu mobile (caché par défaut) -->
         <nav id="mobile-menu">
             <ul>
-                <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact_info.php">Contact</a></li>
+                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="covoiturages.php">Covoiturages</a></li>
+                <li><a href="contact_info.php">Contact</a></li>
                 <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
             </ul>
@@ -87,10 +89,11 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                 <div class="formulaire">
                     <h2 class="ecoride-title">EcoRide</h2>
                     <p>Voyagez ensemble, économisez ensemble.</p>
-                    <form id="rechercheForm" action="/frontend/resultatsCovoiturages.php" method="GET">
+                    <form id="rechercheForm" action="resultatsCovoiturages.php" method="GET">
                         <input list="cities" id="start" placeholder="Départ" name="start" required><br>
                         <input list="cities" id="end" placeholder="Destination" name="end" required><br>
                         <input type="number" id="passengers" placeholder="Passager(s)" name="passengers" min="1" required><br>
+                        <label for="date" class="sr-only">Date du covoiturage</label>
                         <input type="date" id="date" name="date" required><br>
                         <div class=button>
                             <button type="submit">Rechercher</button>
@@ -125,16 +128,77 @@ $isLoggedIn = isset($_SESSION['user_id']); // Renvoi 'true' ou 'false' en foncti
                 <p>Plateforme intuitive et sécurisée.</p>
                 <p>Large choix de trajets adaptés à vos besoins.</p>
                 <p>Des conducteurs et passagers vérifiés.</p>
-                <a href="/frontend/register.html"><button type="button" id="rejoindreBtn">Rejoignez nous!</button></a>
+                <div class="button">
+                    <a href="register.html"><button type="button" id="rejoindreBtn">Rejoignez nous!</button></a>
+                </div>
             </div>
         </section>
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
+        <div class="footer-links">
+            <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
+            <span>|</span>
+            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+        </div>
     </footer>
 
+    <!-- Overlay bloquant -->
+    <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
     <!-- Script JavaScript -->
-    <script src="/frontend/js/accueil.js"></script>
+    <script src="js/cookie-consent.js" defer></script>
+    <script src="js/accueil.js" defer></script>
+    
+    <!-- Analytics (bloqué tant que pas consenti) -->
+    <script
+        type="text/plain"
+        data-consent="analytics"
+        data-src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"
+        async
+    ></script>
+
+    <script type="text/plain" data-consent="analytics">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date()); 
+        gtag('config', 'G-XXXXXXX');
+    </script>
+
+    <!-- Exemple marketing -->
+    <script type="text/plain" data-consent="marketing">
+     <!-- Initialisation d’un SDK marketing fictif -->
+        console.log("SDK marketing initialisé");
+    </script>
+                   
+
+
+    
+    
 </body>
 </html>

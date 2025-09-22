@@ -1,168 +1,170 @@
 <?php
+// api_add_trip.php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-session_start();
 
-$isLoggedIn = isset($_SESSION['user_email']);
-$user_email = $_SESSION['user_email'] ?? null;
+require __DIR__ . '/init.php';              // ← lance session + BASE_URL + $pdo = getPDO()
+header('Content-Type: application/json; charset=utf-8');
 
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
-
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
-
-header('Content-Type: application/json');
-
-
+$isLoggedIn  = isset($_SESSION['user_email']);
+$user_email  = $_SESSION['user_email'] ?? null;
 
 if (!$isLoggedIn) {
+    http_response_code(401);
     echo json_encode(['status' => 'error', 'message' => 'Vous devez être connecté pour saisir un voyage.']);
     exit;
 }
 
-$stmtUser = $conn->prepare("SELECT id, credits, status, lastName, firstName FROM users WHERE email = ?");
-$stmtUser->execute([$user_email]);
-$user = $stmtUser->fetch();
+try {
+    // Récupère l’utilisateur courant
+    $stmtUser = $pdo->prepare("SELECT id, credits, status, lastName, firstName FROM users WHERE email = ?");
+    $stmtUser->execute([$user_email]);
+    $user = $stmtUser->fetch();
 
-if (!$user) {
-    echo json_encode(['status' => 'error', 'message' => 'Utilisateur non trouvé.']);
-    exit;
-}
-
-if ($user['status'] !== 'chauffeur' && $user['status'] !== 'passager_chauffeur') {
-    echo json_encode(['status' => 'error', 'message' => 'Vous n\'êtes pas autorisé à ajouter un voyage.']);
-    exit;
-}
-
-$stmtVéhicules = $conn->prepare("SELECT id, modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE user_id = ?");
-$stmtVéhicules->execute([$user['id']]);
-$vehicules = $stmtVéhicules->fetchAll() ?: [];
-
-$stmtVilles = $conn->query("SELECT nom FROM villes");
-$villes = $stmtVilles->fetchAll(PDO::FETCH_COLUMN);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérifie que tous les champs nécessaires sont présents
-    if (!isset($_POST['depart'], $_POST['destination'], $_POST['prix'], $_POST['vehicule_id'], $_POST['heure_depart'], $_POST['duree'], $_POST['date'])) {
-        echo json_encode(['status' => 'error', 'message' => 'Des champs sont manquants dans le formulaire.']);
-        exit;
-    }
-    // Récupération des données
-    $depart = $_POST['depart']; 
-    $destination = $_POST['destination'];
-    $prix = (float) $_POST['prix'];
-    $vehicule_id = (int) $_POST['vehicule_id'];
-
-    // Conversion de l'heure de départ et de la durée
-    $heure_depart = date('H:i:s', strtotime($_POST['heure_depart']));
-    $duree = $_POST['duree'];  // Durée au format HH:MM:SS
-
-    // Récupérer directement la date du formulaire (format YYYY-MM-DD)
-    $date = $_POST['date'];  // La date doit déjà être au format YYYY-MM-DD
-
-    if ($prix < 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Le prix ne peut pas être négatif.']);
+    if (!$user) {
+        http_response_code(404);
+        echo json_encode(['status' => 'error', 'message' => 'Utilisateur non trouvé.']);
         exit;
     }
 
-    if ($user['credits'] < 2) {
-        echo json_encode(['status' => 'error', 'message' => 'Vous n\'avez pas assez de crédits pour saisir ce voyage.']);
+    if (!in_array($user['status'], ['chauffeur','passager_chauffeur'], true)) {
+        http_response_code(403);
+        echo json_encode(['status' => 'error', 'message' => 'Vous n’êtes pas autorisé à ajouter un voyage.']);
         exit;
     }
 
-    $stmtVehicule = $conn->prepare("SELECT modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE id = ? AND user_id = ?");
+    // Méthode HTTP
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['status' => 'error', 'message' => 'Méthode non supportée.']);
+        exit;
+    }
+
+    // Récup des champs (form-data)
+    $depart        = trim($_POST['depart']        ?? '');
+    $destination   = trim($_POST['destination']   ?? '');
+    $prix          = (float)($_POST['prix']       ?? 0);
+    $vehicule_id   = (int)  ($_POST['vehicule_id']?? 0);
+    $heure_depart  = $_POST['heure_depart'] ?? '';
+    $duree         = $_POST['duree']        ?? '';   // HH:MM:SS
+    $date          = $_POST['date']         ?? '';   // YYYY-MM-DD
+    $places_restantes = (int)($_POST['places_restantes'] ?? 0);
+
+    // Validations minimales
+    $errors = [];
+    if ($depart === '')         $errors['depart'] = 'Depart requis';
+    if ($destination === '')    $errors['destination'] = 'Destination requise';
+    if ($prix < 0)              $errors['prix'] = 'Prix invalide';
+    if ($vehicule_id <= 0)      $errors['vehicule_id'] = 'Véhicule invalide';
+    if (!preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $heure_depart)) $errors['heure_depart'] = 'Heure invalide';
+    if (!preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $duree))        $errors['duree'] = 'Durée invalide';
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date))            $errors['date'] = 'Date invalide';
+    if ($places_restantes <= 0) $errors['places_restantes'] = 'Places invalides';
+
+    if ($errors) {
+        http_response_code(422);
+        echo json_encode(['status' => 'error', 'message' => 'Validation échouée', 'fields' => $errors]);
+        exit;
+    }
+
+    if ((int)$user['credits'] < 2) {
+        http_response_code(403);
+        echo json_encode(['status' => 'error', 'message' => 'Crédits insuffisants (2 requis).']);
+        exit;
+    }
+
+    // Vérifier le véhicule (appartenance + places)
+    $stmtVehicule = $pdo->prepare("SELECT id, modele, marque, energie, nb_places_disponibles FROM chauffeur_info WHERE id = ? AND user_id = ?");
     $stmtVehicule->execute([$vehicule_id, $user['id']]);
     $vehicule = $stmtVehicule->fetch();
 
     if (!$vehicule) {
-        echo json_encode(['status' => 'error', 'message' => 'Véhicule non trouvé ou non autorisé.']);
+        http_response_code(404);
+        echo json_encode(['status' => 'error', 'message' => 'Véhicule introuvable ou non autorisé.']);
         exit;
     }
 
-    // Vérification si nb_places est bien défini
-    $nb_places_disponibles = $vehicule['nb_places_disponibles'] ?? 0;
-    if ($nb_places_disponibles <= 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Le véhicule n\'a pas de places disponibles.']);
+    $nb_places_disponibles = (int)($vehicule['nb_places_disponibles'] ?? 0);
+    if ($places_restantes > $nb_places_disponibles) {
+        http_response_code(422);
+        echo json_encode(['status' => 'error', 'message' => 'Nombre de places sélectionnées supérieur au disponible.']);
         exit;
     }
 
-    $conducteur = $user['firstName'] . ' ' . $user['lastName'];
+    // Heure arrivée = heure_depart + durée
+    $hdep_ts   = strtotime($heure_depart);
+    $duree_sec = strtotime($duree) - strtotime('00:00:00');
+    $harr_ts   = $hdep_ts + max(0, $duree_sec);
+    $heure_arrivee = date('H:i:s', $harr_ts);
+
+    // Eco score selon énergie
+    $ecologique = in_array(strtolower($vehicule['energie']), ['electrique','hybride'], true) ? 1 : 0;
+
+    // Prix facturé en base 
+    $prix_facture = max(0, $prix - 2);
+
+    // Transaction : insert + débit de crédits ensemble
+    $pdo->beginTransaction();
+
+    $stmtInsert = $pdo->prepare("
+        INSERT INTO covoiturages
+            (depart, destination, prix, vehicule_id, user_id, conducteur, places_restantes,
+             note, heure_depart, duree, passagers, ecologique, photo, nb_places_disponibles,
+             modele_voiture, marque_voiture, energie_voiture, heure_arrivee, `date`)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    ");
+
+    $conducteur = trim($user['firstName'].' '.$user['lastName']);
     $note = 0;
     $photo = 'default.jpg';
-    $places_restantes = isset($_POST['places_restantes']) ? (int) $_POST['places_restantes'] : 0;
     $passagers = 0;
 
-    if ($places_restantes <= 0 || $places_restantes > $nb_places_disponibles) {
-        echo json_encode(['status' => 'error', 'message' => 'Nombre de places sélectionnées invalide.']);
+    $stmtInsert->execute([
+        $depart,
+        $destination,
+        $prix_facture,
+        $vehicule_id,
+        $user['id'],
+        $conducteur,
+        $places_restantes,
+        $note,
+        date('H:i:s', $hdep_ts),
+        date('H:i:s', strtotime($duree)), // normalise HH:MM:SS
+        $passagers,
+        $ecologique,
+        $photo,
+        $nb_places_disponibles,
+        $vehicule['modele'],
+        $vehicule['marque'],
+        $vehicule['energie'],
+        $heure_arrivee,
+        $date
+    ]);
+
+    // Débiter 2 crédits
+    $stmtCredits = $pdo->prepare("UPDATE users SET credits = credits - 2 WHERE id = ? AND credits >= 2");
+    $stmtCredits->execute([$user['id']]);
+
+    if ($stmtCredits->rowCount() !== 1) {
+        // Protection si double soumission
+        $pdo->rollBack();
+        http_response_code(409);
+        echo json_encode(['status' => 'error', 'message' => 'Crédits insuffisants.']);
         exit;
     }
-    
-    // Déterminer la valeur de "ecologique" en fonction du type de carburant
-    $ecologique = 0; // Valeur par défaut (non écologique)
 
-    if (in_array($vehicule['energie'], ['electrique', 'hybride'])) {
-        $ecologique = 1;  // Si le véhicule utilise de l'électrique ou hybride, il est écologique
+    $pdo->commit();
+
+    http_response_code(201);
+    echo json_encode(['status' => 'success', 'message' => 'Voyage ajouté avec succès.', 'id' => $pdo->lastInsertId()]);
+
+} catch (Throwable $e) {
+    if ($pdo?->inTransaction()) {
+        $pdo->rollBack();
     }
-
-    // Calcul de l'heure d'arrivée
-    $heure_depart_timestamp = strtotime($heure_depart);
-    $duree_timestamp = strtotime($duree) - strtotime('00:00:00');  // Convertir la durée en secondes
-    $heure_arrivee_timestamp = $heure_depart_timestamp + $duree_timestamp;
-
-    $heure_arrivee = date('H:i:s', $heure_arrivee_timestamp);  // Convertir l'heure d'arrivée au format H:i:s
-
-    // Insertion dans la table covoiturages
-    $stmtCovoiturage = $conn->prepare("INSERT INTO covoiturages (depart, destination, prix, vehicule_id, user_id, conducteur, places_restantes, note, heure_depart, duree, passagers, ecologique, photo, nb_places_disponibles, modele_voiture, marque_voiture, energie_voiture, heure_arrivee, `date`) 
-                                 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-
-    if ($stmtCovoiturage->execute([
-        $depart,   // Le départ (ville ou autre donnée)
-        $destination, 
-        $prix - 2,  
-        $vehicule_id, 
-        $user['id'], 
-        $conducteur, 
-        $places_restantes, 
-        $note, 
-        $heure_depart, 
-        $duree, 
-        $passagers, 
-        $ecologique,  // La valeur ajustée de `ecologique`
-        $photo, 
-        $nb_places_disponibles, 
-        $vehicule['modele'], 
-        $vehicule['marque'], 
-        $vehicule['energie'], // Energie du véhicule
-        $heure_arrivee,  // L'heure d'arrivée calculée
-        $date  // La date du voyage (format YYYY-MM-DD)
-    ])) {
-        $stmtCredits = $conn->prepare("UPDATE users SET credits = credits - 2 WHERE id = ?");
-        $stmtCredits->execute([$user['id']]);
-        echo json_encode(['status' => 'success', 'message' => 'Voyage ajouté avec succès.']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'ajout du voyage.']);
-    }
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Méthode non supportée.']);
+    // En dev, loggue $e->getMessage()
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => 'Erreur serveur.']);
 }
 
-exit();
-?>
+exit;

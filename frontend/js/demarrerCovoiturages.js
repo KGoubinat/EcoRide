@@ -1,91 +1,111 @@
-document.addEventListener('DOMContentLoaded', () => {
-  function sendTripAction(rideId, action) {
-    return fetch('https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/frontend/demarrer_covoiturage.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: rideId, type: 'covoiturage', action })
-    })
-    .then(response => {
-      if (!response.ok) throw new Error(response.statusText);
-      return response.json();
+(function () {
+  // --- Annuler un covoiturage ---
+  const cancelButtons = document.querySelectorAll(".cancel-ride-button");
+  const modal = document.getElementById("cancel-modal");
+  const okBtn = document.getElementById("ride-cancel-confirm");
+  const noBtn = document.getElementById("ride-cancel-cancel");
+  const xBtn = document.getElementById("ride-cancel-close");
+  let pendingForm = null;
+
+  cancelButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      pendingForm = btn.closest("form");
+      if (!modal || !okBtn) {
+        pendingForm?.submit();
+        return;
+      }
+      modal.classList.add("show");
     });
+  });
+
+  function hideRideModal() {
+    modal?.classList.remove("show");
   }
 
-  window.startTrip = function(rideId) {
-    sendTripAction(rideId, 'start')
-      .then(data => {
-        if (data.success) {
-          document.getElementById('start-trip-' + rideId).style.display = 'none';
-          document.getElementById('end-trip-' + rideId).style.display = 'inline-block';
-          // window.location.reload(); // optionnel
+  okBtn?.addEventListener("click", () => {
+    pendingForm?.submit();
+    hideRideModal();
+  });
+  noBtn?.addEventListener("click", hideRideModal);
+  xBtn?.addEventListener("click", hideRideModal);
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) hideRideModal();
+  });
+
+  // --- startTrip / endTrip (inchangé, juste là pour centraliser) ---
+  window.startTrip = function startTrip(rideId) {
+    const fd = new FormData();
+    fd.append("covoiturage_id", rideId);
+    const csrf =
+      document.querySelector('input[name="csrf_token"]')?.value || "";
+    if (csrf) fd.append("csrf_token", csrf);
+
+    fetch("demarrer_covoiturage.php", { method: "POST", body: fd })
+      .then((r) =>
+        r
+          .json()
+          .catch(() => ({}))
+          .then((d) => ({ ok: r.ok, status: r.status, data: d }))
+      )
+      .then(({ ok, status, data }) => {
+        if (
+          ok &&
+          (data.status === "success" || (status >= 200 && status < 300))
+        ) {
+          document
+            .getElementById(`start-trip-${rideId}`)
+            ?.style.setProperty("display", "none");
+          document
+            .getElementById(`end-trip-${rideId}`)
+            ?.style.setProperty("display", "inline-block");
+          // Masquer le bouton "Annuler" dès que ça démarre
+          document
+            .querySelector(`#cancel-ride-form-${rideId}`)
+            ?.classList.add("hidden");
+          location.reload();
         } else {
-          alert('Erreur: ' + data.message);
+          alert(data?.message || `Erreur HTTP: ${status}`);
+          console.error("Réponse:", data);
         }
       })
-      .catch(error => {
-        console.error(error);
-        alert('Erreur lors de la requête');
+      .catch((err) => {
+        alert("Erreur réseau");
+        console.error(err);
       });
   };
 
-  window.endTrip = function(rideId) {
-  sendTripAction(rideId, 'end')
-    .then(data => {
-      if (data.success) {
-        document.getElementById('end-trip-' + rideId).style.display = 'none';
-        alert('Covoiturage terminé !');
-        return fetch('/frontend/arreter_covoiturage.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        });
-      } else {
-        alert('Erreur: ' + data.message);
-        throw new Error(data.message);
-      }
-    })
-    .then(response => response.text())  // <- modifié ici pour récupérer la réponse brute
-    .then(text => {
-      try {
-        const emailData = JSON.parse(text);
-        if (emailData.success) {
-          alert('Emails envoyés aux participants.');
+  window.endTrip = function endTrip(rideId) {
+    const fd = new FormData();
+    fd.append("covoiturage_id", rideId);
+    const csrf =
+      document.querySelector('input[name="csrf_token"]')?.value || "";
+    if (csrf) fd.append("csrf_token", csrf);
+
+    fetch("terminer_covoiturage.php", { method: "POST", body: fd })
+      .then((r) =>
+        r
+          .json()
+          .catch(() => ({}))
+          .then((d) => ({ ok: r.ok, status: r.status, data: d }))
+      )
+      .then(({ ok, status, data }) => {
+        if (
+          ok &&
+          (data.status === "success" || (status >= 200 && status < 300))
+        ) {
+          document
+            .getElementById(`end-trip-${rideId}`)
+            ?.style.setProperty("display", "none");
+          location.reload();
         } else {
-          alert('Erreur lors de l’envoi des emails.');
+          alert(data?.message || `Erreur HTTP: ${status}`);
+          console.error("Réponse:", data);
         }
-      } catch (e) {
-        console.error('Erreur de parsing JSON:', e);
-        console.error('Réponse brute:', text);
-        alert('Erreur inattendue. Voir console pour détails.');
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      alert('Erreur lors de la requête.');
-    });
-};
-
-  function checkRideStatus(rideId) {
-    fetch('/frontend/check_ride_status.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ covoiturageId: rideId })
-    })
-    .then(response => {
-      if (!response.ok) throw new Error(response.statusText);
-      return response.json();
-    })
-    .then(data => {
-      if (data.success && data.status === 'en cours') {
-        document.getElementById('start-trip-' + rideId).style.display = 'none';
-        document.getElementById('end-trip-' + rideId).style.display = 'inline-block';
-      }
-    })
-    .catch(console.error);
-  }
-
-  // Exemple : appel de checkRideStatus sur tous les covoiturages visibles
-  document.querySelectorAll('.ride').forEach(ride => {
-    const rideId = ride.dataset.rideId;
-    checkRideStatus(rideId);
-  });
-});
+      })
+      .catch((err) => {
+        alert("Erreur réseau");
+        console.error(err);
+      });
+  };
+})();

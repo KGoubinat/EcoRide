@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/styles.css">
-    <title>Ajouter un Employé</title>
+    <base href="https://localhost/MesGrossesCouilles/frontend/">
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Ajouter un Employé | Tableau de bord Admin EcoRide</title>
+    <meta name="description" content="Page d'administration EcoRide permettant d'ajouter un nouvel employé via un formulaire sécurisé.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://localhost/MesGrossesCouilles/frontend/add_employee.html">
 </head>
 <body>
     <header>
@@ -15,11 +20,11 @@
 
                 <nav id="navbar">
                     <ul>
-                        <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
-                        <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
-                        <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
-                        <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
-                        <li><a href="/frontend/logout.php">Déconnexion</a></li>
+                        <li><a href="admin_dashboard.php">Tableau de bord</a></li>
+                        <li><a href="add_employee.html">Ajouter un Employé</a></li>
+                        <li><a href="manage_employees.php">Gérer les Employés</a></li>
+                        <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
+                        <li><a href="logout.php">Déconnexion</a></li>
                     </ul>
                 </nav>
             </div>
@@ -27,11 +32,11 @@
             <!-- Menu mobile (caché par défaut) -->
                 <nav id="mobile-menu">
                     <ul>
-                        <li><a href="/frontend/admin_dashboard.php">Tableau de bord</a></li>
-                        <li><a href="/frontend/add_employee.html">Ajouter un Employé</a></li>
-                        <li><a href="/frontend/manage_employees.php">Gérer les Employés</a></li>
-                        <li><a href="/frontend/manage_users.php">Gérer les Utilisateurs</a></li>
-                        <li><a href="/frontend/logout.php">Déconnexion</a></li>
+                        <li><a href="admin_dashboard.php">Tableau de bord</a></li>
+                        <li><a href="add_employee.html">Ajouter un Employé</a></li>
+                        <li><a href="manage_employees.php">Gérer les Employés</a></li>
+                        <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
+                        <li><a href="logout.php">Déconnexion</a></li>
                     </ul>
 
                 </nav>
@@ -39,7 +44,7 @@
     <main class="covoit">
         <div class="addEmployee">
             <h2>Ajouter un Employé</h2>
-            <form class=employee action="/frontend/add_employee.php" method="POST">
+            <form class=employee action="add_employee.php" method="POST">
                 <label for="lastName">Nom :</label>
                 <input type="text" id="lastName" name="lastName" required><br><br>
 
@@ -57,7 +62,7 @@
         </div>
     </main>
     <footer>
-        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
     <script>
             document.addEventListener("DOMContentLoaded", function () {

@@ -1,61 +1,51 @@
 <?php
-// Démarrer la session
-session_start();
+declare(strict_types=1);
 
-// Vérifier si l'utilisateur est connecté
-$isLoggedIn = isset($_SESSION['user_email']);
-$user_email = $_SESSION['user_email'] ?? null;
+require __DIR__ . '/init.php'; // <- avec le slash !
+header('Content-Type: application/json; charset=UTF-8');
 
-if (!$isLoggedIn) {
+// Doit être connecté
+if (empty($_SESSION['user_email'])) {
+    http_response_code(401);
     echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté.']);
     exit;
 }
 
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
-
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
-
-// Récupérer l'ID de l'utilisateur
-$stmtUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
-$stmtUser->execute([$user_email]);
-$user = $stmtUser->fetch();
-
-if (!$user) {
-    echo json_encode(['status' => 'error', 'message' => 'Utilisateur non trouvé.']);
+// Uniquement POST
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    echo json_encode(['status' => 'error', 'message' => 'Méthode non autorisée.']);
     exit;
 }
 
-$user_id = $user['id'];
-
-// Vérifier si un statut a été envoyé
-if (isset($_POST['status'])) {
-    $status = $_POST['status'];
-
-    // Mettre à jour le statut de l'utilisateur dans la base de données
-    $stmtUpdateStatus = $conn->prepare("UPDATE users SET status = ? WHERE id = ?");
-    $stmtUpdateStatus->execute([$status, $user_id]);
-
-    // Répondre avec succès
-    echo json_encode(['status' => 'success', 'message' => 'Statut mis à jour avec succès.']);
-} else {
-    // En cas d'erreur
-    echo json_encode(['status' => 'error', 'message' => 'Le statut n\'a pas été fourni.']);
+// CSRF cohérent avec ton formulaire (name="csrf_token")
+$posted = (string)($_POST['csrf_token'] ?? '');
+$token  = (string)($_SESSION['csrf_token'] ?? '');
+if ($posted === '' || $token === '' || !hash_equals($token, $posted)) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Token CSRF invalide.']);
+    exit;
 }
-?>
+
+// Statut
+$status = trim((string)($_POST['status'] ?? ''));
+$allowed = ['passager','chauffeur','passager_chauffeur'];
+if (!in_array($status, $allowed, true)) {
+    http_response_code(422);
+    echo json_encode(['status' => 'error', 'message' => 'Statut invalide.']);
+    exit;
+}
+
+try {
+    $pdo = getPDO();
+
+    // Maj par email (tu as déjà l’email en session)
+    $st = $pdo->prepare('UPDATE users SET status = ? WHERE email = ?');
+    $st->execute([$status, $_SESSION['user_email']]);
+
+    echo json_encode(['status' => 'success', 'newStatus' => $status]);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => 'Erreur serveur.']);
+}

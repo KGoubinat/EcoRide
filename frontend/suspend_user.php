@@ -1,43 +1,42 @@
 <?php
+declare(strict_types=1);
 session_start();
 
-// Vérifier si l'utilisateur est administrateur
+require __DIR__ . '/../backend/bdd/db.php';   
+require __DIR__ . '/bootstrap.php';          
+
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header("Location: accueil.php");
+    header('Location: ' . BASE_URL . 'accueil.php', true, 302);
     exit;
-
 }
 
-if (isset($_GET['id'])) {
-    $userId = $_GET['id'];
+// ici on accepte encore GET mais on valide strictement
+$userIdParam = $_POST['id'] ?? $_GET['id'] ?? null;
+if ($userIdParam === null || !ctype_digit((string)$userIdParam)) {
+    // id invalide
+    header('Location: ' . BASE_URL . 'manage_users.php?error=id', true, 302);
+    exit;
+}
+$userId = (int)$userIdParam;
 
-    // Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
-
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
+    $pdo = getPDO();
 
-    // Mettre à jour le statut de l'utilisateur pour le suspendre
-    $stmt = $conn->prepare("UPDATE users SET etat = 'suspended' WHERE id = ?");
-    $stmt->execute([$userId]);
+    $stmt = $pdo->prepare('UPDATE users SET etat = :etat WHERE id = :id');
+    $stmt->execute([
+        ':etat' => 'suspended',
+        ':id'   => $userId,
+    ]);
 
-    // Rediriger vers la page de gestion des utilisateurs
-    header("Location: /frontend/manage_users.php");
+    // petit message flash en session si tu veux l'afficher dans manage_users.php
+    $_SESSION['flash'] = ['type' => 'success', 'msg' => "L'utilisateur #$userId a été suspendu."];
+
+    header('Location: ' . BASE_URL . 'manage_users.php', true, 302);
+    exit;
+
+} catch (Throwable $e) {
+    // log interne si besoin
+    // error_log($e->getMessage());
+    header('Location: ' . BASE_URL . 'manage_users.php?error=db', true, 302);
     exit;
 }
-?>

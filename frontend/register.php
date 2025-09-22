@@ -1,97 +1,82 @@
 <?php
-session_start();
-header("Content-Type: application/json");
+declare(strict_types=1);
+require __DIR__ . '/init.php'; // session + BASE_URL + getPDO()
 
-// Récupérer l'URL de la base de données
-$databaseUrl = getenv('JAWSDB_URL');
-if (!$databaseUrl) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Erreur : Variable d'environnement JAWSDB_URL non définie"]);
-    exit;
+
+$isLoggedIn = !empty($_SESSION['user_email'] ?? null);
+
+// CSRF (optionnel pour l’API inscription ; utile si tu veux aussi poster en x-www-form-urlencoded)
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-
-$parsedUrl = parse_url($databaseUrl);
-$servername = $parsedUrl['host'];
-$username = $parsedUrl['user'];
-$password = $parsedUrl['pass'];
-$dbname = ltrim($parsedUrl['path'], '/');
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Erreur de connexion à la base de données"]);
-    exit;
-}
-
-// Décodage JSON sécurisé et vérification de la requête
-$data = json_decode(file_get_contents("php://input"), true);
-if (!$data) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Format JSON invalide"]);
-    exit;
-}
-
-// Vérification des champs requis
-if (!isset($data['firstName'], $data['lastName'], $data['email'], $data['password'])) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Tous les champs sont obligatoires"]);
-    exit;
-}
-
-// Nettoyage et validation des données
-$firstName = trim($data['firstName']);
-$lastName = trim($data['lastName']);
-$email = trim($data['email']);
-$password = trim($data['password']);
-
-if (!preg_match("/^[\p{L}\s'-]+$/u", $firstName) || strlen($firstName) < 2 || strlen($firstName) > 50) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Prénom invalide"]);
-    exit;
-}
-if (!preg_match("/^[\p{L}\s'-]+$/u", $lastName) || strlen($lastName) < 2 || strlen($lastName) > 50) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Nom invalide"]);
-    exit;
-}
-if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Email invalide"]);
-    exit;
-}
-// Vérification de la force du mot de passe
-if (strlen($password) < 8 || strlen($password) > 32 ||
-    !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) ||
-    !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password)) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Mot de passe trop faible"]);
-    exit;
-}
-
-// Vérifier si l'email existe déjà
-$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-$stmt->execute([$email]);
-$userExists = $stmt->fetch();
-
-if ($userExists) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Email déjà utilisé"]);
-    exit;
-}
-
-
-// Hachage du mot de passe
-$hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-// Requête préparée pour éviter les injections SQL
-$stmt = $conn->prepare("INSERT INTO users (firstName, lastName, email, password, credits) VALUES (?, ?, ?, ?, ?)");
-if ($stmt->execute([$firstName, $lastName, $email, $hashed_password, 20])) {
-    echo json_encode(["success" => true, "message" => "Inscription réussie"]);
-} else {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Erreur lors de l'inscription"]);
-}
-
+$csrf = $_SESSION['csrf_token'];
 ?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription - EcoRide</title>
+  <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="header-container">
+    <div class="logo"><h1>EcoRide</h1></div>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+    <nav id="navbar">
+      <ul>
+        <li><a href="accueil.php">Accueil</a></li>
+        <li><a href="contact_info.php">Contact</a></li>
+        <li><a href="covoiturages.php">Covoiturages</a></li>
+        <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
+        <li id="authButton"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
+      </ul>
+    </nav>
+  </div>
+
+  <nav id="mobile-menu">
+    <ul>
+      <li><a href="accueil.php">Accueil</a></li>
+      <li><a href="covoiturages.php">Covoiturages</a></li>
+      <li><a href="contact_info.php">Contact</a></li>
+      <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
+      <li id="authButtonMobile"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="no-columns">
+  <section class="signup-form-container">
+    <h2>Inscription</h2>
+    <p>Créez votre compte pour rejoindre EcoRide !</p>
+
+    <form id="signupForm" method="POST" novalidate>
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf, ENT_QUOTES) ?>">
+      <input type="text"     id="firstName"       name="firstName"       placeholder="Prénom" required><br>
+      <input type="text"     id="lastName"        name="lastName"        placeholder="Nom" required><br>
+      <input type="email"    id="email"           name="email"           placeholder="Adresse e-mail" required><br>
+      <input type="password" id="password"        name="password"        placeholder="Mot de passe" required minlength="8"><br>
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmer le mot de passe" required><br>
+      <div id="passwordError" style="color:red;font-size:.9rem;display:none;"></div>
+
+      <div class="button">
+        <button type="submit">S'inscrire</button>
+      </div>
+    </form>
+
+    <p>Déjà inscrit ? <a href="connexion.html">Connectez-vous ici !</a></p>
+  </section>
+</main>
+
+<footer>
+  <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
+</footer>
+
+<!-- Réutilise ton JS de nav (remplit Connexion/Profil) -->
+<script src="js/accueil.js" defer></script>
+<!-- Validation + appel API d’inscription -->
+<script src="js/register.js" defer></script>
+</body>
+</html>

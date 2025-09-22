@@ -1,58 +1,47 @@
 <?php
-session_start();
+// get_ride_status.php
+declare(strict_types=1);
 
-// Vérifier si un utilisateur est connecté
-if (!isset($_SESSION['user_email'])) {
-    echo "Aucun utilisateur connecté.";
+require __DIR__ . '/init.php'; // ← session_start + $pdo = getPDO()
+header('Content-Type: application/json; charset=utf-8');
+
+// 1) Auth
+if (empty($_SESSION['user_email'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Aucun utilisateur connecté.']);
     exit;
 }
 
-// Récupérer l'URL de la base de données depuis la variable d'environnement JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
+// 2) Lecture du body JSON
+$payload = json_decode(file_get_contents('php://input'), true) ?? [];
+$covoiturageId = filter_var($payload['covoiturageId'] ?? null, FILTER_VALIDATE_INT);
 
-// Utiliser une expression régulière pour extraire les éléments nécessaires de l'URL
-$parsedUrl = parse_url($databaseUrl);
+if (!$covoiturageId) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'ID de covoiturage manquant ou invalide.']);
+    exit;
+}
 
-// Définir les variables pour la connexion à la base de données
-$servername = $parsedUrl['host'];  // Hôte MySQL
-$username = $parsedUrl['user'];  // Nom d'utilisateur MySQL
-$password = $parsedUrl['pass'];  // Mot de passe MySQL
-$dbname = ltrim($parsedUrl['path'], '/');  // Nom de la base de données (en enlevant le premier "/")
-
-// Connexion à la base de données avec PDO
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    echo "Erreur de connexion : " . $e->getMessage();
-}
-
-// Récupérer les données envoyées par AJAX
-$data = json_decode(file_get_contents('php://input'), true);
-$covoiturageId = $data['covoiturageId']; // L'ID du covoiturage
-
-// Vérifier si l'ID du covoiturage est fourni
-if (isset($covoiturageId)) {
-    // Requête pour récupérer l'état du covoiturage
-    $query = "SELECT statut FROM covoiturages WHERE id = ?";
-    
-    // Préparer la requête
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$covoiturageId]); // Exécuter la requête avec l'ID du covoiturage
-    
-    // Récupérer le statut du covoiturage
+    // 3) Récupérer le statut du covoiturage
+    $stmt = $pdo->prepare("SELECT statut FROM covoiturages WHERE id = ?");
+    $stmt->execute([$covoiturageId]);
     $row = $stmt->fetch();
-    
-    // Si le covoiturage existe, renvoyer son statut
-    if ($row) {
-        echo json_encode(['success' => true]);
-    } else {
-        // Si le covoiturage n'existe pas
-        echo json_encode(['success' => false]);
+
+    if (!$row) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Covoiturage introuvable.']);
+        exit;
     }
-} else {
-    // Si l'ID du covoiturage n'est pas fourni
-    echo json_encode(['success' => false]);
+
+    // 4) Retourne le statut
+    echo json_encode([
+        'success' => true,
+        'id'      => $covoiturageId,
+        'statut'  => $row['statut'], // ex: "terminé", "annulé", "en_cours", etc.
+    ]);
+} catch (Throwable $e) {
+    // Log côté serveur si besoin
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur.']);
 }
-?>

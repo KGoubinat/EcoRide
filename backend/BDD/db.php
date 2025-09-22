@@ -1,36 +1,45 @@
 <?php
-// Charger le fichier autoload de Composer
-require_once __DIR__ . '/../../vendor/autoload.php';
+declare(strict_types=1);
 
-// Charger le fichier .env
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+if (!function_exists('getPDO')) {
+    function getPDO(): PDO {
+        $env = getenv('APP_ENV') ?: 'prod';
 
-// Connexion à la base de données via l'URL définie dans le fichier .env
-$databaseUrl = getenv('JAWSDB_URL');
+        // LOCAL
+        if (strcasecmp($env, 'local') === 0) {
+            $host = getenv('DB_HOST') ?: '127.0.0.1';
+            $port = (int)(getenv('DB_PORT') ?: 3306);
+            $db   = getenv('DB_NAME') ?: 'ecoride';
+            $user = getenv('DB_USER') ?: 'root';
+            $pass = getenv('DB_PASS') ?: '';
 
-if (!$databaseUrl) {
-    die("Erreur : La variable d'environnement 'JAWSDB_URL' est absente ou mal configurée.");
+            $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
+            return new PDO($dsn, $user, $pass, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        }
+
+        // PROD (JawsDB)
+        $databaseUrl = getenv('JAWSDB_URL') ?: getenv('JAWSDB_MARIA_URL');
+        if (!$databaseUrl) {
+            throw new RuntimeException('JAWSDB_URL manquante en prod.');
+        }
+        $parts = parse_url($databaseUrl);
+        if (!isset($parts['host'], $parts['user'], $parts['pass'], $parts['path'])) {
+            throw new RuntimeException('URL JawsDB invalide.');
+        }
+
+        $host = $parts['host'];
+        $port = (int)($parts['port'] ?? 3306);
+        $db   = ltrim($parts['path'], '/');
+        $user = $parts['user'];
+        $pass = $parts['pass'];
+
+        $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
+        return new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+    }
 }
-
-$parsedUrl = parse_url($databaseUrl);
-
-// Vérification de la présence des éléments essentiels dans l'URL
-if (!isset($parsedUrl['host'], $parsedUrl['user'], $parsedUrl['pass'], $parsedUrl['path'])) {
-    die("Erreur : L'URL de la base de données est mal configurée.");
-}
-
-$servername = $parsedUrl['host'];
-$username = $parsedUrl['user'];
-$password = $parsedUrl['pass'];
-$dbname = ltrim($parsedUrl['path'], '/');
-
-try {
-    // Connexion à la base de données
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connexion réussie !"; // Pour vérifier si la connexion fonctionne
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
-}
-?>

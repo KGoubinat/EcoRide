@@ -1,48 +1,39 @@
 <?php
-session_start();
+// activer_utilisateur.php (exemple)
+require __DIR__ . '/init.php'; // ← bootstrap + db.php + session_start + $pdo
 
-// Vérifier si l'utilisateur est administrateur
+// 1) Autorisation : réservé aux admins
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header("Location: accueil.php");
+    header('Location: ' . BASE_URL . 'accueil.php');
     exit;
 }
 
-// Vérifier si l'ID de l'utilisateur est présent et valide
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("ID utilisateur invalide.");
+// 2) Récupération et validation de l'ID
+$userId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$userId) {
+    http_response_code(400);
+    exit('ID utilisateur invalide.');
 }
 
-// Convertir l'ID en entier pour éviter les injections SQL
-$userId = (int) $_GET['id'];
+//  3) anti-CSRF si l'action vient d’un formulaire ou d’un lien signé
+ if (!hash_equals($_SESSION['csrf_token'] ?? '', $_GET['token'] ?? '')) {
+    http_response_code(403);
+    exit('Token CSRF invalide.');
+ }
 
-// Récupérer l'URL de la base de données depuis JAWSDB_URL
-$databaseUrl = getenv('JAWSDB_URL');
-
-if (!$databaseUrl) {
-    die("Erreur : La variable d'environnement JAWSDB_URL n'est pas définie.");
-}
-
-// Extraire les informations de connexion depuis l'URL
-$parsedUrl = parse_url($databaseUrl);
-$servername = $parsedUrl['host'];
-$username = $parsedUrl['user'];
-$password = $parsedUrl['pass'];
-$dbname = ltrim($parsedUrl['path'], '/');
-
-// Connexion à la base de données avec PDO
+// 4) Exécution de la mise à jour
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Mettre à jour l'état de l'utilisateur pour l'activer
-    $stmt = $conn->prepare("UPDATE users SET etat = 'active' WHERE id = ?");
+
+    $stmt = $pdo->prepare("UPDATE users SET etat = 'active' WHERE id = ?");
     $stmt->execute([$userId]);
 
-    // Rediriger vers la page de gestion des utilisateurs
-    header("Location: /frontend/manage_users.php");
+
+    // 5) Redirection
+    header('Location: ' . BASE_URL . 'manage_users.php');
     exit;
 
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+} catch (Throwable $e) {
+    http_response_code(500);
+    exit('Erreur lors de l’activation de l’utilisateur.');
 }
-?>

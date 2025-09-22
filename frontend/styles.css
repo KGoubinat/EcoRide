@@ -4,9 +4,8 @@ body {
     margin: 0;
     padding: 0;
     background: #d8f3dc;
-    color: #333;
-    background: url('/frontend/images/Fond.jpg') no-repeat center center fixed,
-                linear-gradient(to bottom, #0077b6, #26A69A, #00BFA5, #ccc);           
+    color: white;
+    background: url('images/Fond.jpg') no-repeat center center fixed;           
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; /* Centre l'image */
@@ -17,10 +16,19 @@ body {
     font-size: 18px;
 }
 
+/* Overlay sombre sur toute la page */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* noir 40% */
+    z-index: -1; /* reste derrière le contenu */
+}
 /* Header */
 header {
-    background: #0077b6;
-    color: black;
+    border-bottom: 3px solid white; /* fine bordure blanche */
+    background: black;
+    color: white;
     padding: 0, 20px;
     height: 50px; 
     margin: 0;
@@ -35,7 +43,7 @@ header {
     padding-right: 10px;
 }
 header h1 {
-    color: black;
+    color: white;
     margin: 0;
     font-weight: bolder;
 }
@@ -58,7 +66,7 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: black;
+    color: white;
     font-weight: bold;
     transition: color 0.3s ease;
 }
@@ -71,7 +79,6 @@ main.covoit {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
     justify-content: center;
 }
 /* Main Layout */
@@ -94,6 +101,7 @@ main.four-columns {
 }
 /* Ajout de la flexbox pour la première colonne */
 .first-column {
+    margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center; /* Centre verticalement */
@@ -124,7 +132,7 @@ main.four-columns {
     flex-direction: column;
     align-items: center;
     justify-content: center; 
-    background: white;
+    background: black;
     border-radius: 50px;
     padding: 20px;
     width: 350px;
@@ -140,7 +148,7 @@ main.four-columns {
     line-height: 1.2; /* Ajuste l'espacement vertical */
     text-align: center; /* Centrer le texte horizontalement */
     margin: 20px 0; /* Espacement au-dessus et en dessous */
-    color: #333; /* Couleur du texte */
+    color: white; /* Couleur du texte */
     letter-spacing: 0%; /* Espace entre les lettres */
 }
 
@@ -150,7 +158,7 @@ main.four-columns {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: black;
     border-radius: 50px;
     padding: 0px; /* Plus d'espace autour du contenu */
     width: 550px;
@@ -161,7 +169,7 @@ form input{
     width: 100%;
     padding: 15px; /* Taille des champs */
     font-size: 1.2em;
-    border: 1px solid #ccc;
+    border: 1px solid white;
     border-radius: 10px;
     margin-bottom: 10px;
 }
@@ -169,7 +177,7 @@ form input{
 
 /* Details Section */
 .details {
-    background: white;
+    background: black;
     padding: 20px;
     border-radius: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -184,7 +192,7 @@ form input{
 /* Rejoindre Section */
 .rejoindre {
     margin:30px;
-    background: white;
+    background: black;
     padding: 20px;
     border-radius: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -197,7 +205,7 @@ form input{
     justify-content: center; /* Centre verticalement */
 }
 .details, .rejoindre, .form, .presentation, .card, .card-filtres, .login-container, .signup-form-container {
-    border: 3px solid black;
+    border: 3px solid white;
 }
 
 
@@ -214,6 +222,7 @@ button {
     text-transform: uppercase;
     display: block; /* Important pour centrer */
     margin: 0 auto; /* Centrer horizontalement */
+
 }
 
 button:hover {
@@ -225,15 +234,18 @@ button:hover {
 
 /* Footer */
 footer {
-    background: #0077b6;
-    color: black;
-    text-align: center;
+    border-top: 3px solid white;
+    background: black;
+    color: white;
+    display: flex;
+    justify-content: center;   /* centre horizontalement */
+    align-items: center;       /* centre verticalement */
     font-weight: bold;
     padding: 0px;
     height: 50px;
 }
 footer a {
-    color: black; /* Couleur du lien en noir */
+    color: white; /* Couleur du lien en blanc */
     text-decoration: none; /* Supprime le soulignement */
     font-weight: bold; /* Rendre le texte plus visible (optionnel) */
 }
@@ -272,7 +284,7 @@ footer a:hover {
     border-radius: 50%;
     margin: 15px auto;
     display: block;
-    border: 2px solid #26A69A; /* Bordure bleue ou verte */
+    border: 2px solid white; /* Bordure bleue ou verte */
     object-fit: cover;
     margin: 5px;
 }
@@ -289,7 +301,7 @@ footer a:hover {
 
     margin: 10px 0;
     font-size: 18px;
-    color: #333;
+    color: white;
     padding-right: 100px;
 }
 
@@ -315,7 +327,7 @@ footer a:hover {
 /* Bouton */
 .card-body button {
     background-color: #26A69A;
-    color: black;
+    color: white;
     border: none;
     border-radius: 5px;
     padding: 8px 6px;
@@ -348,7 +360,7 @@ footer a:hover {
 }
 .card-body-filters button {
     background-color: #26A69A;
-    color: black;
+    color: white;
     border: none;
     border-radius: 5px;
     padding: 8px 12px;
@@ -374,7 +386,7 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: black;
     border-radius: 50px;
     padding: 10px; /* Plus d'espace autour du contenu */
     width: 550px;
@@ -401,7 +413,7 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: black;
     border-radius: 50px;
     padding: 0px; /* Plus d'espace autour du contenu */
     width: 550px;
@@ -416,18 +428,18 @@ footer a:hover {
     text-align: center;
     font-size: 18px;
     font-weight: bold;
-    color: black;
+    color: white;
     background-color: #f8f9fa;
     padding: 20px;
     border-radius: 50px;
     margin-top: 30px;
-    outline: 3px solid black !important;
+    outline: 3px solid white !important;
 }
 
 .suggestion .btn {
     display: inline-block;
     background-color: #26A69A ;
-    color: black;
+    color: white;
     padding: 10px 15px;
     border-radius: 5px;
     text-decoration: none;
@@ -442,11 +454,11 @@ footer a:hover {
     text-align: center;
     font-size: 16px;
     font-weight: bold;
-    color: black;
+    color: white;
     margin-top: 20px;
     background-color: #f8f9fa;
     border-radius: 50px;
-    outline: 3px solid black !important;
+    outline: 3px solid white !important;
     padding: 10px;
 }
 .adaptation {
@@ -464,19 +476,19 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: black;
     border-radius: 50px;
     padding: 20px; /* Plus d'espace autour du contenu */
     width: 500px;
     height: auto; /* Hauteur ajustée au contenu */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-    border: 3px solid black;
+    border: 3px solid white;
 }
 
 .formAvis h2 {
     font-size: 1.5em;
     margin-bottom: 20px;
-    color: #333;
+    color: white;
     text-align: center;
 }
 
@@ -492,15 +504,15 @@ footer a:hover {
     width: 100%;
     padding: 12px; /* Taille des champs */
     font-size: 1.1em;
-    border: 1px solid #ddd;
+    border: 1px solid white;
     border-radius: 8px;
     margin-bottom: 15px;
-    background: #f9f9f9;
+    background: black;
     transition: 0.3s ease-in-out;
 }
 
 .formAvis input:focus, .formAvis select:focus, .formAvis textarea:focus {
-    border-color: #007bff;
+    border-color: white;
     outline: none;
     box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
 }
@@ -511,13 +523,13 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: black;
     border-radius: 50px;
     padding: 5px; /* Plus d'espace autour du contenu */
     width: 500px;
     height: auto; /* Hauteur ajustée au contenu */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-    border: 3px solid black;
+    border: 3px solid white;
 
 }
 .covoiturage-details p{
@@ -548,12 +560,12 @@ footer a:hover {
     align-items: center;
 }
   .modal-content {
-    background-color: #fff;
+    background-color: black;
     padding: 20px;
     border-radius: 50px;
     width: 400px;
     text-align: center;
-    border: 3px solid black;
+    border: 3px solid white;
   }
   
   h2 {
@@ -606,7 +618,7 @@ footer a:hover {
 
 
 .info-card {
-    background-color: #fff;
+    background-color: black;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -628,23 +640,24 @@ footer a:hover {
 
 .reservation-item, .offered-ride-item {
     display: grid;
-    background-color: #f9f9f9;
+    background-color: black;
     padding: 5px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     align-items: center; /* Centre horizontalement */
     justify-content: center;
+    justify-items: center;
 }
 
 .reservation-item p, .offered-ride-item p {
-    margin: 5px 0;
+    margin: 10px 0;
     font-size: 16px;
 }
 
 .reservation-item h3 {
     margin-top: 0;
     font-size: 18px;
-    color: #333;
+    color: white;
 }
 
 /* Formulaire de suppression */
@@ -690,24 +703,25 @@ canvas {
     width: 100%;
     overflow-x: auto;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 table th, table td {
-    border: 1px solid #ddd;
+    border: 1px solid white;
     padding: 10px;
     text-align: left;
 }
 table th {
-    background-color: #333;
+    background-color: black;
     color: white;
 }
 
 .user-info,.user-status,.chauffeur-info,.user-reservations,.user-offered-rides, .saisir-voyage, .feedbackForm, .stats, .comptes, .addEmployee, .listEmployee, .manageUsers, .boardEmployee, .validation, .troublesome-rides-list, .contact, .cookies{
 
-    border: 3px solid black;
+    border: 3px solid white;
     border-radius: 50px;
     justify-content: center;
     justify-items: center;
@@ -715,7 +729,7 @@ table th {
     height: fit-content;
     margin-bottom: 30px;
     padding: 15px;
-    background-color: white;
+    background-color: black;
 }
 
 .container{
@@ -745,7 +759,7 @@ button {
     text-align: center;
     justify-content: center;
     justify-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid white;
     border-radius: 10px;
 }
 .button{
@@ -753,6 +767,7 @@ button {
     justify-content: center;
     justify-items: center;
     padding-top: 20px;
+    margin-bottom: 10px;
 }
 
 
@@ -784,7 +799,7 @@ select {
     width: 100%; /* Utilise toute la largeur disponible dans le formulaire */
     padding: 10px;
     margin-bottom: 5px; /* Espacement entre les champs */
-    border: 1px solid #ccc;
+    border: 1px solid white;
     border-radius: 5px;
     box-sizing: border-box; 
 }
@@ -817,16 +832,14 @@ table {
 th, td {
     padding: 12px 15px;  /* Ajoute de l'espacement entre le texte et les bordures des cellules */
     text-align: left;     /* Aligne le texte à gauche dans les cellules */
-    border-bottom: 1px solid #ddd;  /* Ajoute une bordure sous chaque ligne */
+    border-bottom: 1px solid white;  /* Ajoute une bordure sous chaque ligne */
 }
 
 th {
     background-color: #f4f4f4; /* Change la couleur de fond des en-têtes */
 }
 
-tr:hover {
-    background-color: #f1f1f1; /* Change la couleur de fond lors du survol de la ligne */
-}
+
 
 a {
     text-decoration: none;
@@ -852,7 +865,7 @@ input[type="password"] {
     width: 100%; /* Utilise toute la largeur disponible dans le formulaire */
     padding: 10px;
     margin-bottom: 15px; /* Espacement entre les champs */
-    border: 1px solid #ccc;
+    border: 1px solid white;
     border-radius: 5px;
     box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur */
 }
@@ -906,7 +919,6 @@ body {
 /* Flexibilité pour les formulaires */
 form input, form button {
     padding: 10px;
-    margin-bottom: 10px;
     box-sizing: border-box;
 }
 
@@ -926,14 +938,14 @@ h2, h3, h1 {
     display: none; /* Caché en desktop */
     font-size: 28px;
     cursor: pointer;
-    color: black;
+    color: white;
 }
 
 /* Menu mobile */
 #mobile-menu {
     display: none;
     flex-direction: column;
-    background-color: #0077b6;
+    background-color: #000000;
     position: absolute;
     top: 50px;
     right: 0;
@@ -1010,13 +1022,15 @@ h2, h3, h1 {
     }
 
     .profile-img {
-        display: block;
-        margin: 0 auto;
-        padding: 0;
-        border: none;
-        max-width: 100%;
-        height: auto;
-    }
+  display: block;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  /* Mobile → Desktop : 180 → 360 px (doit matcher le sizes ci-dessus) */
+  width: clamp(180px, 18vw, 360px);
+  height: auto;
+}
 
     ul {
         list-style: none;
@@ -1056,7 +1070,6 @@ h2, h3, h1 {
     .container, .info-card {
         text-align: center;
         max-width: 370px;
-        margin-bottom: 20px;
         padding: 5px;
     }
     .comptes{
@@ -1111,7 +1124,7 @@ h2, h3, h1 {
         top: 50px;
         right: 0;
         width: 100%;
-        color: black;
+        color: white;
     }
 
     nav ul {
@@ -1122,10 +1135,6 @@ h2, h3, h1 {
         text-align: center;
         padding: 10px;
         width: 100%;
-    }
-
-    nav li {
-        height: 50px;
     }
 
     nav.active {
@@ -1153,3 +1162,451 @@ h2, h3, h1 {
     }
     
 }
+
+
+/* === PROFIL : layout 3 colonnes avec zones explicites === */
+main.adaptation { padding: 20px; }
+
+/* Le grid est sur .container (enfant direct de <main class="adaptation">) */
+main.adaptation > .container {
+  display: grid;
+  grid-template-columns: 1fr;   /* 1 colonne en mobile */
+  gap: 24px;
+  align-items: start;
+  justify-items: stretch;
+  width: 100%;
+}
+
+/* Les cartes s’étirent dans leur colonne */
+main.adaptation > .container > * {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* À partir de ~900px : 3 colonnes + placement par zones */
+@media (min-width: 900px) {
+  main.adaptation > .container {
+    grid-template-columns: 1fr 1fr 1fr;  /* 3 colonnes */
+    grid-auto-rows: auto;
+  }
+
+ 
+}
+
+/* Optionnel : harmoniser l’aspect des cartes */
+.user-info,
+.user-status,
+.user-reservations,
+.user-offered-rides,
+.saisir-voyage,
+.chauffeur-info {
+  max-width: 700px;       /* évite des blocs trop larges sur très grands écrans */
+  margin: 0 auto;         /* bien centrés dans leur colonne */
+}
+
+
+/* --- Hover overlay sur la photo de profil --- */
+.profil-photo { display:inline-block; }
+
+.profil-photo .photo-trigger{
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+}
+
+.profil-photo .photo-trigger .profile-img{
+  display: block;
+  border: 3px solid white;
+  border-radius: 50%;
+  /* garde tes tailles actuelles ; tu peux augmenter ici si tu veux
+     width: 140px; height: 140px; */
+  transition: transform .25s ease, filter .25s ease;
+}
+
+/* Overlay */
+.profil-photo .profile-hover{
+  position: absolute;
+  inset: 0;                     /* top/right/bottom/left:0 */
+  display: grid;
+  place-items: center;
+  padding: 6px 10px;
+  text-align: center;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0,0,0,.45);
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;         /* le clic passe au lien */
+}
+
+.profil-photo .profile-hover .icon{
+  font-size: 22px;
+  margin-right: 6px;
+}
+
+/* Effets */
+.profil-photo .photo-trigger:hover .profile-img,
+.profil-photo .photo-trigger:focus .profile-img{
+  transform: scale(1.03);
+  filter: saturate(1.1);
+}   
+.profil-photo .photo-trigger:hover .profile-hover,
+.profil-photo .photo-trigger:focus .profile-hover{
+  opacity: 1;
+}
+
+.cookie-banner {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: #fff;
+  border-top: 2px solid white;
+  padding: 16px;
+  z-index: 9999;
+  box-shadow: 0 -6px 16px rgba(0,0,0,.15);
+}
+.cookie-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+.cookie-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.cookie-actions button { padding: 8px 12px; border-radius: 8px; border: 1px solid white; cursor: pointer; }
+
+.cookie-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 10001;
+  display: flex; align-items: center; justify-content: center;
+}
+.cookie-modal-card {
+  background: black; border: 2px solid white; border-radius: 12px; padding: 20px; width: min(520px, 92vw);
+}
+.cookie-modal-actions { margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end; }
+
+[hidden] { display: none !important; }
+
+/* Overlay bloquant */
+.cookie-blocker {
+  position: fixed;
+  inset: 0; /* top:0, right:0, bottom:0, left:0 */
+  background: rgba(0,0,0,0.4); /* léger assombrissement */
+  z-index: 9998; /* juste en dessous du bandeau */
+}
+
+.user-vehicles { border:3px solid white; border-radius:50px; background:black; padding:15px; }
+.vehicule-card { position: relative; display: flex; border:1px solid white; border-radius:12px; padding:12px; margin-bottom:14px; background:black; }
+.vehicule-header { display:flex; justify-content:space-between; align-items:center; gap:10px; background: black; }
+.vehicule-actions form { display:inline; justify-content: center; gap: 10px; margin-top:10px; }
+.vehicule-edit-form .form-row { display:grid; gap:6px; margin:10px 0; }
+.vehicule-edit-form .form-actions { display:flex; gap:10px; }
+.btn-danger { background:#dc3545; color:#fff;}
+.btn-light { background:#e9ecef; }
+.btn-edit { background:#26A69A; color:#000; }
+.user-vehicles h2 { text-align:center; margin-top:0; margin-bottom:12px; }
+.user-vehicles h3 { font-size: 22px; margin: 0; }
+.user-vehicles .button { gap: 20px; }
+/* Même look que tous tes autres boutons */
+.vehicule-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;     /* comme la règle globale */
+  font-size: 1em;
+  border: 1px solid white;
+  border-radius: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.boardEmployee {
+  text-align: center; /* centre tout le texte de la section */
+}
+
+.boardEmployee ul {
+  list-style-position: inside; /* aligne les puces sous le titre */
+  padding-left: 0;             /* supprime le décalage par défaut */
+  display: inline-block;       /* évite que ça prenne toute la largeur */
+  text-align: left;            /* pour que les puces restent alignées entre elles */
+}
+
+.troublesome-rides-list select {
+  max-width: fit-content;
+  margin-bottom: 15px;
+}
+
+/* Conteneur du formulaire de filtre */
+.filter-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  align-items: baseline !important;
+}
+
+/* Labels + inputs alignés */
+.filter-form label {
+  font-weight: bold;
+  margin-right: 0.3rem;
+}
+
+.filter-form input[type="text"],
+.filter-form select {
+  padding: 6px 10px;
+  border: 1px solid white;
+  border-radius: 4px;
+  min-width: 180px;
+}
+
+/* Bouton Filtrer */
+.filter-form button {
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  align-items: center;
+  align-self: center !important;
+}
+
+
+.alert {
+  padding: 12px;
+  margin: 10px auto;      /* auto => centre horizontalement */
+  border-radius: 6px;
+  font-weight: bold;
+  max-width: 400px;       /* largeur max */
+  text-align: center;     /* texte centré */
+}
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid white;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* --- Touch-friendly targets (48x48) --- */
+nav ul li a,
+#mobile-menu a,
+.boardEmployee a,
+.table-container a,
+button,
+.btn,
+.button button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 10px 14px;           /* agrandit la zone cliquable */
+  line-height: 1.2;
+  touch-action: manipulation;   /* évite le délai 300ms sur mobile */
+}
+
+/* Un peu d'espace entre liens listés */
+.boardEmployee a { margin: 6px 0; }
+
+/* Nav desktop : zone de clic confortable */
+nav ul li a { padding: 12px 16px; }
+
+/* Nav mobile : encore plus large */
+@media (max-width: 768px) {
+  #mobile-menu a { padding: 14px 18px; }
+}
+
+/* --- Fix contraste liens (dark UI) --- */
+a {
+  color: #26A69A;                /* vert/teal bien contrasté sur noir */
+  text-decoration: none;
+  font-weight: bold;
+}
+a:hover,
+a:focus {
+  color: #00BFA5;                /* un poil plus lumineux */
+  text-decoration: underline;    /* meilleur repère d’état */
+  outline: none;
+}
+
+/* Spécifique aux zones sombres pour forcer le contraste si autre CSS s'applique */
+.boardEmployee a,
+.manageUsers a,
+.listEmployee a,
+.comptes a,
+.stats a,
+header a,
+footer a {
+  color: #26A69A !important;
+}
+.boardEmployee a:hover,
+.manageUsers a:hover,
+.listEmployee a:hover,
+.comptes a:hover,
+.stats a:hover,
+header a:hover,
+footer a:hover {
+  color: #00BFA5 !important;
+}
+
+/* S’assurer que le texte de boardEmployee est bien blanc sur fond noir */
+.boardEmployee {
+  color: #fff;
+}
+
+/* (Optionnel) assombrir légèrement l’overlay global pour booster tous les contrastes */
+body::before {
+  background: rgba(0, 0, 0, 0.7);  /* était 0.6 */
+}
+
+/* --- 1) Liens dans le contenu : visibles sans la couleur seule --- */
+main a,
+.boardEmployee a,
+.manageUsers a,
+.listEmployee a,
+.comptes a,
+.stats a,
+p a,
+li a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 2px;
+}
+
+
+
+/* --- 2) Liens “non-texte” (nav/boutons) : style de bouton => pas concerné par l’audit --- */
+
+.table-container a[href*="status="],    /* liens d’action dans tableaux */
+.table-container a[href*="edit_"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;            /* cible confortable */
+  padding: 10px 14px;
+  border: 1px solid white;
+  border-radius: 8px;
+  background: black;
+  text-decoration: none;        /* pas besoin d’underline sur un bouton */
+}
+
+/* === Menu mobile avec bordure === */
+#mobile-menu {
+  border: 2px solid white;   /* Bordure blanche */
+  border-radius: 20px;       /* Arrondi */
+  margin: 10px;              /* Espace extérieur */
+  background-color: black;   /* Garde ton fond noir */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Optionnel : ombre */
+}
+
+/* Pour bien séparer les liens */
+#mobile-menu ul li {
+  border-bottom: 1px solid white;
+  padding: 8px 0;
+}
+
+#mobile-menu ul li:last-child {
+  border-bottom: none; /* pas de ligne après le dernier */
+}
+
+/* Par défaut : mobile */
+body {
+  background: url('images/Fond-768.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Tablette */
+@media (min-width: 768px) {
+  body {
+    background-image: url('images/Fond-1280.jpg');
+  }
+}
+
+/* Desktop */
+@media (min-width: 1280px) {
+  body {
+    background-image: url('images/Fond-1920.jpg');
+  }
+}
+
+/* Si tu préfères des steps explicites */
+@media (max-width: 768px){
+  .profile-img{ width: 250px; }
+}
+@media (min-width: 769px){
+  .profile-img{ width: 360px; }
+  .profile-img{ height: auto; }
+}
+
+/* centre le bloc image */
+.profil-photo{
+  display:flex;
+  justify-content:center;   /* centre horizontalement */
+  align-items:center;       /* si tu fixes une hauteur au conteneur */
+  margin: 0 auto 15px;      /* centre le conteneur lui-même */
+}
+
+/* assure le centrage de l’img elle-même */
+.profil-photo img.profile-img{
+  display:block;
+  margin:0 auto;
+  border-radius:50%;
+  border:3px solid #fff;
+  object-fit:cover;
+}
+
+/* La carte devient le référentiel des positions */
+.vehicule-card{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Boutons ancrés dans les coins bas */
+.vehicule-btn{
+  position: absolute;
+  bottom: 12px;
+}
+.vehicule-btn-left{  left: 16px; }
+.vehicule-btn-right{ right: 16px; }
+.vehicule-btn form{ margin: 0; }  /* pas de marge parasite */
+
+/* Mobile : on remet les boutons en flux, centrés et empilés */
+@media (max-width: 520px){
+  .vehicule-card{ padding-bottom: 16px; text-align: center; }
+  .vehicule-btn{
+    position: static;
+    display: inline-block;
+    margin: 6px 8px 0;
+  }
+}
+
+.vehicule-infos {
+  margin-bottom: 20px; /* espace entre la liste et les boutons */
+}
+
+.vehicule-actions{
+  margin-top: auto;                 /* pousse le bloc en bas */
+  display: flex;
+  justify-content: center;
+  gap: 30px;                        /* espace entre boutons */
+  padding-top: 12px;                /* <<< espace au-dessus */
+}
+

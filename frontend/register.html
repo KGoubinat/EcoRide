@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription - EcoRide</title>
-    <link rel="stylesheet" href="/frontend/styles.css">
+    <base href="https://localhost/MesGrossesCouilles/frontend/">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -15,9 +16,9 @@
             <div class="menu-toggle" id="menu-toggle">☰</div>
             <nav id="navbar">
                 <ul>
-                    <li><a href="/frontend/accueil.php">Accueil</a></li>
-                    <li><a href="/frontend/contact_info.php">Contact</a></li>
-                    <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
+                    <li><a href="accueil.php">Accueil</a></li>
+                    <li><a href="contact_info.php">Contact</a></li>
+                    <li><a href="covoiturages.php">Covoiturages</a></li>
                 </ul>
             </nav>
         </div>
@@ -26,9 +27,9 @@
 
         <nav id="mobile-menu">
             <ul>
-                <li><a href="/frontend/accueil.php">Accueil</a></li>
-                <li><a href="/frontend/covoiturages.php">Covoiturages</a></li>
-                <li><a href="/frontend/contact_info.php">Contact</a></li>
+                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="covoiturages.php">Covoiturages</a></li>
+                <li><a href="contact_info.php">Contact</a></li>
                 <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
                 <li id="authButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
             </ul>
@@ -39,7 +40,7 @@
         <section class="signup-form-container">
             <h2>Inscription</h2>
             <p>Créez votre compte pour rejoindre EcoRide !</p>
-            <form id="signupForm" action="/frontend/register.php" method="POST">
+            <form id="signupForm" action="/MesGrossesCouilles/frontend/register.php" method="POST">
                 <input type="text" id="firstName" name="firstName" placeholder="Prénom" required><br>
                 <input type="text" id="lastName" name="lastName" placeholder="Nom" required><br>
                 <input type="email" id="email" name="email" placeholder="Adresse e-mail" required><br>
@@ -50,14 +51,14 @@
                 </div>
                 <button type="submit">S'inscrire</button>
             </form>
-            <p>Déjà inscrit ? <a href="/frontend/connexion.html">Connectez-vous ici !</a></p>
+            <p>Déjà inscrit ? <a href="connexion.html">Connectez-vous ici !</a></p>
         </section>
     </main>
     
     <footer>
-        <p>EcoRide@gmail.com / <a href="/frontend/mentions_legales.php">Mentions légales</a></p>
+        <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
     </footer>
 
-<script src="/frontend/js/register.js"></script>
+<script src="MesGrossesCouilles/frontend/js/register.js"></script>
 </body>
 </html>

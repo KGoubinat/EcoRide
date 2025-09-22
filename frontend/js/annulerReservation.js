@@ -1,54 +1,34 @@
+(function () {
+  const buttons = document.querySelectorAll(".btn-danger[data-reservation-id]");
+  const modal = document.getElementById("cancel-reservation-modal");
+  const okBtn = document.getElementById("resv-cancel-confirm");
+  const noBtn = document.getElementById("resv-cancel-cancel");
+  const xBtn = document.getElementById("resv-cancel-close");
+  let form = null;
 
-// Sélectionner les éléments
-(function() {
-const cancelButtons = document.querySelectorAll('.btn-danger'); 
-const cancelModal = document.getElementById('cancel-reservation-modal');  // La modale de confirmation
-const modalCancelConfirm = document.getElementById('modal-cancel-confirm');  // Bouton confirmer
-const modalCancelCancel = document.getElementById('modal-cancel-cancel');  // Bouton annuler
-
-let reservationId = null;  // L'ID de la réservation à annuler
-
-// Afficher la modale lorsqu'on clique sur un bouton d'annulation
-cancelButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-        e.preventDefault();  // Empêche le bouton de fonctionner immédiatement
-        reservationId = button.getAttribute('data-reservation-id');  // Récupérer l'ID de la réservation
-        if (reservationId) {
-            cancelModal.style.display = 'flex';  // Afficher la modale
-        } else {
-            console.log("Aucun ID de covoiturage trouvé dans l'attribut.");
-        }
+  buttons.forEach((b) => {
+    const f = b.closest("form");
+    b.addEventListener("click", (e) => {
+      e.preventDefault();
+      form = f;
+      if (!modal || !okBtn) {
+        form?.submit();
+        return;
+      }
+      modal.classList.add("show");
     });
-});
+  });
 
-// Confirmer l'annulation
-modalCancelConfirm.addEventListener('click', () => {
-    if (reservationId) {
-        // Log pour vérifier que l'ID est correct avant de rediriger
-        console.log("Redirection vers annuler_reservation.php?id=" + reservationId);
-        
-        // Rediriger vers la page d'annulation de la réservation avec l'ID de la réservation
-        window.location.href = `/frontend/annuler_reservation.php?id=${reservationId}`;
-    } else {
-        console.log("Aucun ID de réservation trouvé.");
-    }
-});
-
-// Fermer la modale si l'utilisateur annule
-modalCancelCancel.addEventListener('click', () => {
-    cancelModal.style.display = 'none';  // Cacher la modale
-});
-
-// Fermer la modale si l'utilisateur clique sur la croix
-const closeModalButton = cancelModal.querySelector('.close-reservation-btn');
-closeModalButton.addEventListener('click', () => {
-    cancelModal.style.display = 'none';  // Cacher la modale
-});
-
-// Fermer la modale si l'utilisateur clique en dehors de celle-ci
-window.addEventListener('click', (e) => {
-    if (e.target === cancelModal) {
-        cancelModal.style.display = 'none';
-    }
-});
-})
+  function hide() {
+    modal?.classList.remove("show");
+  }
+  okBtn?.addEventListener("click", () => {
+    form?.submit();
+    hide();
+  });
+  noBtn?.addEventListener("click", hide);
+  xBtn?.addEventListener("click", hide);
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) hide();
+  });
+})();
