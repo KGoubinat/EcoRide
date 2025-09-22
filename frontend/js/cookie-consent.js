@@ -4,17 +4,19 @@
 
   const COOKIE_NAME = "ecoride_consent_v1";
   const COOKIE_MAX_AGE_DAYS = 180; // 6 mois
-  const CATEGORIES = ["analytics", "marketing"]; // "essentiels" sont implicites
 
   // --- Utils cookie ---
   function setCookie(name, value, days) {
     const maxAge = days * 24 * 60 * 60;
+    const secure = location.protocol === "https:" ? ";Secure" : "";
     document.cookie =
       `${encodeURIComponent(name)}=${encodeURIComponent(value)};` +
       `path=/;` +
       `max-age=${maxAge};` +
-      `SameSite=Lax`;
+      `SameSite=Lax` +
+      secure;
   }
+
   function getCookie(name) {
     const target = encodeURIComponent(name) + "=";
     return (
@@ -25,17 +27,21 @@
         ?.slice(target.length) || ""
     );
   }
+
   function parseConsent() {
-    const raw =
-      getCookie(COOKIES.COOKIE_NAME || COOKIE_NAME) || getCookie(COOKIE_NAME);
+    const raw = getCookie(COOKIE_NAME);
     if (!raw) return null;
+    // tolérant aux anciennes versions double-encodées
     try {
       return JSON.parse(decodeURIComponent(raw));
     } catch {
-      return null;
+      try {
+        return JSON.parse(decodeURIComponent(decodeURIComponent(raw)));
+      } catch {
+        return null;
+      }
     }
   }
-  const COOKIES = { COOKIE_NAME };
 
   // --- UI elements (présents dans tes pages) ---
   const $banner = document.getElementById("cookie-banner");
@@ -44,70 +50,6 @@
   const $openPrefLink = document.getElementById("open-cookie-modal");
   const $chkAnalytics = document.getElementById("consent-analytics");
   const $chkMarketing = document.getElementById("consent-marketing");
-
-  // --- Appliquer décision & lancer scripts différés ---
-  function applyConsent(consent) {
-    // Sauvegarde
-    setCookie(
-      COOKIE_NAME,
-      encodeURIComponent(JSON.stringify(consent)),
-      COOKIE_MAX_AGE_DAYS
-    );
-
-    // Fermer UI
-    hide($banner);
-    hide($modal);
-    hide($blocker);
-
-    // Déclencher event pour ton app
-    document.dispatchEvent(
-      new CustomEvent("ecoride:consentchange", { detail: consent })
-    );
-
-    // Exécuter scripts marqués type="text/plain" data-consent="..."
-    enableDeferredScripts(consent);
-  }
-
-  function enableDeferredScripts(consent) {
-    const nodes = document.querySelectorAll(
-      'script[type="text/plain"][data-consent]'
-    );
-    nodes.forEach((node) => {
-      const needs = node
-        .getAttribute("data-consent")
-        .split(",")
-        .map((s) => s.trim().toLowerCase());
-
-      // Autorisé si toutes les catégories requises sont accordées
-      const allowed = needs.every((cat) => consent[cat] === true);
-
-      if (!allowed) return;
-
-      const newScript = document.createElement("script");
-      // Copie d'attributs utiles
-      [
-        "id",
-        "async",
-        "defer",
-        "crossorigin",
-        "referrerpolicy",
-        "integrity",
-      ].forEach((attr) => {
-        if (node.hasAttribute(attr))
-          newScript.setAttribute(attr, node.getAttribute(attr));
-      });
-
-      const src = node.getAttribute("data-src");
-      if (src) {
-        newScript.src = src;
-      } else {
-        newScript.text = node.text || node.textContent || "";
-      }
-
-      // Remplace dans le DOM
-      node.parentNode.replaceChild(newScript, node);
-    });
-  }
 
   // --- Helpers UI ---
   function show(el) {
@@ -129,21 +71,88 @@
     show($blocker);
   }
 
-  // --- Handlers boutons du bandeau ---
+  // --- Base consent object ---
+  function baseConsent(patch) {
+    return {
+      version: 1,
+      date: new Date().toISOString(),
+      essentials: true, // toujours actifs
+      analytics: false,
+      marketing: false,
+      ...patch,
+    };
+  }
+
+  // --- Appliquer décision & lancer scripts différés ---
+  function applyConsent(consent) {
+    // IMPORTANT: ne PAS re-encoder ici (setCookie s’en charge déjà)
+    setCookie(COOKIE_NAME, JSON.stringify(consent), COOKIE_MAX_AGE_DAYS);
+
+    hide($banner);
+    hide($modal);
+    hide($blocker);
+
+    document.dispatchEvent(
+      new CustomEvent("ecoride:consentchange", { detail: consent })
+    );
+
+    enableDeferredScripts(consent);
+  }
+
+  function enableDeferredScripts(consent) {
+    const nodes = document.querySelectorAll(
+      'script[type="text/plain"][data-consent]'
+    );
+    nodes.forEach((node) => {
+      const needs = node
+        .getAttribute("data-consent")
+        .split(",")
+        .map((s) => s.trim().toLowerCase());
+
+      const allowed = needs.every((cat) => consent[cat] === true);
+      if (!allowed) return;
+
+      const newScript = document.createElement("script");
+
+      // Copie d'attributs utiles (sauf type/data-*)
+      [
+        "id",
+        "async",
+        "defer",
+        "crossorigin",
+        "referrerpolicy",
+        "integrity",
+      ].forEach((attr) => {
+        if (node.hasAttribute(attr)) {
+          newScript.setAttribute(attr, node.getAttribute(attr));
+        }
+      });
+
+      const src = node.getAttribute("data-src");
+      if (src) {
+        newScript.src = src;
+      } else {
+        newScript.textContent = node.textContent || "";
+      }
+
+      node.parentNode.replaceChild(newScript, node);
+    });
+  }
+
+  // --- Handlers bandeau ---
   function bindBannerActions() {
     if (!$banner) return;
+
     $banner
       .querySelector('[data-action="accept-all"]')
       ?.addEventListener("click", () => {
-        const consent = baseConsent({ analytics: true, marketing: true });
-        applyConsent(consent);
+        applyConsent(baseConsent({ analytics: true, marketing: true }));
       });
 
     $banner
       .querySelector('[data-action="reject-all"]')
       ?.addEventListener("click", () => {
-        const consent = baseConsent({ analytics: false, marketing: false });
-        applyConsent(consent);
+        applyConsent(baseConsent({ analytics: false, marketing: false }));
       });
 
     $banner
@@ -154,18 +163,19 @@
       });
   }
 
-  // --- Handlers du modal ---
+  // --- Handlers modal ---
   function bindModalActions() {
     if (!$modal) return;
 
     $modal
       .querySelector('[data-action="save"]')
       ?.addEventListener("click", () => {
-        const consent = baseConsent({
-          analytics: $chkAnalytics ? $chkAnalytics.checked : false,
-          marketing: $chkMarketing ? $chkMarketing.checked : false,
-        });
-        applyConsent(consent);
+        applyConsent(
+          baseConsent({
+            analytics: $chkAnalytics ? $chkAnalytics.checked : false,
+            marketing: $chkMarketing ? $chkMarketing.checked : false,
+          })
+        );
       });
 
     $modal
@@ -174,19 +184,6 @@
         hide($modal);
         hide($blocker);
       });
-  }
-
-  // --- Base consent object ---
-  function baseConsent(patch) {
-    return {
-      version: 1,
-      date: new Date().toISOString(),
-      // Essentiels toujours actifs
-      essentials: true,
-      analytics: false,
-      marketing: false,
-      ...patch,
-    };
   }
 
   // --- API publique pratique ---
@@ -202,14 +199,14 @@
       openModal(API.get());
     },
     reset() {
-      // Efface en réouvrant le bandeau
+      // Efface puis ré-ouvre le bandeau
       setCookie(COOKIE_NAME, "", -1);
       openBanner();
     },
   };
-  window.CookieConsentAPI = API; // accessible dans la console
+  window.CookieConsentAPI = API;
 
-  // --- Lien "Gérer mes cookies" ---
+  // Lien "Gérer mes cookies"
   if ($openPrefLink) {
     $openPrefLink.addEventListener("click", (e) => {
       e.preventDefault();
@@ -224,13 +221,11 @@
 
     const existing = parseConsent();
     if (existing) {
-      // Consent déjà donné → activer les scripts autorisés
       enableDeferredScripts(existing);
       hide($banner);
       hide($modal);
       hide($blocker);
     } else {
-      // Première visite → afficher le bandeau et bloquer rien de non-essentiel
       openBanner();
     }
   });

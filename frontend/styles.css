@@ -1260,7 +1260,7 @@ main.adaptation > .container > * {
 .cookie-banner {
   position: fixed;
   left: 0; right: 0; bottom: 0;
-  background: #fff;
+  background: black;
   border-top: 2px solid white;
   padding: 16px;
   z-index: 9999;
