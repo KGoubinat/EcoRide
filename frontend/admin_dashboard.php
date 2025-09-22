@@ -169,8 +169,12 @@ $backParam = urlencode($back);
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
-</footer>
+        <div class="footer-links">
+            <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
+            <span>|</span>
+            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+        </div>
+    </footer>
 
 <script>
     // Graphiques Chart.js

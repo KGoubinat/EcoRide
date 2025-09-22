@@ -71,8 +71,12 @@ $csrf = $_SESSION['csrf_token'];
 </main>
 
 <footer>
-  <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
-</footer>
+        <div class="footer-links">
+            <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
+            <span>|</span>
+            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+        </div>
+    </footer>
 
 <!-- Réutilise ton JS de nav (remplit Connexion/Profil) -->
 <script src="js/accueil.js" defer></script>

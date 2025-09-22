@@ -710,8 +710,12 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 </main>
 
 <footer>
-    <p>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></p>
-</footer>
+        <div class="footer-links">
+            <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
+            <span>|</span>
+            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+        </div>
+    </footer>
 
  <!-- Pour la mise a jour du statut-->
     <!-- Modale de confirmation -->

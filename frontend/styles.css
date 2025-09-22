@@ -83,7 +83,6 @@ main.covoit {
 }
 /* Main Layout */
 main {
-    padding: 50px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr; /* Trois colonnes : ajustées pour une mise en page optimale */
     gap: 20px;
@@ -178,7 +177,7 @@ form input{
 /* Details Section */
 .details {
     background: black;
-    padding: 20px;
+    padding: 10px;
     border-radius: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -191,7 +190,6 @@ form input{
 
 /* Rejoindre Section */
 .rejoindre {
-    margin:30px;
     background: black;
     padding: 20px;
     border-radius: 50px;
@@ -269,7 +267,7 @@ footer a:hover {
     max-height: 500px;
     width: auto;
     height: auto;
-    background-color: #ffffff;
+    background-color: black;
     border-radius: 50px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
@@ -341,6 +339,7 @@ footer a:hover {
 
 
 .card-body-filters {
+    background-color: black;
     padding: 0px;
     text-align: left;
     font-weight: bold;
@@ -456,7 +455,7 @@ footer a:hover {
     font-weight: bold;
     color: white;
     margin-top: 20px;
-    background-color: #f8f9fa;
+    background-color: black;
     border-radius: 50px;
     outline: 3px solid white !important;
     padding: 10px;
@@ -1610,3 +1609,33 @@ body {
   padding-top: 12px;                /* <<< espace au-dessus */
 }
 
+/* Reset utiles */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; display: flex; min-height: 100vh; flex-direction: column; }
+
+/* Le contenu prend la hauteur restante, le footer reste en bas */
+main { flex: 1; }
+
+/* Footer fixe à 50px, centré verticalement */
+footer {
+  height: 50px;
+  min-height: 50px;          /* par sécurité */
+  padding: 0 16px;           /* pas de padding vertical pour ne pas dépasser 50px */
+  display: flex;
+  align-items: center;       /* centre le contenu verticalement */
+  border-top: 1px solid #eee;
+}
+
+/* Empêche le contenu interne d'ajouter de la hauteur */
+footer .footer-links,
+footer p { margin: 0; }
+footer .footer-links { display: flex; gap: 8px; align-items: center; }
+footer .footer-links a, footer .footer-links span { line-height: 1; }
+
+/* Évite le margin collapse du dernier bloc de la page contre le footer */
+main > *:last-child { margin-bottom: 0 !important; }
+main { padding-bottom: 12px; } /* un petit padding pour séparer proprement */
+
+/* Si un composant au-dessus du footer a de gros margin-bottom, on peut le lisser */
+.section, .presentation, .third-column, .rejoindre, .details { margin-bottom: 16px; } /* adapte à ton design */
