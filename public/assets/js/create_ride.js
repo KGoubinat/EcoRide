@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Utiliser l’URL du formulaire si définie, sinon fallback
     const actionAttr =
       voyageForm.getAttribute("action") ||
-      "../backend/handlers/ajoutrides.php";
+      "api/create_ride.php";
     const url = new URL(actionAttr, document.baseURI).toString();
 
     const xhr = new XMLHttpRequest();

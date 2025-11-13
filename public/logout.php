@@ -1,34 +1,46 @@
 <?php
-// logout.php
 declare(strict_types=1);
 
-// IMPORTANT : inclure init.php pour avoir BASE_URL et la session
-require __DIR__ . '/init.php'; // doit faire session_start() + définir BASE_URL
+require __DIR__ . '/init.php';
 
-// Vider la session
+// -------------------------
+// 1. Déconnexion sécurisée
+// -------------------------
 if (session_status() === PHP_SESSION_ACTIVE) {
+
     $_SESSION = [];
 
-    // Supprimer le cookie de session
+    // Supprimer cookie session
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
+
         setcookie(session_name(), '', time() - 42000,
-            $params['path'] ?? '/',
-            $params['domain'] ?? '',
-            $params['secure'] ?? false,
-            $params['httponly'] ?? true
+            $params['path'],
+            $params['domain'],
+            $params['secure'],
+            $params['httponly']
         );
-        // Ce doublon couvre le cas où le path par défaut serait différent
+
+        // fallback
         setcookie(session_name(), '', time() - 42000, '/');
     }
 
     session_destroy();
 }
 
-// Redirection (par défaut vers la page de connexion)
-$next = $_GET['next'] ?? 'login.php'; // adapte si besoin (login.php, home.php, etc.)
-$next = ltrim($next, '/');                 // éviter un chemin absolu fourni en entrée
-$location = rtrim(BASE_URL, '/') . '/' . $next;
+// -------------------------
+// 2. Redirection sécurisée
+// -------------------------
+$allowedPages = ['login.php', 'home.php', 'index.php'];
 
-header('Location: ' . $location);
+$next = $_GET['next'] ?? 'login.php';
+$next = basename($next); // élimine chemins type ../ ou URLs
+
+if (!in_array($next, $allowedPages, true)) {
+    $next = 'login.php';
+}
+
+$location = rtrim(BASE_URL, '/') . '/' . $next;
+header("Location: $location");
 exit;
+?>

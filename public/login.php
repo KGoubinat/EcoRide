@@ -2,6 +2,11 @@
 declare(strict_types=1);
 require __DIR__ . '/init.php'; // BASE_URL + session + csrf
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require __DIR__ . '/../backend/handlers/login.php';
+    exit;
+}
+
 header('X-Robots-Tag: noindex, nofollow', true);
 
 // redirection par défaut (peut être surchargée par ?redirect=...)
@@ -71,7 +76,7 @@ $redirect = $_GET['redirect'] ?? 'home.php';
     <div id="alertBox" class="alert alert-danger" style="display:none;"></div>
 
     <!-- Formulaire -->
-    <form id="loginForm" action="../backend/handlers/login.php" method="POST" novalidate>
+    <form id="loginForm" action="login.php" method="POST" novalidate>
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
       <input type="hidden" name="redirect" id="redirectInput" value="<?= htmlspecialchars($redirect, ENT_QUOTES) ?>">
 
@@ -133,7 +138,7 @@ $redirect = $_GET['redirect'] ?? 'home.php';
             <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
-<script src="assets/js/cookie_consent.js" defer></script>
+<script src="assets/js/cookie-consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   // Menu burger

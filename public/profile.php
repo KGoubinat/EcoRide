@@ -450,7 +450,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         <?php if (in_array($user['status'], ['chauffeur','passager_chauffeur'], true)): ?>
             <div class="saisir-voyage">
                 <h2>Proposer un covoiturage</h2>
-                <form id="voyageForm" method="POST" action="api/ajoutrides.php">
+                <form id="voyageForm" method="POST" action="api/create_ride.php">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
 
                     <div class="form-group">

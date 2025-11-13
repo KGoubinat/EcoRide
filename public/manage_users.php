@@ -94,7 +94,7 @@ $back = 'manage_users.php' . ($qs ? ('?' . http_build_query($qs)) : '');
   <nav id="mobile-menu">
     <ul>
       <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-      <li><a href="add_employee.html">Ajouter un Employé</a></li>
+      <li><a href="add_employee.php">Ajouter un Employé</a></li>
       <li><a href="manage_employees.php">Gérer les Employés</a></li>
       <li><a href="manage_users.php" aria-current="page">Gérer les Utilisateurs</a></li>
       <li>

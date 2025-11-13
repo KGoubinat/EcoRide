@@ -1,20 +1,14 @@
 <?php
 declare(strict_types=1);
 
-// Debug local (optionnel)
-if (!headers_sent()) {
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-}
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 // 1) BASE_URL + .env via bootstrap
 require_once __DIR__ . '/bootstrap.php';
 
 // ==== URL helpers ====
-// site_origin()     -> https://domaine.tld  (sans chemin)
-// current_url($q)   -> URL courante; $q=true garde la query string
-// absolute_from_base($path) -> URL absolue basée sur BASE_URL (pour images/CSS...)
 
 if (!function_exists('site_origin')) {
     function site_origin(): string {

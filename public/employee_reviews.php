@@ -96,10 +96,11 @@ $reviews = $stmt->fetchAll() ?: [];
       <li><a href="employee_reviews.php">Gérer les Avis</a></li>
       <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
       <li>
-        <form action="../backend/handlers/delogin.php" method="POST" style="display:inline">
-          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
-          <button type="submit" class="linklike">Déconnexion</button>
+        <form action="../backend/handlers/logout.php" method="POST" style="display:inline">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+            <button type="submit" class="linklike">Déconnexion</button>
         </form>
+
       </li>
     </ul>
   </nav>

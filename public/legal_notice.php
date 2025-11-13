@@ -62,18 +62,16 @@ $canonical  = rtrim((string)BASE_URL, '/').'/legal_notice.php';
     <h3>Mentions Légales</h3>
 
     <h4>Éditeur du site</h4>
-    <p>EcoRide, société à responsabilité limitée (SARL) au capital de 100&nbsp;000&nbsp;€</p>
-    <p>Siège social : 123 Rue de l'Innovation, 75000 Paris, France</p>
-    <p>Email : <a href="mailto:contact@ecoride.com">contact@ecoride.com</a></p>
+    <p>EcoRide – Projet pédagogique réalisé dans le cadre du Titre Professionnel DWWM.</p>
+    <p>Email : <a href="mailto:EcoRide@gmail.com">EcoRide@gmail.com</a></p>
     <p>Téléphone : <a href="tel:+33123456789">01&nbsp;23&nbsp;45&nbsp;67&nbsp;89</a></p>
-    <p>Numéro SIREN : 123&nbsp;456&nbsp;789</p>
 
     <h4>Directeur de publication</h4>
-    <p>Jean Dupont, Directeur général de EcoRide</p>
+    <p>Kévin Goubinat</p>
 
     <h4>Hébergement</h4>
-    <p>Hébergeur : OVH</p>
-    <p>Adresse : 2 Rue Kellermann, 59100 Roubaix, France</p>
+    <p>Hébergeur : Heroku</p>
+  
 
     <h4>Conditions Générales d'Utilisation (CGU)</h4>
     <ul>
