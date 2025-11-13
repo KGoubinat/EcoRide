@@ -100,7 +100,7 @@ function er_button(string $href, string $label): string {
  * Envoie un email à tous (passagers + éventuellement conducteur).
  * $event: 'start' | 'end' | 'cancel'
  * - start/cancel : email générique avec lien vers profil + bouton "Signaler un problème"
- * - end : email personnalisé à CHAQUE passager (hors chauffeur) avec lien validation.php + token
+ * - end : email personnalisé à CHAQUE passager (hors chauffeur) avec lien validation_feedback.php + token
  *         + bouton "Signaler un problème"
  */
 function notifyRideEvent(PDO $pdo, int $rideId, string $event, int $triggerUserId, bool $includeDriver = false): void {
@@ -121,7 +121,7 @@ function notifyRideEvent(PDO $pdo, int $rideId, string $event, int $triggerUserI
             if (empty($p['email'])) continue;
 
             $token = createValidationToken($pdo, $rideId, (int)$p['user_id']);
-            $link  = BASE_URL . "validation.php?ride_id={$rideId}&token={$token}";
+            $link  = BASE_URL . "validation_feedback.php?ride_id={$rideId}&token={$token}";
 
             $name    = trim((string)($p['firstName'] ?? '')) ?: 'Bonjour';
             $depart  = htmlspecialchars((string)$ride['depart'], ENT_QUOTES);

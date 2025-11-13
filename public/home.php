@@ -4,6 +4,10 @@ require __DIR__ . '/init.php';  // <-- une ligne pour tout initialiser
 // Vérifie si l'utilisateur est connecté
 $isLoggedIn = isset($_SESSION['user_id']); 
 
+if (!isset($villes) || !is_array($villes)) {
+    $villes = []; // ou récup depuis la BDD
+}
+
 function getConsent(): array {
   $name = 'ecoride_consent_v1';
   if (empty($_COOKIE[$name])) return [];
@@ -87,9 +91,9 @@ $consent = getConsent();
         <div class="second-column">
             <section class="form">
                 <div class="formulaire">
-                    <h2 class="ecoride-title">EcoRide</h2>
+                    <h2 class="ecoride-title">Chercher un covoiturage</h2>
                     <p>Voyagez ensemble, économisez ensemble.</p>
-                    <form id="rechercheForm" action="resultatsrides.php" method="GET">
+                    <form id="rechercheForm" action="ride_results.php" method="GET">
                         <input list="cities" id="start" placeholder="Départ" name="start" required><br>
                         <input list="cities" id="end" placeholder="Destination" name="end" required><br>
                         <input type="number" id="passengers" placeholder="Passager(s)" name="passengers" min="1" required><br>
@@ -189,9 +193,6 @@ $consent = getConsent();
     </script>
 
     <!-- Exemple marketing -->
-    <script type="text/plain" data-consent="marketing">
-     <!-- Initialisation d’un SDK marketing fictif -->
-        console.log("SDK marketing initialisé");
-    </script>
+    <script type="text/plain" data-consent="marketing"></script>
 </body>
 </html>

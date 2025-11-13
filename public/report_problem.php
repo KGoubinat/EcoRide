@@ -9,9 +9,9 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Redirige vers la page de connexion si non connecté (et revient ensuite)
 if (empty($_SESSION['user_id'])) {
-    // on réutilise la même convention que partout ailleurs: connexion.html?redirect=...
+    // on réutilise la même convention que partout ailleurs: connexion.php?redirect=...
     $redirect = 'report_problem.php?ride_id=' . urlencode((string)($_GET['ride_id'] ?? ''));
-    header('Location: ' . BASE_URL . 'connexion.html?redirect=' . urlencode($redirect));
+    header('Location: ' . BASE_URL . 'connexion.php?redirect=' . urlencode($redirect));
     exit;
 }
 

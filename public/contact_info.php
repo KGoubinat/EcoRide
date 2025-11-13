@@ -66,7 +66,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
   <div class="contact">
     <h2>Contactez-nous</h2>
     <p>Vous pouvez nous contacter à l'adresse suivante :</p>
-    <p>Email : <a href="mailto:contact@exemple.com">contact@exemple.com</a></p>
+    <p>Email : <a href="mailto:EcoRide@gmail.com">EcoRide@gmail.com</a></p>
     <p>Téléphone : <a href="tel:+33123456789">01 23 45 67 89</a></p>
   </div>
 </main>

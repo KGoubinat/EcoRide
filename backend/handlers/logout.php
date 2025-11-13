@@ -14,5 +14,5 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 // Redirection vers la page de connexion
-header('Location: ' . BASE_URL . 'connexion.html');
+header('Location: ' . BASE_URL . 'connexion.php');
 exit;

@@ -60,7 +60,7 @@ function sendValidationEmail($toEmail, $rideId, $userId) {
     ];
     
     $token = generateToken($userId, $rideId);
-    $validationLink = "https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/public/validation.php?ride_id=$rideId&token=$token";
+    $validationLink = "https://ecoride-covoiturage-app-fe35411c6ec7.herokuapp.com/public/validation_feedback.php?ride_id=$rideId&token=$token";
 
     try {
         $mail->isSMTP();

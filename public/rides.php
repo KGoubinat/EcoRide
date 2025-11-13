@@ -72,10 +72,10 @@ try {
 <main class="covoit">
   <section class="form">
     <div class="formulaire">
-      <h2 class="ecoride-title">EcoRide</h2>
-      <p>Voyagez ensemble, économisez ensemble.</p>
+      <h2 class="ecoride-title">Chercher un covoiturage</h2>
+      <p>Indiquez votre trajet et la date souhaitée ci dessous : </p>
 
-      <form id="rechercheForm" action="resultatsrides.php" method="GET">
+      <form id="rechercheForm" action="ride_results.php" method="GET">
         <input list="cities" id="start" name="start" placeholder="Départ" required><br>
         <input list="cities" id="end"   name="end"   placeholder="Destination" required><br>
         <input type="number" id="passengers" name="passengers" placeholder="Passager(s)" min="1" required><br>

@@ -79,7 +79,7 @@ $back = 'manage_employees.php' . ($search !== '' ? ('?q='.urlencode($search)) : 
       <li><a href="manage_employees.php" aria-current="page">Gérer les Employés</a></li>
       <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
       <li>
-        <form action="../backend/handlers/delogin.php" method="POST" style="display:inline">
+        <form action="../backend/handlers/logout.php" method="POST" style="display:inline">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <button type="submit" class="linklike">Déconnexion</button>
         </form>

@@ -1,232 +1,200 @@
-// frontend/js/cookie_consent.js
+// assets/js/cookie_consent.js
+
 (function () {
-  "use strict";
+  const COOKIE_NAME = 'ecoride_consent_v1';
+  const COOKIE_MAX_AGE = 365 * 24 * 60 * 60; // 1 an
 
-  const COOKIE_NAME = "ecoride_consent_v1";
-  const COOKIE_MAX_AGE_DAYS = 180; // 6 mois
-
-  // --- Utils cookie ---
-  function setCookie(name, value, days) {
-    const maxAge = days * 24 * 60 * 60;
-    const secure = location.protocol === "https:" ? ";Secure" : "";
-    document.cookie =
-      `${encodeURIComponent(name)}=${encodeURIComponent(value)};` +
-      `path=/;` +
-      `max-age=${maxAge};` +
-      `SameSite=Lax` +
-      secure;
-  }
-
-  function getCookie(name) {
-    const target = encodeURIComponent(name) + "=";
-    return (
-      document.cookie
-        .split(";")
-        .map((s) => s.trim())
-        .find((s) => s.startsWith(target))
-        ?.slice(target.length) || ""
-    );
-  }
-
-  function parseConsent() {
-    const raw = getCookie(COOKIE_NAME);
-    if (!raw) return null;
-    // tolérant aux anciennes versions double-encodées
+  // ---- Helpers cookie ----
+  function readConsent() {
+    const all = document.cookie.split(';').map(c => c.trim());
+    const row = all.find(c => c.startsWith(COOKIE_NAME + '='));
+    if (!row) return {};
+    const raw = row.split('=').slice(1).join('='); // au cas où
     try {
-      return JSON.parse(decodeURIComponent(raw));
-    } catch {
-      try {
-        return JSON.parse(decodeURIComponent(decodeURIComponent(raw)));
-      } catch {
-        return null;
-      }
+      const decoded = decodeURIComponent(raw);
+      const data = JSON.parse(decoded);
+      return typeof data === 'object' && data !== null ? data : {};
+    } catch (e) {
+      return {};
     }
   }
 
-  // --- UI elements (présents dans tes pages) ---
-  const $banner = document.getElementById("cookie-banner");
-  const $modal = document.getElementById("cookie-modal");
-  const $blocker = document.getElementById("cookie-blocker");
-  const $openPrefLink = document.getElementById("open-cookie-modal");
-  const $chkAnalytics = document.getElementById("consent-analytics");
-  const $chkMarketing = document.getElementById("consent-marketing");
+  function writeConsent(consent) {
+    const value = encodeURIComponent(JSON.stringify(consent));
+    document.cookie =
+      COOKIE_NAME + '=' + value +
+      '; Max-Age=' + COOKIE_MAX_AGE +
+      '; Path=/' +
+      '; SameSite=Lax';
+    // (Tu peux ajouter ;Secure si tu es 100% en HTTPS)
+  }
 
-  // --- Helpers UI ---
+  function hasUserMadeChoice(consent) {
+    // On considère qu'il a fait un choix s'il y a une clé autre que "essentials"
+    return Object.keys(consent).length > 1 || 'analytics' in consent || 'marketing' in consent;
+  }
+
+  // ---- UI helpers ----
   function show(el) {
-    if (el) el.hidden = false;
+    if (!el) return;
+    el.hidden = false;
   }
+
   function hide(el) {
-    if (el) el.hidden = true;
+    if (!el) return;
+    el.hidden = true;
   }
 
-  function openModal(prefill) {
-    if ($chkAnalytics) $chkAnalytics.checked = !!prefill.analytics;
-    if ($chkMarketing) $chkMarketing.checked = !!prefill.marketing;
-    show($modal);
-    show($blocker);
-  }
+  // ---- Application du consentement aux scripts ----
+  function applyConsentToScripts(consent) {
+    const scripts = document.querySelectorAll('script[type="text/plain"][data-consent]:not([data-applied="1"])');
 
-  function openBanner() {
-    show($banner);
-    show($blocker);
-  }
+    scripts.forEach(srcScript => {
+      const key = srcScript.dataset.consent;
+      const allowed = !!consent[key]; // true si autorisé
 
-  // --- Base consent object ---
-  function baseConsent(patch) {
-    return {
-      version: 1,
-      date: new Date().toISOString(),
-      essentials: true, // toujours actifs
-      analytics: false,
-      marketing: false,
-      ...patch,
-    };
-  }
-
-  // --- Appliquer décision & lancer scripts différés ---
-  function applyConsent(consent) {
-    // IMPORTANT: ne PAS re-encoder ici (setCookie s’en charge déjà)
-    setCookie(COOKIE_NAME, JSON.stringify(consent), COOKIE_MAX_AGE_DAYS);
-
-    hide($banner);
-    hide($modal);
-    hide($blocker);
-
-    document.dispatchEvent(
-      new CustomEvent("ecoride:consentchange", { detail: consent })
-    );
-
-    enableDeferredScripts(consent);
-  }
-
-  function enableDeferredScripts(consent) {
-    const nodes = document.querySelectorAll(
-      'script[type="text/plain"][data-consent]'
-    );
-    nodes.forEach((node) => {
-      const needs = node
-        .getAttribute("data-consent")
-        .split(",")
-        .map((s) => s.trim().toLowerCase());
-
-      const allowed = needs.every((cat) => consent[cat] === true);
-      if (!allowed) return;
-
-      const newScript = document.createElement("script");
-
-      // Copie d'attributs utiles (sauf type/data-*)
-      [
-        "id",
-        "async",
-        "defer",
-        "crossorigin",
-        "referrerpolicy",
-        "integrity",
-      ].forEach((attr) => {
-        if (node.hasAttribute(attr)) {
-          newScript.setAttribute(attr, node.getAttribute(attr));
-        }
-      });
-
-      const src = node.getAttribute("data-src");
-      if (src) {
-        newScript.src = src;
-      } else {
-        newScript.textContent = node.textContent || "";
+      if (!allowed) {
+        return; // on ne charge pas ce script
       }
 
-      node.parentNode.replaceChild(newScript, node);
+      // Marquer comme appliqué pour éviter les doublons
+      srcScript.dataset.applied = '1';
+
+      if (srcScript.dataset.src) {
+        // Script externe (analytics par ex)
+        const s = document.createElement('script');
+        s.src = srcScript.dataset.src;
+        s.async = srcScript.async;
+        document.head.appendChild(s);
+      } else if (srcScript.textContent.trim() !== '') {
+        // Script inline
+        const s = document.createElement('script');
+        s.text = srcScript.textContent;
+        document.body.appendChild(s);
+      }
     });
   }
 
-  // --- Handlers bandeau ---
-  function bindBannerActions() {
-    if (!$banner) return;
+  // ---- Initialisation au chargement ----
+  document.addEventListener('DOMContentLoaded', function () {
+    const banner = document.getElementById('cookie-banner');
+    const modal = document.getElementById('cookie-modal');
+    const blocker = document.getElementById('cookie-blocker');
+    const openModalLink = document.getElementById('open-cookie-modal');
+    const analyticsCheckbox = document.getElementById('consent-analytics');
+    const marketingCheckbox = document.getElementById('consent-marketing');
 
-    $banner
-      .querySelector('[data-action="accept-all"]')
-      ?.addEventListener("click", () => {
-        applyConsent(baseConsent({ analytics: true, marketing: true }));
-      });
-
-    $banner
-      .querySelector('[data-action="reject-all"]')
-      ?.addEventListener("click", () => {
-        applyConsent(baseConsent({ analytics: false, marketing: false }));
-      });
-
-    $banner
-      .querySelector('[data-action="customize"]')
-      ?.addEventListener("click", () => {
-        const current = parseConsent() || baseConsent({});
-        openModal(current);
-      });
-  }
-
-  // --- Handlers modal ---
-  function bindModalActions() {
-    if (!$modal) return;
-
-    $modal
-      .querySelector('[data-action="save"]')
-      ?.addEventListener("click", () => {
-        applyConsent(
-          baseConsent({
-            analytics: $chkAnalytics ? $chkAnalytics.checked : false,
-            marketing: $chkMarketing ? $chkMarketing.checked : false,
-          })
-        );
-      });
-
-    $modal
-      .querySelector('[data-action="close"]')
-      ?.addEventListener("click", () => {
-        hide($modal);
-        hide($blocker);
-      });
-  }
-
-  // --- API publique pratique ---
-  const API = {
-    get() {
-      return parseConsent() || baseConsent({});
-    },
-    set(patch = {}) {
-      const next = { ...API.get(), ...patch, date: new Date().toISOString() };
-      applyConsent(next);
-    },
-    open() {
-      openModal(API.get());
-    },
-    reset() {
-      // Efface puis ré-ouvre le bandeau
-      setCookie(COOKIE_NAME, "", -1);
-      openBanner();
-    },
-  };
-  window.CookieConsentAPI = API;
-
-  // Lien "Gérer mes cookies"
-  if ($openPrefLink) {
-    $openPrefLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      API.open();
-    });
-  }
-
-  // --- Boot ---
-  document.addEventListener("DOMContentLoaded", () => {
-    bindBannerActions();
-    bindModalActions();
-
-    const existing = parseConsent();
-    if (existing) {
-      enableDeferredScripts(existing);
-      hide($banner);
-      hide($modal);
-      hide($blocker);
-    } else {
-      openBanner();
+    if (!banner || !modal) {
+      return; // sécurité
     }
+
+    let consent = readConsent();
+
+    // Si un consentement existe déjà → on l'applique et on ne montre pas le bandeau
+    if (hasUserMadeChoice(consent)) {
+      // Met à jour les cases à cocher en fonction du cookie
+      if (analyticsCheckbox) {
+        analyticsCheckbox.checked = !!consent.analytics;
+      }
+      if (marketingCheckbox) {
+        marketingCheckbox.checked = !!consent.marketing;
+      }
+      applyConsentToScripts(consent);
+    } else {
+      // Pas encore de choix → montrer le bandeau
+      show(banner);
+      show(blocker);
+    }
+
+    // ---- Gestion des boutons du bandeau ----
+    banner.addEventListener('click', function (event) {
+      const btn = event.target.closest('button[data-action]');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+
+      if (action === 'accept-all') {
+        consent = {
+          essentials: true,
+          analytics: true,
+          marketing: true
+        };
+        writeConsent(consent);
+        if (analyticsCheckbox) analyticsCheckbox.checked = true;
+        if (marketingCheckbox) marketingCheckbox.checked = true;
+        hide(banner);
+        hide(blocker);
+        applyConsentToScripts(consent);
+      }
+
+      if (action === 'reject-all') {
+        consent = {
+          essentials: true,
+          analytics: false,
+          marketing: false
+        };
+        writeConsent(consent);
+        if (analyticsCheckbox) analyticsCheckbox.checked = false;
+        if (marketingCheckbox) marketingCheckbox.checked = false;
+        hide(banner);
+        hide(blocker);
+        // On ne charge rien de plus ici
+      }
+
+      if (action === 'customize') {
+        hide(banner);
+        show(modal);
+        show(blocker);
+        // Pré-remplir les cases avec la valeur actuelle
+        if (analyticsCheckbox) analyticsCheckbox.checked = !!consent.analytics;
+        if (marketingCheckbox) marketingCheckbox.checked = !!consent.marketing;
+      }
+    });
+
+    // ---- Lien "Gérer mes cookies" dans le footer ----
+    if (openModalLink) {
+      openModalLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        hide(banner);
+        show(modal);
+        show(blocker);
+        // Pré-remplir à partir du cookie actuel
+        consent = readConsent();
+        if (analyticsCheckbox) analyticsCheckbox.checked = !!consent.analytics;
+        if (marketingCheckbox) marketingCheckbox.checked = !!consent.marketing;
+      });
+    }
+
+    // ---- Boutons dans la modale ----
+    modal.addEventListener('click', function (event) {
+      const btn = event.target.closest('button[data-action]');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+
+      if (action === 'save') {
+        consent = {
+          essentials: true,
+          analytics: analyticsCheckbox ? analyticsCheckbox.checked : false,
+          marketing: marketingCheckbox ? marketingCheckbox.checked : false
+        };
+        writeConsent(consent);
+        hide(modal);
+        hide(blocker);
+        applyConsentToScripts(consent);
+      }
+
+      if (action === 'close') {
+        hide(modal);
+        // Si l'utilisateur n'a jamais fait de choix avant, on peut réafficher le bandeau
+        const stored = readConsent();
+        if (!hasUserMadeChoice(stored)) {
+          show(banner);
+          show(blocker);
+        } else {
+          hide(blocker);
+        }
+      }
+    });
   });
 })();

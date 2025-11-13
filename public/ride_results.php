@@ -309,7 +309,7 @@ function driverPhoto(PDO $pdo, array $row): string {
                     'date'  => $suggestedRide['date'],
                 ]);
             ?>
-            <button onclick="location.href='resultatsrides.php?<?= htmlspecialchars($sq) ?>'" class="button">Voir ce trajet&nbsp;</button>
+            <button onclick="location.href='ride_results.php?<?= htmlspecialchars($sq) ?>'" class="button">Voir ce trajet&nbsp;</button>
         </div>
 
         <?php if ($otherRides): ?>
