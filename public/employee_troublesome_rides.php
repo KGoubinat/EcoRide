@@ -13,6 +13,12 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'employe') {
     exit;
 }
 
+// CSRF (réutilise si déjà présent)
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+
 $pdo = getPDO();
 
 // (Optionnel) filtre par statut ?status=open|resolved|all
@@ -75,25 +81,18 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Covoiturages problématiques | Espace Employé EcoRide</title>
+  <title>EcoRide - Covoiturages Problématiques</title>
 
   <!-- base dynamique -->
-  <base href="<?= htmlspecialchars(rtrim(BASE_URL, '/').'/', ENT_QUOTES) ?>">
-  <link rel="stylesheet" href="styles.css">
+  <base href="<?= htmlspecialchars(rtrim((string)BASE_URL, '/').'/', ENT_QUOTES) ?>">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/modern.css">
 
-  <!-- SEO (Lighthouse OK, mais page privée) -->
+  <!-- SEO (page privée) -->
   <meta name="description" content="Interface employé pour consulter et traiter les covoiturages signalés : filtrer par statut, voir les détails et marquer comme résolus.">
   <meta name="robots" content="noindex, nofollow">
-
-  <!-- Canonical sans paramètres ?status=&page= -->
-  <?php $canonical = rtrim(BASE_URL, '/').'/employee_troublesome_rides.php'; ?>
+  <?php $canonical = rtrim((string)BASE_URL, '/').'/employee_troublesome_rides.php'; ?>
   <link rel="canonical" href="<?= htmlspecialchars($canonical, ENT_QUOTES) ?>">
-
-  <!-- (Facultatif) Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Covoiturages problématiques | Espace Employé EcoRide">
-  <meta property="og:description" content="Consultez et résolvez les signalements de covoiturages.">
-  <meta property="og:url" content="<?= htmlspecialchars($canonical, ENT_QUOTES) ?>">
 </head>
 
 <body>
@@ -105,7 +104,7 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
       <ul>
         <li><a href="employee_dashboard.php">Tableau de bord</a></li>
         <li><a href="employee_reviews.php">Gérer les Avis</a></li>
-        <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
+        <li><a href="employee_troublesome_rides.php" aria-current="page">Covoiturages Problématiques</a></li>
         <li><a href="logout.php">Déconnexion</a></li>
       </ul>
     </nav>
@@ -115,7 +114,12 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
       <li><a href="employee_dashboard.php">Tableau de bord</a></li>
       <li><a href="employee_reviews.php">Gérer les Avis</a></li>
       <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
-      <li><a href="logout.php">Déconnexion</a></li>
+      <li>
+        <form action="../backend/handlers/deconnexion.php" method="POST" style="display:inline">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+          <button type="submit" class="linklike">Déconnexion</button>
+        </form>
+      </li>
     </ul>
   </nav>
 </header>
@@ -159,6 +163,13 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
         </thead>
         <tbody>
         <?php foreach ($troublesomeRides as $ride): ?>
+          <?php
+            $back = 'employee_troublesome_rides.php?status=' . urlencode($status) . '&page=' . (int)$page;
+            $isOpen = (($ride['status'] ?? '') === 'open');
+            $targetStatus = $isOpen ? 'resolved' : 'open';
+            $btnLabel = $isOpen ? 'Marquer résolu' : 'Réouvrir';
+            $confirmMsg = $isOpen ? 'Marquer comme résolu ?' : 'Réouvrir ce signalement ?';
+          ?>
           <tr>
             <td><?= (int)$ride['troublesome_id'] ?></td>
             <td><?= (int)$ride['ride_id'] ?></td>
@@ -181,17 +192,13 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
             <td><?= htmlspecialchars($ride['comment'] ?? '', ENT_QUOTES) ?></td>
             <td><?= htmlspecialchars($ride['status'] ?? '', ENT_QUOTES) ?></td>
             <td>
-              <?php
-                // on reconstruit un "back" propre pour revenir au bon filtre/page
-                $back = 'employee_troublesome_rides.php?status=' . urlencode($status) . '&page=' . (int)$page;
-                if (($ride['status'] ?? '') === 'open') {
-                  $url = 'update_troublesome_ride.php?id='.(int)$ride['troublesome_id'].'&status=resolved&back='.urlencode($back);
-                  echo '<a href="'.$url.'" onclick="return confirm(\'Marquer comme résolu ?\');">Marquer résolu</a>';
-                } else {
-                  $url = 'update_troublesome_ride.php?id='.(int)$ride['troublesome_id'].'&status=open&back='.urlencode($back);
-                  echo '<a href="'.$url.'" onclick="return confirm(\'Réouvrir ce signalement ?\');">Réouvrir</a>';
-                }
-              ?>
+              <form action="../backend/handlers/update_troublesome_ride.php" method="POST" style="display:inline" onsubmit="return confirm('<?= $confirmMsg ?>');">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                <input type="hidden" name="id" value="<?= (int)$ride['troublesome_id'] ?>">
+                <input type="hidden" name="status" value="<?= htmlspecialchars($targetStatus, ENT_QUOTES) ?>">
+                <input type="hidden" name="back" value="<?= htmlspecialchars($back, ENT_QUOTES) ?>">
+                <button type="submit" class="btn"><?= $btnLabel ?></button>
+              </form>
             </td>
           </tr>
         <?php endforeach; ?>
@@ -203,7 +210,7 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
         if ($pages > 1):
       ?>
       <nav style="margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap;">
-        <?php for ($p = 1; $p <= $pages; $p++): 
+        <?php for ($p = 1; $p <= $pages; $p++):
           $link = 'employee_troublesome_rides.php?status='.urlencode($status).'&page='.$p; ?>
           <a href="<?= $link ?>" <?= $p===$page ? 'style="font-weight:bold;text-decoration:underline;"':'' ?>>
             <?= $p ?>
@@ -222,10 +229,44 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
+<style>
+.linklike { background:none; border:none; padding:0; margin:0; cursor:pointer; color:inherit; font:inherit; text-decoration:underline; }
+</style>
+
+<!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+<!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+ 
+<script src="assets/js/cookie-consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

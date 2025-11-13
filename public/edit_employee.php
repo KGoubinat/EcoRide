@@ -19,7 +19,14 @@ if (!$id) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // CSRF
+    $csrf = $_POST['csrf_token'] ?? '';
+    if (!$csrf || !hash_equals($_SESSION['csrf_token'] ?? '', $csrf)) {
+        header('Location: ' . BASE_URL . 'manage_employees.php?error=forbidden');
+        exit;
+    }
+
     $lastName  = trim($_POST['lastName'] ?? '');
     $firstName = trim($_POST['firstName'] ?? '');
     $email     = trim($_POST['email'] ?? '');
@@ -64,7 +71,8 @@ if (!$employee) {
   <meta charset="UTF-8" />
   <title>Modifier un Employé</title>
   <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/modern.css">
 </head>
 <body>
 <header>
@@ -74,7 +82,7 @@ if (!$employee) {
     <nav id="navbar">
       <ul>
         <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-        <li><a href="add_employee.html">Ajouter un Employé</a></li>
+        <li><a href="add_employee.php">Ajouter un Employé</a></li>
         <li><a href="manage_employees.php">Gérer les Employés</a></li>
         <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
         <li><a href="logout.php">Déconnexion</a></li>
@@ -84,7 +92,7 @@ if (!$employee) {
   <nav id="mobile-menu">
     <ul>
       <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-      <li><a href="add_employee.html">Ajouter un Employé</a></li>
+      <li><a href="add_employee.php">Ajouter un Employé</a></li>
       <li><a href="manage_employees.php">Gérer les Employés</a></li>
       <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
       <li><a href="logout.php">Déconnexion</a></li>
@@ -100,7 +108,8 @@ if (!$employee) {
       <p class="flash flash-error">✖ <?= htmlspecialchars($error, ENT_QUOTES) ?></p>
     <?php endif; ?>
 
-    <form method="post" class="employee-form">
+    <form method="post" class="employee-form" action="edit_employee.php?id=<?= (int)$employee['id'] ?>">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
       <label for="lastName">Nom :</label>
       <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($employee['lastName'], ENT_QUOTES) ?>" required><br><br>
 
@@ -128,10 +137,41 @@ if (!$employee) {
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
+        <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
+<script src="assets/js/cookie-consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 session_start();
-
-require __DIR__ . '/../backend/bdd/db.php';   
-require __DIR__ . '/bootstrap.php';          
+require __DIR__ . '/../../public/init.php';
+        
 
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
     header('Location: ' . BASE_URL . 'accueil.php', true, 302);

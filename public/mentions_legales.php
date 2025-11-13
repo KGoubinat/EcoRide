@@ -2,9 +2,10 @@
 // mentions_legales.php
 declare(strict_types=1);
 
-require __DIR__ . '/init.php'; // session_start + BASE_URL (+ $pdo dispo si besoin)
+require __DIR__ . '/init.php'; // session_start + BASE_URL (+ $pdo si besoin)
 
 $isLoggedIn = isset($_SESSION['user_id']);
+$canonical  = rtrim((string)BASE_URL, '/').'/mentions_legales.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -12,9 +13,23 @@ $isLoggedIn = isset($_SESSION['user_id']);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EcoRide - Mentions légales</title>
+
   <!-- base dynamique -->
-  <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
-  <link rel="stylesheet" href="styles.css" />
+  <base href="<?= htmlspecialchars(rtrim((string)BASE_URL, '/').'/', ENT_QUOTES) ?>">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/modern.css">
+
+  <!-- SEO -->
+  <meta name="description" content="Mentions légales d’EcoRide : éditeur du site, hébergeur, contact, conditions d’utilisation, confidentialité et cookies.">
+  <link rel="canonical" href="<?= htmlspecialchars($canonical, ENT_QUOTES) ?>">
+
+  <!-- Open Graph (partage propre) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="EcoRide - Mentions légales">
+  <meta property="og:description" content="Informations légales : éditeur, hébergeur, CGU, confidentialité et cookies.">
+  <meta property="og:url" content="<?= htmlspecialchars($canonical, ENT_QUOTES) ?>">
+  <meta property="og:image" content="<?= htmlspecialchars(rtrim((string)BASE_URL, '/').'/assets/images/cover.jpg', ENT_QUOTES) ?>">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <header>
@@ -50,7 +65,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <p>EcoRide, société à responsabilité limitée (SARL) au capital de 100&nbsp;000&nbsp;€</p>
     <p>Siège social : 123 Rue de l'Innovation, 75000 Paris, France</p>
     <p>Email : <a href="mailto:contact@ecoride.com">contact@ecoride.com</a></p>
-    <p>Téléphone : 01&nbsp;23&nbsp;45&nbsp;67&nbsp;89</p>
+    <p>Téléphone : <a href="tel:+33123456789">01&nbsp;23&nbsp;45&nbsp;67&nbsp;89</a></p>
     <p>Numéro SIREN : 123&nbsp;456&nbsp;789</p>
 
     <h4>Directeur de publication</h4>
@@ -62,13 +77,14 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
     <h4>Conditions Générales d'Utilisation (CGU)</h4>
     <ul>
-      <li>En accédant à ce site, vous acceptez les conditions d'utilisation suivantes.</li>
+      <li>En accédant à ce site, vous acceptez les conditions d'utilisation.</li>
       <li>Le contenu du site est protégé par des droits d'auteur.</li>
       <li>L'éditeur ne peut être tenu responsable des dommages liés à l'utilisation du site.</li>
     </ul>
 
     <h4>Politique de Confidentialité</h4>
-    <p>Les données personnelles sont collectées à des fins de gestion des comptes utilisateurs, etc. Pour plus d'informations, consultez notre politique de confidentialité.</p>
+    <p>Les données personnelles sont collectées à des fins de gestion des comptes utilisateurs, etc.
+       Pour plus d'informations, consultez notre politique de confidentialité.</p>
 
     <h4>Cookies</h4>
     <p>Ce site utilise des cookies pour améliorer votre expérience. Consultez notre
@@ -84,12 +100,43 @@ $isLoggedIn = isset($_SESSION['user_id']);
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
-<!-- chemins relatifs à BASE_URL -->
-<script src="js/accueil.js"></script>
+   <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
+ 
+<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/accueil.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

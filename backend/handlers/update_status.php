@@ -1,7 +1,6 @@
 <?php
-declare(strict_types=1);
 
-require __DIR__ . '/init.php'; // <- avec le slash !
+require __DIR__ . '/../../public/init.php';
 header('Content-Type: application/json; charset=UTF-8');
 
 // Doit être connecté

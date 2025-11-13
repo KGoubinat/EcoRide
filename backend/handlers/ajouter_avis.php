@@ -1,6 +1,6 @@
 <?php
 // add_review.php
-require __DIR__ . '/init.php'; // ← lance session + BASE_URL + $pdo = getPDO()
+require __DIR__ . '/../../public/init.php'; // ← lance session + BASE_URL + $pdo = getPDO()
 
 // 1) Doit être connecté
 if (empty($_SESSION['user_email'])) {

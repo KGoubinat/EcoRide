@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/init.php';
+require __DIR__ . '/../init.php';
 header('Content-Type: application/json; charset=UTF-8');
 
 try {
@@ -78,7 +78,8 @@ try {
     $pdo->commit();
    
     // Notifications (Mailtrap via notifyRideEvent)
-    require_once __DIR__ . '/../backend/lib/ride_notifications.php';
+require_once __DIR__ . '/../../backend/lib/ride_notifications.php';
+
     try { notifyRideEvent($pdo, $rideId, 'start', $userId, false); } catch (\Throwable $e) {
         // On ignore une erreur d’envoi mail pour ne pas casser l’UX
     }

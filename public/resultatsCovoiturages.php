@@ -122,7 +122,7 @@ if (!$covoiturages && $suggestedRide) {
 function driverPhoto(PDO $pdo, array $row): string {
     $driverKey = array_key_exists('conducteur_id', $row) ? 'conducteur_id' : 'user_id';
     $driverId  = $row[$driverKey] ?? null;
-    if (!$driverId) return "images/default-avatar.png";
+    if (!$driverId) return "assets/images/default-avatar.png";
 
     $st = $pdo->prepare("SELECT photo FROM users WHERE id = ?");
     $st->execute([$driverId]);
@@ -130,7 +130,7 @@ function driverPhoto(PDO $pdo, array $row): string {
     if (!empty($photo)) {
         return $photo;
     }
-    return "images/default-avatar.png";
+    return "assets/images/default-avatar.png";
 }
 ?>
 <!DOCTYPE html>
@@ -139,8 +139,9 @@ function driverPhoto(PDO $pdo, array $row): string {
     <meta charset="UTF-8">
     <title>EcoRide - Résultats</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
-    <link rel="stylesheet" href="styles.css">
+    <base href="<?= htmlspecialchars(rtrim((string)BASE_URL, '/').'/', ENT_QUOTES) ?>">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/modern.css">
 </head>
 <body>
 <header>
@@ -295,7 +296,7 @@ function driverPhoto(PDO $pdo, array $row): string {
 
     <?php elseif ($suggestedRide): ?>
         <div class="suggestion">
-            <p>Aucun covoiturage trouvé pour cette date.</p>
+            <p>Aucun covoiturage trouvé avec ces critères.</p>
             <p>
                 Premier itinéraire le plus proche le
                 <strong><?= htmlspecialchars((new DateTime($suggestedRide['date']))->format('d/m/Y')) ?></strong>
@@ -308,7 +309,7 @@ function driverPhoto(PDO $pdo, array $row): string {
                     'date'  => $suggestedRide['date'],
                 ]);
             ?>
-            <a href="resultatsCovoiturages.php?<?= htmlspecialchars($sq) ?>" class="btn">Voir ce trajet</a>
+            <button onclick="location.href='resultatsCovoiturages.php?<?= htmlspecialchars($sq) ?>'" class="button">Voir ce trajet&nbsp;</button>
         </div>
 
         <?php if ($otherRides): ?>
@@ -345,11 +346,43 @@ function driverPhoto(PDO $pdo, array $row): string {
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
-<script src="js/filtres.js" defer></script>
+   <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
+
+<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/filtres.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.getElementById("menu-toggle");

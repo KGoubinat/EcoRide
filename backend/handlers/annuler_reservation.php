@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/init.php'; // session_start + BASE_URL + $pdo=getPDO()
+require __DIR__ . '/../../public/init.php'; // session_start + BASE_URL + $pdo=getPDO()
 
 // 1) Auth obligatoire
 if (empty($_SESSION['user_email'])) {

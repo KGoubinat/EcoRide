@@ -1,6 +1,6 @@
 <?php
 // logout.php
-require __DIR__ . '/init.php'; // gère BASE_URL et session_start
+require __DIR__ . '/../../public/init.php'; // gère BASE_URL et session_start
 
 // Vider la session
 $_SESSION = [];

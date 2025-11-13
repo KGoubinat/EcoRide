@@ -5,7 +5,7 @@ body {
     padding: 0;
     background: #d8f3dc;
     color: white;
-    background: url('images/Fond.jpg') no-repeat center center fixed;           
+    background: url('../images/Fond-1920.jpg') no-repeat center center fixed;           
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center; /* Centre l'image */
@@ -27,20 +27,18 @@ body::before {
 /* Header */
 header {
     border-bottom: 3px solid white; /* fine bordure blanche */
-    background: black;
+    background: #0F151A;
     color: white;
-    padding: 0, 20px;
-    height: 50px; 
+    padding: 0 20px;
     margin: 0;
 
 }
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
+.header-container{
+  display:flex;
+  justify-content:center;   /* centre le h1 */
+  position:relative;        /* référence pour le burger */
+  padding: 0 10px;
+  align-items: center;
 }
 header h1 {
     color: white;
@@ -131,7 +129,7 @@ main.four-columns {
     flex-direction: column;
     align-items: center;
     justify-content: center; 
-    background: black;
+    background: #0F151A;
     border-radius: 50px;
     padding: 20px;
     width: 350px;
@@ -157,7 +155,7 @@ main.four-columns {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: #0F151A;
     border-radius: 50px;
     padding: 0px; /* Plus d'espace autour du contenu */
     width: 550px;
@@ -176,7 +174,7 @@ form input{
 
 /* Details Section */
 .details {
-    background: black;
+    background: #0F151A;
     padding: 10px;
     border-radius: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -190,7 +188,7 @@ form input{
 
 /* Rejoindre Section */
 .rejoindre {
-    background: black;
+    background: #0F151A;
     padding: 20px;
     border-radius: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -233,7 +231,7 @@ button:hover {
 /* Footer */
 footer {
     border-top: 3px solid white;
-    background: black;
+    background: #0F151A;
     color: white;
     display: flex;
     justify-content: center;   /* centre horizontalement */
@@ -261,13 +259,14 @@ footer a:hover {
 }
 /* Style de la carte */
 .card {
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     max-height: 500px;
     width: auto;
     height: auto;
-    background-color: black;
+    background-color: #0F151A;
     border-radius: 50px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
@@ -339,7 +338,7 @@ footer a:hover {
 
 
 .card-body-filters {
-    background-color: black;
+    background-color: #0F151A;
     padding: 0px;
     text-align: left;
     font-weight: bold;
@@ -385,7 +384,7 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: #0F151A;
     border-radius: 50px;
     padding: 10px; /* Plus d'espace autour du contenu */
     width: 550px;
@@ -412,7 +411,7 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: #0F151A;
     border-radius: 50px;
     padding: 0px; /* Plus d'espace autour du contenu */
     width: 550px;
@@ -432,7 +431,6 @@ footer a:hover {
     padding: 20px;
     border-radius: 50px;
     margin-top: 30px;
-    outline: 3px solid white !important;
 }
 
 .suggestion .btn {
@@ -455,9 +453,8 @@ footer a:hover {
     font-weight: bold;
     color: white;
     margin-top: 20px;
-    background-color: black;
+    background-color: #0F151A;
     border-radius: 50px;
-    outline: 3px solid white !important;
     padding: 10px;
 }
 .adaptation {
@@ -475,7 +472,7 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: #0F151A;
     border-radius: 50px;
     padding: 20px; /* Plus d'espace autour du contenu */
     width: 500px;
@@ -506,7 +503,7 @@ footer a:hover {
     border: 1px solid white;
     border-radius: 8px;
     margin-bottom: 15px;
-    background: black;
+    background: #0F151A;
     transition: 0.3s ease-in-out;
 }
 
@@ -522,7 +519,7 @@ footer a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: #0F151A;
     border-radius: 50px;
     padding: 5px; /* Plus d'espace autour du contenu */
     width: 500px;
@@ -559,7 +556,7 @@ footer a:hover {
     align-items: center;
 }
   .modal-content {
-    background-color: black;
+    background-color: #0F151A;
     padding: 20px;
     border-radius: 50px;
     width: 400px;
@@ -577,6 +574,10 @@ footer a:hover {
     justify-content: space-around;
     margin-top: 20px;
   }
+
+  .modal.active {
+  display: flex !important;
+}
   
   .btn-confirm, .btn-cancel {
     padding: 10px 20px;
@@ -605,7 +606,7 @@ footer a:hover {
     background-color: #c82333;
   }
   
-  .close-btn {
+  .close-btn, .close-reservation-btn {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -617,7 +618,7 @@ footer a:hover {
 
 
 .info-card {
-    background-color: black;
+    background-color: #0F151A;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -639,7 +640,7 @@ footer a:hover {
 
 .reservation-item, .offered-ride-item {
     display: grid;
-    background-color: black;
+    background-color: #0F151A;
     padding: 5px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -714,7 +715,7 @@ table th, table td {
     text-align: left;
 }
 table th {
-    background-color: black;
+    background-color: #0F151A;
     color: white;
 }
 
@@ -728,7 +729,7 @@ table th {
     height: fit-content;
     margin-bottom: 30px;
     padding: 15px;
-    background-color: black;
+    background-color: #0F151A;
 }
 
 .container{
@@ -928,16 +929,22 @@ form input, form button {
 
 /* Réduire la taille des titres pour les petits écrans */
 h2, h3, h1 {
+  text-align: center;
     font-size: 1.5em;
 }
 
 
 /* -------------------- Styles pour le menu burger (mobile) -------------------- */
-.menu-toggle {
-    display: none; /* Caché en desktop */
-    font-size: 28px;
-    cursor: pointer;
-    color: white;
+.menu-toggle{
+  display:none;             /* visible qu’en mobile */
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform: translateY(-50%);
+  font-size:28px;
+  color:white;
+  cursor:pointer;
+  color: #26A69A;
 }
 
 /* Menu mobile */
@@ -1260,7 +1267,7 @@ main.adaptation > .container > * {
 .cookie-banner {
   position: fixed;
   left: 0; right: 0; bottom: 0;
-  background: black;
+  background: #0F151A;
   border-top: 2px solid white;
   padding: 16px;
   z-index: 9999;
@@ -1284,7 +1291,7 @@ main.adaptation > .container > * {
   display: flex; align-items: center; justify-content: center;
 }
 .cookie-modal-card {
-  background: black; border: 2px solid white; border-radius: 12px; padding: 20px; width: min(520px, 92vw);
+  background: #0F151A; border: 2px solid white; border-radius: 12px; padding: 20px; width: min(520px, 92vw);
 }
 .cookie-modal-actions { margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end; }
 
@@ -1298,9 +1305,9 @@ main.adaptation > .container > * {
   z-index: 9998; /* juste en dessous du bandeau */
 }
 
-.user-vehicles { border:3px solid white; border-radius:50px; background:black; padding:15px; }
-.vehicule-card { position: relative; display: flex; border:1px solid white; border-radius:12px; padding:12px; margin-bottom:14px; background:black; }
-.vehicule-header { display:flex; justify-content:space-between; align-items:center; gap:10px; background: black; }
+.user-vehicles { border:3px solid white; border-radius:50px; background: #0F151A; padding:15px; display: flex; flex-direction: column; align-items: center; margin: 0 auto; }
+.vehicule-card { position: relative; display: flex; border:1px solid white; border-radius:12px; padding:12px; margin-bottom:14px; background: #0F151A; }
+.vehicule-header { display:flex; justify-content:space-between; align-items:center; gap:10px; background: #0F151A; justify-content: center; }
 .vehicule-actions form { display:inline; justify-content: center; gap: 10px; margin-top:10px; }
 .vehicule-edit-form .form-row { display:grid; gap:6px; margin:10px 0; }
 .vehicule-edit-form .form-actions { display:flex; gap:10px; }
@@ -1501,7 +1508,7 @@ li a {
   padding: 10px 14px;
   border: 1px solid white;
   border-radius: 8px;
-  background: black;
+  background: #0F151A;
   text-decoration: none;        /* pas besoin d’underline sur un bouton */
 }
 
@@ -1510,7 +1517,7 @@ li a {
   border: 2px solid white;   /* Bordure blanche */
   border-radius: 20px;       /* Arrondi */
   margin: 10px;              /* Espace extérieur */
-  background-color: black;   /* Garde ton fond noir */
+  background-color: #0F151A;   /* Garde ton fond noir */
   box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Optionnel : ombre */
 }
 
@@ -1526,21 +1533,21 @@ li a {
 
 /* Par défaut : mobile */
 body {
-  background: url('images/Fond-768.jpg') no-repeat center center fixed;
+  background: url('../images/Fond-768.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
 /* Tablette */
 @media (min-width: 768px) {
   body {
-    background-image: url('images/Fond-1280.jpg');
+    background-image: url('../images/Fond-1280.jpg');
   }
 }
 
 /* Desktop */
 @media (min-width: 1280px) {
   body {
-    background-image: url('images/Fond-1920.jpg');
+    background-image: url('../images/Fond-1920.jpg');
   }
 }
 
@@ -1572,6 +1579,7 @@ body {
 
 /* La carte devient le référentiel des positions */
 .vehicule-card{
+  width: fit-content;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1635,8 +1643,102 @@ footer .footer-links a, footer .footer-links span { line-height: 1; }
 
 /* Évite le margin collapse du dernier bloc de la page contre le footer */
 main > *:last-child { margin-bottom: 0 !important; }
-main { padding-bottom: 12px; } /* un petit padding pour séparer proprement */
+main { padding-bottom: 12px; }
+main { padding-top: 12px; }  /* un petit padding pour séparer proprement */
 
 /* Si un composant au-dessus du footer a de gros margin-bottom, on peut le lisser */
 .section, .presentation, .third-column, .rejoindre, .details { margin-bottom: 16px; } /* adapte à ton design */
+
+.user-offered-rides, .user-vehicles {
+    width: 80% !important;
+}
+.user-reservations {
+    width: 70% !important;
+}
+
+.cancel-ride-button {
+    margin-bottom: 5px !important;
+}
+
+.btn-edit{
+    margin-bottom: 5px !important;
+}
+
+/* Champs compacts (style "Recherche") */
+.compact-fields .form-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* largeur fixe mais responsive : 340px max, sinon 100% en mobile */
+.compact-fields .form-group input,
+.compact-fields .form-group select,
+.compact-fields .form-group textarea {
+  width: 340px;              /* largeur “compacte” en desktop */
+  max-width: 100%;           /* ne dépasse pas le conteneur en mobile */
+  flex: 0 0 340px;           /* évite de s’étirer en flex */
+  box-sizing: border-box;
+}
+
+/* Option : même hauteur visuelle pour tout */
+.compact-fields input,
+.compact-fields select,
+.compact-fields textarea {
+  height: 46px;
+  padding: 12px 14px;
+}
+
+/* En mobile, on repasse plein largeur pour le confort */
+@media (max-width: 768px) {
+  .compact-fields .form-group input,
+  .compact-fields .form-group select,
+  .compact-fields .form-group textarea {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+}
+
+#mobile-menu { display:none; }
+#mobile-menu.active { display:flex; } /* ou display:block */
+
+/* Centrage du bouton dans les formulaires compacts */
+.compact-fields button[type="submit"],
+.compact-fields .form-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* --- Modale EcoRide unifiée --- */
+.eco-modal,
+.eco-modal-overlay { position: fixed; inset: 0; z-index: 9999; }
+
+.eco-modal-overlay {
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(4px);
+}
+
+.eco-modal { display: grid; place-items: center; z-index: 10000;  }
+
+.eco-modal-content {
+  background: var(--card);
+  border: 1px solid #ffffff2a;
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  width: min(90%, 400px);
+  animation: scaleIn .2s ease;
+}
+
+.eco-modal-content h3 { margin: 0 0 .5rem; font-size: 1.4rem; }
+
+.eco-modal-actions {
+  display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;
+}
+
+@keyframes scaleIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 

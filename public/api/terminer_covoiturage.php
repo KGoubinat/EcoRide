@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/init.php';
+require __DIR__ . '/../init.php';
 header('Content-Type: application/json; charset=UTF-8');
 
 if (empty($_SESSION['user_email']) && empty($_SESSION['user_id'])) {
@@ -73,7 +73,7 @@ try {
   $pdo->prepare("UPDATE reservations SET statut = 'terminé' WHERE covoiturage_id = ?")->execute([$rideId]);
   $pdo->commit();
 
-  require_once __DIR__ . '/../backend/lib/ride_notifications.php';
+  require_once __DIR__ . '/../../backend/lib/ride_notifications.php';
   try { notifyRideEvent($pdo, $rideId, 'end', $userId, false); } catch (\Throwable $e) {}
 
   echo json_encode(['status'=>'success','message'=>'Covoiturage terminé','newStatus'=>'terminé','id'=>$rideId]);

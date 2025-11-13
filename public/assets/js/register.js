@@ -1,42 +1,59 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Menu burger
+  // --- Menu burger
   const menuToggle = document.getElementById("menu-toggle");
   const mobileMenu = document.getElementById("mobile-menu");
   if (menuToggle && mobileMenu) {
     menuToggle.addEventListener("click", () =>
       mobileMenu.classList.toggle("active")
     );
-    document
-      .querySelectorAll("#mobile-menu a")
-      .forEach((link) =>
-        link.addEventListener("click", () =>
-          mobileMenu.classList.remove("active")
-        )
+    document.querySelectorAll("#mobile-menu a").forEach((link) => {
+      link.addEventListener("click", () =>
+        mobileMenu.classList.remove("active")
       );
+    });
   }
 
-  // Remplissage Connexion/Profil si tu utilises les data-logged-in
-  const mountAuth = (suffix = "") => {
+  // --- Helpers
+  const urlFromBase = (p) => new URL(p, document.baseURI).toString();
+  const setLink = (li, href, label) => {
+    if (!li) return;
+    li.textContent = "";
+    const a = document.createElement("a");
+    a.href = href;
+    a.textContent = label;
+    li.appendChild(a);
+    li.style.display = ""; // au cas où il aurait été "none"
+  };
+
+  // --- Remplissage Connexion/Profil (desktop + mobile)
+  function mountAuth(suffix = "") {
     const profil = document.getElementById("profilButton" + suffix);
     const auth = document.getElementById("authButton" + suffix);
     if (!profil || !auth) return;
+
+    // Les deux flags doivent être "true" (cohérent avec tes autres pages)
     const logged =
-      profil.dataset.loggedIn === "true" || auth.dataset.loggedIn === "true";
+      profil.dataset.loggedIn === "true" && auth.dataset.loggedIn === "true";
+
     if (logged) {
-      profil.innerHTML = '<a href="profil.php">Profil</a>';
-      auth.innerHTML = '<a href="deconnexion.php">Déconnexion</a>';
+      setLink(profil, urlFromBase("profil.php"), "Profil");
+      setLink(auth, urlFromBase("logout.php"), "Déconnexion");
     } else {
       const redirect = encodeURIComponent(
         window.location.pathname + window.location.search
       );
-      profil.innerHTML = `<a href="connexion.html?redirect=${redirect}">Connexion</a>`;
-      auth.innerHTML = '<a href="register.php">Inscription</a>';
+      setLink(
+        profil,
+        urlFromBase(`connexion.php?redirect=${redirect}`),
+        "Connexion"
+      );
+      setLink(auth, urlFromBase("register.php"), "Inscription");
     }
-  };
-  mountAuth("");
-  mountAuth("Mobile");
+  }
+  mountAuth(""); // desktop
+  mountAuth("Mobile"); // mobile
 
-  // Form
+  // --- Formulaire d'inscription
   const form = document.getElementById("signupForm");
   if (!form) return;
 
@@ -46,8 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const password = document.getElementById("password");
   const confirm = document.getElementById("confirmPassword");
   const errorBox = document.getElementById("passwordError");
-
-  const pwdMin = 8; // cohérent avec le serveur
+  const pwdMin = 8;
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -68,11 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Appel API backend (relatif à <base href=".../frontend/">)
-    const apiUrl = new URL(
-      "../backend/register.php",
-      document.baseURI
-    ).toString();
+    const apiUrl = urlFromBase("../backend/register.php"); // ajuste si ton endpoint diffère
 
     fetch(apiUrl, {
       method: "POST",
@@ -86,15 +98,23 @@ document.addEventListener("DOMContentLoaded", function () {
         email: email.value.trim(),
         password: pwd,
       }),
+      credentials: "same-origin",
     })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success) {
-          alert(data.message || "Inscription réussie.");
-          // Redirection vers le Profil
-          window.location.href = "profil.php";
+      .then(async (r) => {
+        const text = await r.text();
+        let data = {};
+        try {
+          data = text ? JSON.parse(text) : {};
+        } catch {}
+        return { ok: r.ok, status: r.status, data, raw: text };
+      })
+      .then(({ ok, status, data, raw }) => {
+        if (ok && (data.success || data.status === "success")) {
+          // Redirection respectant <base>
+          window.location.href = urlFromBase("profil.php");
         } else {
-          alert("Erreur : " + (data.message || "Inscription impossible"));
+          console.error("Réponse brute:", raw);
+          alert(data?.message || `Erreur HTTP: ${status}`);
         }
       })
       .catch(() => alert("Une erreur réseau est survenue."));

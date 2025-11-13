@@ -1,7 +1,7 @@
 <?php
 // connexion.php
 declare(strict_types=1);
-require __DIR__ . '/init.php'; // charge .env + BASE_URL + getPDO()
+require __DIR__ . '/../../public/init.php'; // charge .env + BASE_URL + getPDO()
 
 // Autoriser seulement des redirections sûres (internes)
 function is_safe_redirect(string $url): bool {
@@ -17,7 +17,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     if ($email === '' || $pwd === '') {
         // message neutre pour éviter l'énumération
-        header('Location: ' . BASE_URL . 'connexion.html?error=missing');
+        header('Location: ' . BASE_URL . 'connexion.php?error=missing');
         exit;
     }
 
@@ -36,7 +36,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         // Réponse neutre (pas d’info si l’email existe)
         if (!$user) {
-            header('Location: ' . BASE_URL . 'connexion.html?error=credentials');
+            header('Location: ' . BASE_URL . 'connexion.php?error=credentials');
             exit;
         }
 
@@ -62,7 +62,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         }
 
         if (!$ok) {
-            header('Location: ' . BASE_URL . 'connexion.html?error=credentials');
+            header('Location: ' . BASE_URL . 'connexion.php?error=credentials');
             exit;
         }
 
@@ -78,7 +78,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         if ($etat !== 'active') {
             // Message neutre côté UI
-            header('Location: ' . BASE_URL . 'connexion.html?error=inactive');
+            header('Location: ' . BASE_URL . 'connexion.php?error=inactive');
             exit;
         }
 
@@ -120,12 +120,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     } catch (Throwable $e) {
         http_response_code(500);
-        header('Location: ' . BASE_URL . 'connexion.html?error=internal');
+        header('Location: ' . BASE_URL . 'connexion.php?error=internal');
         exit;
     }
 }
 
 
 // si on arrive ici sans POST, renvoyer vers le formulaire
-header('Location: ' . BASE_URL . 'connexion.html');
+header('Location: ' . BASE_URL . 'connexion.php');
 exit;

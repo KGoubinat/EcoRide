@@ -1,7 +1,7 @@
 <?php
 // participer_covoiturage.php
 declare(strict_types=1);
-require __DIR__ . '/init.php';
+require __DIR__ . '/../init.php';
 header('Content-Type: application/json; charset=UTF-8');
 
 $isLocal = (getenv('APP_ENV') === 'local');
@@ -21,19 +21,26 @@ try {
   // 2) Entrées + CSRF (header OU body)
   $raw  = file_get_contents('php://input');
   $data = $_POST ?: (json_decode($raw, true) ?: []);
-  $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? ($data['csrf_token'] ?? '');
+  $csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? ($data['csrf_token'] ?? ($data['csrf'] ?? ''));
 
   if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)$csrf)) {
     http_response_code(403);
     echo json_encode(['success'=>false,'message'=>'Token CSRF invalide.']); exit;
   }
 
-  $rideId     = filter_var($data['ride_id'] ?? $data['id'] ?? null, FILTER_VALIDATE_INT);
-  $passengers = filter_var($data['passengers'] ?? null, FILTER_VALIDATE_INT);
-  if (!$rideId || !$passengers || $passengers < 1) {
-    http_response_code(400);
-    echo json_encode(['success'=>false,'message'=>'Paramètres invalides.']); exit;
-  }
+  $rideId = filter_var(
+    $data['covoiturage_id'] ?? $data['ride_id'] ?? $data['id'] ?? null,
+    FILTER_VALIDATE_INT
+);
+  $passengers = filter_var(
+    $data['passengers'] ?? 1,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1, 'default' => 1]]
+);
+  if (!$rideId) {
+  http_response_code(400);
+  echo json_encode(['success'=>false,'message'=>'Paramètres invalides (id).']); exit;
+}
 
   // 3) Utilitaires
   $pdo = getPDO();

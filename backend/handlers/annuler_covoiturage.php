@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/init.php'; // session + getPDO()
+require __DIR__ . '/../../public/init.php'; // session + getPDO()
 header('Content-Type: text/html; charset=UTF-8');
 
 // 1) Auth
@@ -80,7 +80,7 @@ try {
     $pdo->commit();
 
     // 9) Notifications (Mailtrap via notifyRideEvent)
-    require_once __DIR__ . '/../backend/lib/ride_notifications.php';
+    require_once __DIR__ . '/../lib/ride_notifications.php';
     try {
         notifyRideEvent($pdo, $rideId, 'cancel', (int)$user['id'], true);
     } catch (\Throwable $e) {

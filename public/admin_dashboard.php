@@ -74,8 +74,9 @@ $backParam = urlencode($back);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- base dynamique, marche en local & Heroku (assure un slash final) -->
     <base href="<?= htmlspecialchars(rtrim(BASE_URL, '/').'/', ENT_QUOTES) ?>">
-    <link rel="stylesheet" href="styles.css" />
-    <title>Tableau de bord Administrateur</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/modern.css">
+    <title>Tableau de bord</title>
     <meta name="description" content="Tableau de bord administrateur EcoRide : statistiques des covoiturages, crédits gagnés par jour, et gestion des comptes (employés & utilisateurs).">
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="<?= htmlspecialchars(rtrim(BASE_URL,'/').'/admin_dashboard.php', ENT_QUOTES) ?>">
@@ -84,14 +85,14 @@ $backParam = urlencode($back);
 <body>
 <header>
     <div class="header-container">
-        <h1>Bienvenue, Administrateur</h1>
+        <h1>Tableau de bord</h1>
 
         <div class="menu-toggle" id="menu-toggle">☰</div>
 
         <nav id="navbar">
             <ul>
-                <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-                <li><a href="add_employee.html">Ajouter un Employé</a></li>
+                <li><a aria-current="page" href="admin_dashboard.php">Tableau de bord</a></li>
+                <li><a href="add_employee.php">Ajouter un Employé</a></li>
                 <li><a href="manage_employees.php">Gérer les Employés</a></li>
                 <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
                 <li><a href="logout.php">Déconnexion</a></li>
@@ -102,7 +103,7 @@ $backParam = urlencode($back);
     <nav id="mobile-menu">
         <ul>
             <li><a href="admin_dashboard.php">Tableau de bord</a></li>
-            <li><a href="add_employee.html">Ajouter un Employé</a></li>
+            <li><a href="add_employee.php">Ajouter un Employé</a></li>
             <li><a href="manage_employees.php">Gérer les Employés</a></li>
             <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
             <li><a href="logout.php">Déconnexion</a></li>
@@ -130,52 +131,49 @@ $backParam = urlencode($back);
         </div>
     </section>
 
-    <section class="comptes">
-        <h2>Gérer les Comptes</h2>
-        <div class="table-container">
-            <h3>Liste des Employés et Utilisateurs</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Email</th>
-                        <th>Rôle</th>
-                        <th>État</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($users as $u): ?>
-                    <tr>
-                        <td><?= (int)$u['id'] ?></td>
-                        <td><?= htmlspecialchars($u['firstName'] . ' ' . $u['lastName']) ?></td>
-                        <td><?= htmlspecialchars($u['email']) ?></td>
-                        <td><?= htmlspecialchars($u['role']) ?></td>
-                        <td><?= htmlspecialchars(ucfirst($u['etat'])) ?></td>
-                        <td>
-                            <?php if ($u['etat'] === 'active'): ?>
-                                <a href="update_user_status.php?id=<?= (int)$u['id'] ?>&status=suspended&back=<?= $backParam ?>">Suspendre</a>
-                            <?php else: ?>
-                                <a href="update_user_status.php?id=<?= (int)$u['id'] ?>&status=active&back=<?= $backParam ?>">Activer</a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </section>
+    
 </main>
 
 <footer>
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
+        <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
+<script src="assets/js/accueil.js" defer></script>
+<script src="assets/js/cookie-consent.js" defer></script>
 <script>
     // Graphiques Chart.js
     const carpoolLabels = <?= json_encode($carpoolLabels, JSON_UNESCAPED_UNICODE) ?>;
@@ -273,19 +271,7 @@ $backParam = urlencode($back);
     document.getElementById("totalCredits").textContent =
         "Total des crédits gagnés: " + totalCredits + " crédits";
 
-    // Menu burger
-    document.addEventListener("DOMContentLoaded", function () {
-        const menuToggle = document.getElementById("menu-toggle");
-        const mobileMenu = document.getElementById("mobile-menu");
-        if (menuToggle && mobileMenu) {
-            menuToggle.addEventListener("click", function () {
-                mobileMenu.classList.toggle("active");
-            });
-            document.querySelectorAll("#mobile-menu a").forEach(link => {
-                link.addEventListener("click", () => mobileMenu.classList.remove("active"));
-            });
-        }
-    });
+
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-require 'init.php'; // doit fournir $pdo et session_start()
+require __DIR__ . '/../../public/init.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: profil.php'); 

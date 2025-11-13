@@ -10,7 +10,7 @@ function applyFilters() {
   const note = document.querySelector('select[name="note"]')?.value || "";
   const date = document.querySelector('input[name="date"]')?.value || "";
 
-  const basePath = window.location.pathname;
+  const basePath = window.location.pathname; // on reste sur la page courante
   const params = new URLSearchParams(window.location.search);
 
   const setOrDelete = (key, val) => {
@@ -31,10 +31,14 @@ function applyFilters() {
   else params.delete("date");
 
   const query = params.toString();
+  // on garde le même path, on met à jour les query params
   window.location.href = query ? `${basePath}?${query}` : basePath;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Petit helper pour résoudre proprement les chemins avec <base href="...">
+  const urlFromBase = (p) => new URL(p, document.baseURI).toString();
+
   const fill = (suffix = "") => {
     const profil = document.getElementById("profilButton" + suffix);
     const auth = document.getElementById("authButton" + suffix);
@@ -44,14 +48,21 @@ document.addEventListener("DOMContentLoaded", () => {
       profil.dataset.loggedIn === "true" && auth.dataset.loggedIn === "true";
 
     if (logged) {
-      profil.innerHTML = '<a href="profil.php">Mon profil</a>';
-      auth.innerHTML = '<a href="deconnexion.php">Déconnexion</a>';
+      profil.innerHTML = `<a href="${urlFromBase(
+        "profil.php"
+      )}">Mon profil</a>`;
+      auth.innerHTML = `<a href="${urlFromBase("logout.php")}">Déconnexion</a>`;
     } else {
+      // lien connexion avec redirect vers la page actuelle
       const redirect = encodeURIComponent(
         window.location.pathname + window.location.search
       );
-      profil.innerHTML = `<a href="connexion.html?redirect=${redirect}">Connexion</a>`;
-      auth.innerHTML = '<a href="register.php">Inscription</a>'; // <- ici
+      profil.innerHTML = `<a href="${urlFromBase(
+        "connexion.php"
+      )}?redirect=${redirect}">Connexion</a>`;
+      auth.innerHTML = `<a href="${urlFromBase(
+        "register.php"
+      )}">Inscription</a>`;
     }
   };
 

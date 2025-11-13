@@ -1,6 +1,6 @@
 <?php
-// accueil.php (page recherche)
-require __DIR__ . '/init.php'; // ← session_start + BASE_URL + $pdo=getPDO()
+// covoiturages.php
+require __DIR__ . '/init.php'; // session_start + BASE_URL + $pdo=getPDO()
 
 $isLoggedIn  = isset($_SESSION['user_id']);
 $user_email  = $_SESSION['user_email'] ?? '';
@@ -18,18 +18,26 @@ try {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- base dynamique: OK local & Heroku -->
-  <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
-  <link rel="stylesheet" href="styles.css">
-  <title>Covoiturages près de chez vous | EcoRide</title>
+  <title>Ecoride - Covoiturages</title>
+
+  <!-- Base dynamique -->
+  <base href="<?= htmlspecialchars((string)BASE_URL, ENT_QUOTES) ?>">
+
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/modern.css">
+
+  <!-- SEO dynamiques -->
   <meta name="description" content="Trouvez ou proposez facilement un covoiturage avec EcoRide. Partagez vos trajets, économisez et réduisez votre empreinte carbone.">
-  <link rel="canonical" href="https://localhost/MesGrossesCouilles/frontend/covoiturages.php">
+  <link rel="canonical" href="<?= htmlspecialchars(current_url(false), ENT_QUOTES) ?>">
   <meta property="og:title" content="Covoiturages près de chez vous | EcoRide">
   <meta property="og:description" content="Trouvez ou proposez facilement un covoiturage avec EcoRide. Partagez vos trajets, économisez et réduisez votre empreinte carbone.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://localhost/MesGrossesCouilles/frontend/covoiturages.php">
-  <meta property="og:image" content="https://localhost/MesGrossesCouilles/frontend/images/cover.jpg">
+  <meta property="og:url" content="<?= htmlspecialchars(current_url(true), ENT_QUOTES) ?>">
+  <meta property="og:image" content="<?= htmlspecialchars(absolute_from_base('assets/images/cover.jpg'), ENT_QUOTES) ?>">
+  <meta property="og:site_name" content="EcoRide">
+  <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0ea5e9">
 </head>
 <body>
 <header>
@@ -40,7 +48,7 @@ try {
       <ul>
         <li><a href="accueil.php">Accueil</a></li>
         <li><a href="contact_info.php">Contact</a></li>
-        <li><a href="covoiturages.php">Covoiturages</a></li>
+        <li><a href="covoiturages.php" aria-current="page">Covoiturages</a></li>
         <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
         <li id="authButton"
             data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"
@@ -73,9 +81,7 @@ try {
         <input type="number" id="passengers" name="passengers" placeholder="Passager(s)" min="1" required><br>
         <label for="date" class="sr-only">Date du covoiturage</label>
         <input type="date" id="date" name="date" required><br>
-        <div class="button">
-          <button type="submit">Rechercher</button>
-        </div>
+        <button class="button" type="submit">Rechercher</button>
       </form>
 
       <datalist id="cities">
@@ -93,11 +99,42 @@ try {
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
+    <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
 
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
 
-<script src="js/accueil.js"></script>
+<!-- JS -->
+<script src="assets/js/accueil.js" defer></script>
+<script src="assets/js/cookie-consent.js" defer></script>
+
 </body>
 </html>

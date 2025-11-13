@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require __DIR__ . '/init.php';              // ← lance session + BASE_URL + $pdo = getPDO()
+require __DIR__ . '/../init.php';             // ← lance session + BASE_URL + $pdo = getPDO()
 header('Content-Type: application/json; charset=utf-8');
 
 $isLoggedIn  = isset($_SESSION['user_email']);
@@ -56,8 +56,9 @@ try {
     if ($destination === '')    $errors['destination'] = 'Destination requise';
     if ($prix < 0)              $errors['prix'] = 'Prix invalide';
     if ($vehicule_id <= 0)      $errors['vehicule_id'] = 'Véhicule invalide';
-    if (!preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $heure_depart)) $errors['heure_depart'] = 'Heure invalide';
-    if (!preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $duree))        $errors['duree'] = 'Durée invalide';
+    if (!preg_match('/^\d{1,2}:\d{2}(:\d{2})?$/', $heure_depart)) $errors['heure_depart'] = 'Heure invalide';
+    if (!preg_match('/^\d{1,2}:\d{2}(:\d{2})?$/', $duree))        $errors['duree'] = 'Durée invalide';
+
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date))            $errors['date'] = 'Date invalide';
     if ($places_restantes <= 0) $errors['places_restantes'] = 'Places invalides';
 

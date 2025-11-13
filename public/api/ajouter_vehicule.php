@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/init.php'; // ← session_start + BASE_URL + $pdo = getPDO()
+require __DIR__ . '/../init.php'; // ← session_start + BASE_URL + $pdo = getPDO()
 header('Content-Type: application/json; charset=utf-8');
 
 // 1) Auth

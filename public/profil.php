@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 // profil.php
-declare(strict_types=1);
+
 
 require __DIR__ . '/init.php'; // -> session_start(), BASE_URL, getPDO()
 
-// Nonce unique par requête (pour autoriser nos <script> inline sans 'unsafe-inline')
+// Nonce unique par requÃªte (pour autoriser nos <script> inline sans 'unsafe-inline')
 $nonce = base64_encode(random_bytes(16));
 
 // (HTTPS recommandé en prod)
@@ -17,7 +17,7 @@ if ($isHttps) {
 
 // Isolation et clickjacking
 header("Cross-Origin-Opener-Policy: same-origin");
-header("X-Frame-Options: DENY"); // équivalent à frame-ancestors 'none'
+header("X-Frame-Options: DENY"); // équivalent Ã  frame-ancestors 'none'
 
 // Référent & permissions
 header("Referrer-Policy: strict-origin-when-cross-origin");
@@ -29,7 +29,7 @@ $csp = [
   "base-uri 'self'",
   "object-src 'none'",
   "img-src 'self' data: blob: https://res.cloudinary.com", // temporaire si Cloudinary direct
-  "style-src 'self' 'unsafe-inline'", // garde 'unsafe-inline' pour ton CSS inline; idéalement à retirer
+  "style-src 'self' 'unsafe-inline'", // garde 'unsafe-inline' pour ton CSS inline; idéalement Ã  retirer
   "font-src 'self' data:",
   "connect-src 'self'",
   "frame-ancestors 'none'",
@@ -42,7 +42,7 @@ $csp = [
 header('Content-Security-Policy: ' . implode('; ', $csp));
 // Redirige si non connecté
 if (empty($_SESSION['user_email'])) {
-    header('Location: ' . BASE_URL . 'connexion.html?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    header('Location: ' . BASE_URL . 'connexion.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit;
 }
 
@@ -71,7 +71,7 @@ $userId = (int)$user['id'];
 
 $isLoggedIn = true;
 
-// Mise à jour du statut utilisateur (POST classique depuis le formulaire)
+// Mise Ã  jour du statut utilisateur (POST classique depuis le formulaire)
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['status'], $_POST['csrf_token'])) {
     if (!hash_equals($_SESSION['csrf_token'], (string)$_POST['csrf_token'])) {
         exit('Token CSRF invalide.');
@@ -80,7 +80,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['status'], $_P
     if (in_array($newStatus, ['passager','chauffeur','passager_chauffeur'], true)) {
         $st = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
         $st->execute([$newStatus, $userId]);
-        $user['status'] = $newStatus; // maj locale pour l’affichage
+        $user['status'] = $newStatus; // maj locale pour lâ€™affichage
     }
 }
 
@@ -115,7 +115,7 @@ if ($rowAvg && (int)$rowAvg['nb'] > 0) {
     $nbAvis  = (int)$rowAvg['nb'];
 }
 
-// Réservations de l’utilisateur
+// Réservations de lâ€™utilisateur
 $stmtReservations = $pdo->prepare("
     SELECT 
         r.id AS reservation_id,
@@ -133,7 +133,7 @@ $stmtReservations = $pdo->prepare("
 $stmtReservations->execute([$userId]);
 $reservations = $stmtReservations->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-// Covoiturages proposés par l’utilisateur
+// Covoiturages proposés par lâ€™utilisateur
 $stmtOffered = $pdo->prepare("
     SELECT 
         c.id AS ride_id,
@@ -158,7 +158,7 @@ if (in_array($user['status'], ['chauffeur','passager_chauffeur'], true)) {
     $villes = $stVilles->fetchAll(PDO::FETCH_COLUMN) ?: [];
 }
 
-// Véhicules du chauffeur (si rôle) 
+// Véhicules du chauffeur (si rÃ´le) 
 $vehicules = [];
 if (in_array($user['status'], ['chauffeur','passager_chauffeur'], true)) {
     $stVeh = $pdo->prepare("SELECT id, modele, marque FROM chauffeur_info WHERE user_id = ?");
@@ -168,7 +168,7 @@ if (in_array($user['status'], ['chauffeur','passager_chauffeur'], true)) {
 
 // Photo de profil (fallback)
 $photo = trim((string)($user['photo'] ?? ''));
-$photoUrl = $photo !== '' ? $photo : 'images/default-avatar.png';
+$photoUrl = $photo !== '' ? $photo : 'assets/images/default-avatar.png';
 
 // --- Mes véhicules (liste complète) ---
 $vehicules = [];
@@ -182,13 +182,13 @@ $stVeh = $pdo->prepare("
 $stVeh->execute([$userId]);
 $vehicules = $stVeh->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-// Pour éviter le tracking via Cloudinary, on sert les images via un proxy côté serveur
+// Pour éviter le tracking via Cloudinary, on sert les images via un proxy cÃ´té serveur
 function cookieless_img(string $url): string {
-    // fait /frontend/cdn.php?path=... à partir d’une URL Cloudinary
+    // fait /public/cdn.php?path=... Ã  partir dâ€™une URL Cloudinary
     if (preg_match('~^https?://res\.cloudinary\.com/(.+)$~i', $url, $m)) {
         return 'cdn.php?path=' . $m[1];
     }
-    return $url; // déjà first-party
+    return $url; // déjÃ  first-party
 }
 
 
@@ -211,7 +211,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
     $parts[] = "{$urlW} {$w}w";
   }
   $avatarSet = implode(', ', $parts);
-  // src par défaut ≈ cible desktop
+  // src par défaut â‰ˆ cible desktop
   $avatarSrc = htmlspecialchars(cookieless_img(cld_variant_w($photoUrl, 360)), ENT_QUOTES);
 }
 
@@ -225,15 +225,16 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
 <head>
     <meta charset="UTF-8">
-    <title>Mon profil | EcoRide</title>
+    <title>EcoRide - Mon profil</title>
     <meta name="description" content="Gérez vos informations personnelles, vos trajets et préférences de covoiturage dans votre espace EcoRide.">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preload" as="image" href="images/Fond-768.jpg"  type="image/jpg" media="(max-width: 767px)"  fetchpriority="high">
-    <link rel="preload" as="image" href="images/Fond-1280.jpg" type="image/jpg" media="(min-width: 768px) and (max-width: 1279px)" fetchpriority="high">
-    <link rel="preload" as="image" href="images/Fond-1920.jpg" type="image/jpg" media="(min-width: 1280px)" fetchpriority="high">
+    <base href="<?= htmlspecialchars(rtrim((string)BASE_URL, '/').'/', ENT_QUOTES) ?>">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/modern.css">
+    <link rel="preload" as="image" href="assets/images/Fond-768.jpg"  type="image/jpg" media="(max-width: 767px)"  fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/Fond-1280.jpg" type="image/jpg" media="(min-width: 768px) and (max-width: 1279px)" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/Fond-1920.jpg" type="image/jpg" media="(min-width: 1280px)" fetchpriority="high">
     
     
 </head>
@@ -241,7 +242,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 <header>
     <div class="header-container">
         <div class="logo">
-            <h1>Bienvenue <?= htmlspecialchars($user['firstName']) ?> !</h1>
+            <h1>Profil de <?= htmlspecialchars($user['firstName']) ?></h1>
         </div>
         <div class="menu-toggle" id="menu-toggle">☰</div>
         <nav id="navbar">
@@ -252,10 +253,11 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                 <!-- Uniformiser avec le JS des autres pages -->
                 <li id="profilButton"
-                    data-logged-in="true"><a href="profil.php">Profil</a></li>
+                    data-logged-in="true"><a href="profil.php"  aria-current="page" >Profil</a></li>
                 <li id="authButton"
                     data-logged-in="true" data-user-email="<?= htmlspecialchars((string)$user_email, ENT_QUOTES) ?>">
-                    <a href="deconnexion.php">Déconnexion</a>
+                    <a href="logout.php">Déconnexion</a>
+
                 </li>
             </ul>
         </nav>
@@ -297,7 +299,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                 <!-- Formulaire de téléchargement d'image caché -->
                 <div id="change-photo-form" hidden>
-                    <form id="upload-photo-form" action="upload_photo.php" method="POST" enctype="multipart/form-data">
+                    <form id="upload-photo-form" action="../backend/handlers/upload_photo.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                     <input type="file" id="photo-input" name="photo" accept="image/*" required>
                     </form>
@@ -328,9 +330,8 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
                     <option value="chauffeur"          <?= $user['status']==='chauffeur'?'selected':''; ?>>Chauffeur</option>
                     <option value="passager_chauffeur" <?= $user['status']==='passager_chauffeur'?'selected':''; ?>>Passager & Chauffeur</option>
                 </select>
-                <div class="button">
-                    <button type="submit">Mettre à jour</button>
-                </div>
+                <button type="submit" class="button">Mettre à jour</button>
+
             </form>
         </div>
         </div> 
@@ -354,8 +355,8 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                             <!-- Annuler la réservation (POST) -->
                             <?php if ($canCancelRes): ?>
-                            <form action="annuler_reservation.php" method="POST"
-                                    onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                            <form action="../backend/handlers/annuler_reservation.php" method="POST">
+
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                 <input type="hidden" name="reservation_id" value="<?= (int)$res['reservation_id'] ?>">
                                 <button type="submit" class="btn-danger" data-reservation-id="<?= (int)$res['reservation_id'] ?>">
@@ -366,8 +367,8 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                              <?php if ($canDeleteRes): ?>
                                 <!-- Supprimer définitivement -->
-                                <form action="supprimer_reservation.php" method="POST"
-                                    onsubmit="return confirm('Supprimer définitivement cette réservation ?');">
+                                <form action="../backend/handlers/supprimer_reservation.php" method="POST">
+
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                 <input type="hidden" name="reservation_id" value="<?= (int)$res['reservation_id'] ?>">
                                 <button type="submit" class="btn-danger">Supprimer</button>
@@ -409,8 +410,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
                             <!-- Annuler le covoiturage (POST) -->
                                 <?php if ($canCancel): ?>
                                     <form id="cancel-ride-form-<?= $rideId ?>"
-                                            action="annuler_covoiturage.php" method="POST"
-                                            onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ce covoiturage ?');">
+                                            action="../backend/handlers/annuler_covoiturage.php" method="POST">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                         <input type="hidden" name="covoiturage_id" value="<?= $rideId ?>">
                                         <button type="submit" class="cancel-ride-button" data-covoiturage-id="<?= $rideId ?>">
@@ -421,18 +421,17 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                                     <?php if ($showStart): ?>
                                     <button id="start-trip-<?= $rideId ?>" class="btn-start-trip"
-                                            onclick="startTrip(<?= $rideId ?>)">Démarrer le covoiturage</button>
+                                      data-ride-id="<?= $rideId ?>">Démarrer le covoiturage</button>
                                     <?php endif; ?>
 
                                     <?php if ($showEnd): ?>
                                     <button id="end-trip-<?= $rideId ?>" class="btn-end-trip"
-                                            onclick="endTrip(<?= $rideId ?>)">Arrivée à destination</button>
+                                         data-ride-id="<?= $rideId ?>">Arrivée à destination</button>
                                     <?php else: ?>
                                     <button id="end-trip-<?= $rideId ?>" class="btn-end-trip" style="display:none;">Arrivée à destination</button>
                                     <?php endif; ?>
                                     <?php if ($canDelete): ?>
-                                    <form action="supprimer_covoiturage.php" method="POST"
-                                        onsubmit="return confirm('Supprimer définitivement ce covoiturage ?');">
+                                    <form action="../backend/handlers/supprimer_covoiturage.php" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                     <input type="hidden" name="covoiturage_id" value="<?= $rideId ?>">
                                     <button type="submit" class="btn-danger">Supprimer</button>
@@ -451,7 +450,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         <?php if (in_array($user['status'], ['chauffeur','passager_chauffeur'], true)): ?>
             <div class="saisir-voyage">
                 <h2>Proposer un covoiturage</h2>
-                <form id="voyageForm" method="POST" action="ajoutCovoiturages.php">
+                <form id="voyageForm" method="POST" action="api/ajoutCovoiturages.php">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
 
                     <div class="form-group">
@@ -500,9 +499,10 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
                         </select>
                     </div>
 
-                    <div class="button">
-                        <button type="submit" id="saisirVoyageButton">Saisir le covoiturage</button>
-                    </div>
+                    
+                        <button class="button" type="submit" id="saisirVoyageButton">Saisir le covoiturage</button>
+                    
+                    
                 </form>
 
                 <datalist id="cities">
@@ -515,7 +515,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
             <!-- Informations véhicule -->
             <section class="chauffeur-info">
                 <h2>Informations du véhicule</h2>
-                <form id="vehicleForm" method="POST" action="ajouter-vehicule.php" enctype="multipart/form-data">
+                <form id="vehicleForm" method="POST" action="api/ajouter_vehicule.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
 
                     <div class="form-group">
@@ -587,9 +587,9 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
                         <input type="checkbox" id="animal" name="animal" <?= $pet_preference ? 'checked':''; ?>>
                     </div>
 
-                    <div class="button">
-                        <button type="submit">Ajouter</button>
-                    </div>
+                    
+                    <button class="button"type="submit">Ajouter</button>
+                    
                 </form>
             </section>
         <?php endif; ?>
@@ -629,17 +629,18 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
           <?php endif; ?>
         
         </ul>
-        <div class="button">
+    
             <button type="button" class="btn-edit" data-toggle="#edit-veh-<?= $vid ?>">Modifier</button>
-            <form action="supprimer_vehicule.php" method="POST" onsubmit="return confirm('Supprimer ce véhicule ?');">
+
+            <form action="../backend/handlers/supprimer_vehicule.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                 <input type="hidden" name="vehicule_id" value="<?= $vid ?>">
                 <button type="submit" class="btn-danger">Supprimer</button>
             </form>
-        </div>
+    
 
         <!-- Formulaire d'édition (replié par défaut) -->
-        <form id="edit-veh-<?= $vid ?>" class="vehicule-edit-form" action="modifier_vehicule.php" method="POST" style="display:none;">
+        <form id="edit-veh-<?= $vid ?>" class="vehicule-edit-form" action="../backend/handlers/modifier_vehicule.php" method="POST" style="display:none;">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
           <input type="hidden" name="vehicule_id" value="<?= $vid ?>">
 
@@ -713,9 +714,40 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
+
+   <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
 
  <!-- Pour la mise a jour du statut-->
     <!-- Modale de confirmation -->
@@ -723,7 +755,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2 id="modal-title">Confirmer la mise à jour du statut</h2>
-            <p id="modal-message">Êtes-vous sûr de vouloir mettre à jour votre statut ?</p>
+            <p id="modal-message">êtes-vous sûr de vouloir mettre à jour votre statut ?</p>
             <div class="modal-actions">
                 <button id="modal-confirm" class="btn-confirm">Confirmer</button>
                 <button id="modal-cancel" class="btn-cancel">Annuler</button>
@@ -752,7 +784,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
     <div id="travel-confirmation-modal" class="modal">
         <div class="modal-content">
             <h2 id="modal-title2">Confirmer la publication du voyage</h2>
-            <p id="confirmation-message">Êtes-vous sûr de vouloir soumettre votre voyage ?<br> 2 Credits seront retirés de votre solde</p>
+            <p id="confirmation-message">Êtes-vous sûr de vouloir soumettre votre voyage ? 2 Credits seront retirés de votre solde</p>
             <button id="modal-travel-confirm" class="btn-confirm">Confirmer</button>
             <button id="modal-travel-cancel"class="btn-cancel">Annuler</button>
         </div>
@@ -798,6 +830,19 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         </div>
     </div>
 
+    <!-- Modale de confirmation pour suppression -->
+<div id="delete-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="delete-close">&times;</span>
+    <h2>Confirmer la suppression</h2>
+    <p>Cette action est irréversible. Voulez-vous continuer&nbsp;?</p>
+    <div class="modal-actions">
+      <button id="delete-confirm" class="btn-confirm">Supprimer</button>
+      <button id="delete-cancel"  class="btn-cancel">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <script nonce="<?= $nonce ?>">
 // Politique Trusted Types minimale
 try {
@@ -833,7 +878,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // bascule la propriété 'hidden' (plus fiable que style.display)
       formWrap.hidden = !formWrap.hidden;
 
-      // accessibilité : mettre à jour aria-expanded
+      // accessibilité : mettre Ã  jour aria-expanded
       changeLink.setAttribute('aria-expanded', String(!formWrap.hidden));
 
       // option pratique : ouvrir le sélecteur de fichier directement
@@ -843,7 +888,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     changeLink.addEventListener('click', toggle);
-    // clavier : Enter/Espace sur le “lien-bouton”
+    // clavier : Enter/Espace sur le â€œlien-boutonâ€
     changeLink.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') toggle(e);
     });
@@ -868,15 +913,44 @@ document.addEventListener('click', (e) => {
   if (el) el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
 });
 </script>
+<script nonce="<?= $nonce ?>">
+document.addEventListener('DOMContentLoaded', () => {
+  
+
+  // 2) Démarrer / terminer un covoiturage (plus d'onclick inline)
+  //    startTrip / endTrip doivent exister (ex: dans demarrerCovoiturages.js)
+  document.querySelectorAll('.btn-start-trip[data-ride-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = parseInt(btn.getAttribute('data-ride-id'), 10);
+      if (!Number.isNaN(id) && typeof window.startTrip === 'function') {
+        window.startTrip(id);
+      }
+    });
+  });
+
+  document.querySelectorAll('.btn-end-trip[data-ride-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = parseInt(btn.getAttribute('data-ride-id'), 10);
+      if (!Number.isNaN(id) && typeof window.endTrip === 'function') {
+        window.endTrip(id);
+      }
+    });
+  });
+});
+</script>
 
 <!-- Vos fichiers JS -->
-<script src="js/demarrerCovoiturages.js" defer></script>
-<script src="js/annulerReservation.js" defer></script>
-<script src="js/annulerCovoiturage.js" defer></script>
-<script src="js/ajoutVehicle.js" defer></script>
-<script src="js/profil.js" defer></script>
-<script src="js/ajoutCovoiturages.js" defer></script>
-<script src="js/status.js" defer></script> 
-<script src="js/accueil.js" defer></script>
+<script src="assets/js/demarrerCovoiturages.js" defer></script>
+<script src="assets/js/annulerReservation.js" defer></script>
+<script src="assets/js/annulerCovoiturage.js" defer></script>
+<script src="assets/js/ajoutVehicle.js" defer></script>
+<script src="assets/js/profil.js" defer></script>
+<script src="assets/js/ajoutCovoiturages.js" defer></script>
+<script src="assets/js/status.js" defer></script>
+<script src="assets/js/accueil.js" defer></script>
+<script src="assets/js/supprimerConfirm.js" defer></script>
+<script src="assets/js/cookie-consent.js" defer></script>
 </body>
 </html>
+
+

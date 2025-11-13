@@ -7,14 +7,14 @@ $isLoggedIn = isset($_SESSION['user_id']);
 function getConsent(): array {
   $name = 'ecoride_consent_v1';
   if (empty($_COOKIE[$name])) return [];
-  $raw = urldecode($_COOKIE[$name]); // très important
+  $raw = urldecode($_COOKIE[$name]); 
   $data = json_decode($raw, true);
   return is_array($data) ? $data : [];
 }
 
 
 $consent = getConsent();
-// Exemple : n’initialise pas un SDK pub si !$consent['marketing']
+
 ?>
 
 
@@ -24,20 +24,20 @@ $consent = getConsent();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRide - Accueil</title>
-    <base href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES) ?>">
-    <link rel="stylesheet" href="styles.css">
+    <base href="<?= htmlspecialchars((string)BASE_URL, ENT_QUOTES) ?>">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/modern.css">
     <meta name="description" content="Partagez vos trajets et réduisez votre empreinte carbone avec EcoRide. Rejoignez une communauté qui covoiture près de chez vous.">
-    <link rel="canonical" href="https://localhost/MesGrossesCouilles/frontend/accueil.php">
+    <link rel="canonical" href="<?= htmlspecialchars(current_url(false), ENT_QUOTES) ?>">
     <meta property="og:title" content="EcoRide — Covoiturage écologique et solidaire">
     <meta property="og:description" content="Partagez vos trajets et réduisez votre empreinte carbone avec EcoRide.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://localhost/MesGrossesCouilles/frontend/accueil.php">
-    <meta property="og:image" content="https://localhost/MesGrossesCouilles/frontend/images/cover.jpg">
+    <meta property="og:url" content="<?= htmlspecialchars(current_url(true), ENT_QUOTES) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars(absolute_from_base('assets/images/cover.jpg'), ENT_QUOTES) ?>">
     <meta name="twitter:card" content="summary_large_image">
-    <!-- dans <head>, AVANT styles.css -->
-    <link rel="preload" as="image" href="images/Fond-768.jpg"  type="image/jpg" media="(max-width: 767px)"  fetchpriority="high">
-    <link rel="preload" as="image" href="images/Fond-1280.jpg" type="image/jpg" media="(min-width: 768px) and (max-width: 1279px)" fetchpriority="high">
-    <link rel="preload" as="image" href="images/Fond-1920.jpg" type="image/jpg" media="(min-width: 1280px)" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/Fond-768.jpg"  type="image/jpg" media="(max-width: 767px)"  fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/Fond-1280.jpg" type="image/jpg" media="(min-width: 768px) and (max-width: 1279px)" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/Fond-1920.jpg" type="image/jpg" media="(min-width: 1280px)" fetchpriority="high">
 
 
 </head>
@@ -53,7 +53,7 @@ $consent = getConsent();
 
             <nav id="navbar">
                 <ul>
-                    <li><a href="accueil.php">Accueil</a></li>
+                    <li><a href="accueil.php" aria-current="page">Accueil</a></li>
                     <li><a href="contact_info.php">Contact</a></li>
                     <li><a href="covoiturages.php">Covoiturages</a></li>
                     <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false'; ?>"></li>
@@ -95,9 +95,7 @@ $consent = getConsent();
                         <input type="number" id="passengers" placeholder="Passager(s)" name="passengers" min="1" required><br>
                         <label for="date" class="sr-only">Date du covoiturage</label>
                         <input type="date" id="date" name="date" required><br>
-                        <div class=button>
-                            <button type="submit">Rechercher</button>
-                        </div>
+                        <button type="submit" class="button">Rechercher</button>
                     </form>
                     
                     <datalist id="cities">
@@ -128,9 +126,7 @@ $consent = getConsent();
                 <p>Plateforme intuitive et sécurisée.</p>
                 <p>Large choix de trajets adaptés à vos besoins.</p>
                 <p>Des conducteurs et passagers vérifiés.</p>
-                <div class="button">
-                    <a href="register.php"><button type="button" id="rejoindreBtn">Rejoignez nous!</button></a>
-                </div>
+                <button onclick="location.href='register.php'" id="rejoindreBtn" class="button">Rejoignez-nous&nbsp;!</button>
             </div>
         </section>
     </main>
@@ -139,12 +135,14 @@ $consent = getConsent();
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
     <!-- Overlay bloquant -->
-    <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
     <!-- Bandeau cookies -->
     <div id="cookie-banner" class="cookie-banner" hidden>
     <div class="cookie-content">
@@ -172,8 +170,8 @@ $consent = getConsent();
     </div>
 
     <!-- Script JavaScript -->
-    <script src="js/cookie-consent.js" defer></script>
-    <script src="js/accueil.js" defer></script>
+    <script src="assets/js/cookie-consent.js" defer></script>
+    <script src="assets/js/accueil.js" defer></script>
     
     <!-- Analytics (bloqué tant que pas consenti) -->
     <script
@@ -195,10 +193,5 @@ $consent = getConsent();
      <!-- Initialisation d’un SDK marketing fictif -->
         console.log("SDK marketing initialisé");
     </script>
-                   
-
-
-    
-    
 </body>
 </html>

@@ -20,10 +20,11 @@ $employee_name = trim(($_SESSION['firstName'] ?? '') . ' ' . ($_SESSION['lastNam
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Espace Employé | Tableau de bord EcoRide</title>
+    <title>Ecoride - Tableau de bord</title>
 
     <base href="<?= htmlspecialchars(rtrim(BASE_URL, '/').'/', ENT_QUOTES) ?>">
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/modern.css">
 
     <!-- SEO (Lighthouse OK mais page privée) -->
     <meta name="description" content="Espace Employé EcoRide : tableau de bord permettant de gérer les avis des chauffeurs et de consulter les covoiturages problématiques.">
@@ -39,12 +40,12 @@ $employee_name = trim(($_SESSION['firstName'] ?? '') . ' ' . ($_SESSION['lastNam
 <body>
 <header>
     <div class="header-container">
-        <h1>Espace Employé de <?= htmlspecialchars($employee_name ?: '—') ?></h1>
+        <h1>Espace de <?= htmlspecialchars($employee_name ?: '—') ?></h1>
         <div class="menu-toggle" id="menu-toggle">☰</div>
         <nav id="navbar">
             <ul>
-                <li><a href="employee_dashboard.php">Tableau de bord</a></li>
-                <li><a href="employee_reviews.php">Gérer les Avis</a></li>
+                <li><a href="employee_dashboard.php" aria-current="page">Tableau de bord</a></li>
+                <li><a href="employee_reviews.php" >Gérer les Avis</a></li>
                 <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
                 <li><a href="logout.php">Déconnexion</a></li>
             </ul>
@@ -80,10 +81,42 @@ $employee_name = trim(($_SESSION['firstName'] ?? '') . ' ' . ($_SESSION['lastNam
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
+        <!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
+<script src ="assets/js/accueil.js" defer></script>
+<script src="assets/js/cookie-consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.getElementById("menu-toggle");

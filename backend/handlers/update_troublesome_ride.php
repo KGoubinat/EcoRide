@@ -1,7 +1,7 @@
 <?php
 // update_troublesome_ride.php
 declare(strict_types=1);
-require __DIR__ . '/init.php';
+require __DIR__ . '/../../public/init.php';
 
 function redirect(string $path, array $qs = []): never {
   $base = rtrim(BASE_URL, '/') . '/';

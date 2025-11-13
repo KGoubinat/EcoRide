@@ -49,13 +49,21 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 
 // Chemin de base différent selon environnement
 if ($host === 'localhost') {
-    // ⚠️ Attention à la casse : utilise exactement le même dossier que sur disque
-    $basePath = '/MesGrossesCouilles/frontend/';
+    $basePath = '/MesGrossesCouilles/public/';
 } else {
     $basePath = '/'; // Heroku/Prod : racine
 }
 
-define('BASE_URL', $protocol . '://' . $host . rtrim($basePath, '/') . '/');
+$envBase = env('BASE_URL', '');
+if ($envBase) {
+    $envBase = rtrim($envBase, '/') . '/';
+    define('BASE_URL', $envBase);
+} else {
+    // ... garde ton code existant (détection protocole + $basePath)
+    define('BASE_URL', $protocol . '://' . $host . rtrim($basePath, '/') . '/');
+}
+
+
 
 // Forcer HTTPS en prod uniquement
 if ($host !== 'localhost') {

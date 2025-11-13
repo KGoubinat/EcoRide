@@ -13,6 +13,12 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'employe') {
     exit;
 }
 
+// CSRF token (réutilise si déjà présent)
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+
 $pdo = getPDO();
 
 // ---- Filtre par statut (pending par défaut) ----
@@ -49,18 +55,19 @@ $reviews = $stmt->fetchAll() ?: [];
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gérer les Avis | Espace Employé EcoRide</title>
+  <title>EcoRide - Gérer les Avis</title>
 
   <!-- base dynamique -->
-  <base href="<?= htmlspecialchars(rtrim(BASE_URL, '/').'/', ENT_QUOTES) ?>">
-  <link rel="stylesheet" href="styles.css">
+  <base href="<?= htmlspecialchars(rtrim((string)BASE_URL, '/').'/', ENT_QUOTES) ?>">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/modern.css">
 
   <!-- SEO (Lighthouse OK, mais page privée) -->
   <meta name="description" content="Interface employé EcoRide pour modérer les avis : filtrer par statut, consulter les notes et approuver ou rejeter les commentaires.">
   <meta name="robots" content="noindex, nofollow">
 
   <!-- Canonical sans paramètres ?status= -->
-  <?php $canonical = rtrim(BASE_URL, '/').'/employee_reviews.php'; ?>
+  <?php $canonical = rtrim((string)BASE_URL, '/').'/employee_reviews.php'; ?>
   <link rel="canonical" href="<?= htmlspecialchars($canonical, ENT_QUOTES) ?>">
 
   <!-- (Facultatif) Open Graph -->
@@ -77,7 +84,7 @@ $reviews = $stmt->fetchAll() ?: [];
     <nav id="navbar">
       <ul>
         <li><a href="employee_dashboard.php">Tableau de bord</a></li>
-        <li><a href="employee_reviews.php">Gérer les Avis</a></li>
+        <li><a href="employee_reviews.php" aria-current="page">Gérer les Avis</a></li>
         <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
         <li><a href="logout.php">Déconnexion</a></li>
       </ul>
@@ -88,7 +95,12 @@ $reviews = $stmt->fetchAll() ?: [];
       <li><a href="employee_dashboard.php">Tableau de bord</a></li>
       <li><a href="employee_reviews.php">Gérer les Avis</a></li>
       <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
-      <li><a href="logout.php">Déconnexion</a></li>
+      <li>
+        <form action="../backend/handlers/deconnexion.php" method="POST" style="display:inline">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+          <button type="submit" class="linklike">Déconnexion</button>
+        </form>
+      </li>
     </ul>
   </nav>
 </header>
@@ -150,11 +162,19 @@ $reviews = $stmt->fetchAll() ?: [];
             </td>
             <td>
               <?php if ($r['status'] === 'pending'): ?>
-                <a href="approve_review.php?id=<?= (int)$r['id'] ?>&status=approved"
-                   onclick="return confirm('Approuver cet avis ?');">Valider</a>
-                |
-                <a href="approve_review.php?id=<?= (int)$r['id'] ?>&status=rejected"
-                   onclick="return confirm('Refuser cet avis ?');">Refuser</a>
+                <form action="../backend/handlers/approve_review.php" method="POST" style="display:inline" onsubmit="return confirm('Approuver cet avis ?');">
+                  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                  <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                  <input type="hidden" name="status" value="approved">
+                  <button type="submit" class="btn btn-success">Valider</button>
+                </form>
+                <span> | </span>
+                <form action="../backend/handlers/approve_review.php" method="POST" style="display:inline" onsubmit="return confirm('Refuser cet avis ?');">
+                  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                  <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                  <input type="hidden" name="status" value="rejected">
+                  <button type="submit" class="btn btn-warning">Refuser</button>
+                </form>
               <?php else: ?>
                 <em>—</em>
               <?php endif; ?>
@@ -171,10 +191,46 @@ $reviews = $stmt->fetchAll() ?: [];
         <div class="footer-links">
             <a href="#" id="open-cookie-modal">Gérer mes cookies</a>
             <span>|</span>
-            <span>EcoRide@gmail.com / <a href="mentions_legales.php">Mentions légales</a></span>
+            <span>EcoRide@gmail.com</span>
+            <span>|</span>
+            <a href="mentions_legales.php">Mentions légales</a>
         </div>
     </footer>
 
+<style>
+/* bouton qui ressemble à un lien pour logout */
+.linklike { background:none; border:none; padding:0; margin:0; cursor:pointer; color:inherit; font:inherit; text-decoration:underline; }
+</style>
+
+<!-- Overlay bloquant -->
+  <div id="cookie-blocker" class="cookie-blocker" hidden></div>
+    <!-- Bandeau cookies -->
+    <div id="cookie-banner" class="cookie-banner" hidden>
+    <div class="cookie-content">
+        <p>Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus personnalisés.</p>
+        <div class="cookie-actions">
+        <button data-action="accept-all" type="button">Tout accepter</button>
+        <button data-action="reject-all" type="button">Tout refuser</button>
+        <button data-action="customize"  type="button">Personnaliser</button>
+        </div>
+    </div>
+    </div>
+
+<!-- Centre de préférences -->
+    <div id="cookie-modal" class="cookie-modal" hidden>
+    <div class="cookie-modal-card">
+        <h3>Préférences de cookies</h3>
+        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <div class="cookie-modal-actions">
+        <button data-action="save"  type="button">Enregistrer</button>
+        <button data-action="close" type="button">Fermer</button>
+        </div>
+    </div>
+    </div>
+
+<script src="assets/js/cookie-consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

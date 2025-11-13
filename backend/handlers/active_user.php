@@ -1,6 +1,6 @@
 <?php
 // activer_utilisateur.php (exemple)
-require __DIR__ . '/init.php'; // ← bootstrap + db.php + session_start + $pdo
+require __DIR__ . '/../../public/init.php'; // ← bootstrap + db.php + session_start + $pdo
 
 // 1) Autorisation : réservé aux admins
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {

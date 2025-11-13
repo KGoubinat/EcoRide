@@ -26,7 +26,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 }
 
 // Redirection (par défaut vers la page de connexion)
-$next = $_GET['next'] ?? 'connexion.html'; // adapte si besoin (connexion.php, accueil.php, etc.)
+$next = $_GET['next'] ?? 'connexion.php'; // adapte si besoin (connexion.php, accueil.php, etc.)
 $next = ltrim($next, '/');                 // éviter un chemin absolu fourni en entrée
 $location = rtrim(BASE_URL, '/') . '/' . $next;
 

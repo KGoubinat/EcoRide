@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/init.php';
+require __DIR__ . '/../../public/init.php';    
 
 if (empty($_SESSION['user_email']) || empty($_SESSION['csrf_token'])) {
   http_response_code(401); exit('Non connecté.');

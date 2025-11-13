@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/init.php'; // session_start + BASE_URL + getPDO()
+require __DIR__ . '/../../public/init.php'; // session_start + BASE_URL + getPDO()
 
 header('X-Robots-Tag: noindex, nofollow', true);
 
