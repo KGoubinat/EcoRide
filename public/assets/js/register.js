@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
       profil.dataset.loggedIn === "true" && auth.dataset.loggedIn === "true";
 
     if (logged) {
-      setLink(profil, urlFromBase("profil.php"), "Profil");
+      setLink(profil, urlFromBase("profile.php"), "Profil");
       setLink(auth, urlFromBase("logout.php"), "Déconnexion");
     } else {
       const redirect = encodeURIComponent(
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       setLink(
         profil,
-        urlFromBase(`connexion.php?redirect=${redirect}`),
+        urlFromBase(`login.php?redirect=${redirect}`),
         "Connexion"
       );
       setLink(auth, urlFromBase("register.php"), "Inscription");
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(({ ok, status, data, raw }) => {
         if (ok && (data.success || data.status === "success")) {
           // Redirection respectant <base>
-          window.location.href = urlFromBase("profil.php");
+          window.location.href = urlFromBase("profile.php");
         } else {
           console.error("Réponse brute:", raw);
           alert(data?.message || `Erreur HTTP: ${status}`);

@@ -41,9 +41,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
     <nav id="navbar">
       <ul>
-        <li><a href="accueil.php">Accueil</a></li>
+        <li><a href="home.php">Accueil</a></li>
         <li><a href="contact_info.php" aria-current="page">Contact</a></li>
-        <li><a href="covoiturages.php">Covoiturages</a></li>
+        <li><a href="rides.php">Covoiturages</a></li>
         <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
         <li id="authButton"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
       </ul>
@@ -53,8 +53,8 @@ $isLoggedIn = isset($_SESSION['user_id']);
   <!-- Menu mobile -->
   <nav id="mobile-menu">
     <ul>
-      <li><a href="accueil.php">Accueil</a></li>
-      <li><a href="covoiturages.php">Covoiturages</a></li>
+      <li><a href="home.php">Accueil</a></li>
+      <li><a href="rides.php">Covoiturages</a></li>
       <li><a href="contact_info.php">Contact</a></li>
       <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
       <li id="authButtonMobile"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
@@ -105,7 +105,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

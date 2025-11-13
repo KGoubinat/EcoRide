@@ -1,5 +1,5 @@
 ﻿<?php
-// profil.php
+// profile.php
 
 
 require __DIR__ . '/init.php'; // -> session_start(), BASE_URL, getPDO()
@@ -42,7 +42,7 @@ $csp = [
 header('Content-Security-Policy: ' . implode('; ', $csp));
 // Redirige si non connecté
 if (empty($_SESSION['user_email'])) {
-    header('Location: ' . BASE_URL . 'connexion.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    header('Location: ' . BASE_URL . 'login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit;
 }
 
@@ -247,13 +247,13 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         <div class="menu-toggle" id="menu-toggle">☰</div>
         <nav id="navbar">
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="home.php">Accueil</a></li>
                 <li><a href="contact_info.php">Contact</a></li>
-                <li><a href="covoiturages.php">Covoiturages</a></li>
+                <li><a href="rides.php">Covoiturages</a></li>
 
                 <!-- Uniformiser avec le JS des autres pages -->
                 <li id="profilButton"
-                    data-logged-in="true"><a href="profil.php"  aria-current="page" >Profil</a></li>
+                    data-logged-in="true"><a href="profile.php"  aria-current="page" >Profil</a></li>
                 <li id="authButton"
                     data-logged-in="true" data-user-email="<?= htmlspecialchars((string)$user_email, ENT_QUOTES) ?>">
                     <a href="logout.php">Déconnexion</a>
@@ -265,8 +265,8 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
     <!-- Menu mobile -->
   <nav id="mobile-menu">
     <ul>
-      <li><a href="accueil.php">Accueil</a></li>
-      <li><a href="covoiturages.php">Covoiturages</a></li>
+      <li><a href="home.php">Accueil</a></li>
+      <li><a href="rides.php">Covoiturages</a></li>
       <li><a href="contact_info.php">Contact</a></li>
       <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
       <li id="authButtonMobile"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
@@ -355,7 +355,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                             <!-- Annuler la réservation (POST) -->
                             <?php if ($canCancelRes): ?>
-                            <form action="../backend/handlers/annuler_reservation.php" method="POST">
+                            <form action="../backend/handlers/cancel_reservation.php" method="POST">
 
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                 <input type="hidden" name="reservation_id" value="<?= (int)$res['reservation_id'] ?>">
@@ -367,7 +367,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
 
                              <?php if ($canDeleteRes): ?>
                                 <!-- Supprimer définitivement -->
-                                <form action="../backend/handlers/supprimer_reservation.php" method="POST">
+                                <form action="../backend/handlers/delete_reservation.php" method="POST">
 
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                 <input type="hidden" name="reservation_id" value="<?= (int)$res['reservation_id'] ?>">
@@ -410,7 +410,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
                             <!-- Annuler le covoiturage (POST) -->
                                 <?php if ($canCancel): ?>
                                     <form id="cancel-ride-form-<?= $rideId ?>"
-                                            action="../backend/handlers/annuler_covoiturage.php" method="POST">
+                                            action="../backend/handlers/cancel_ride.php" method="POST">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                         <input type="hidden" name="covoiturage_id" value="<?= $rideId ?>">
                                         <button type="submit" class="cancel-ride-button" data-covoiturage-id="<?= $rideId ?>">
@@ -431,7 +431,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
                                     <button id="end-trip-<?= $rideId ?>" class="btn-end-trip" style="display:none;">Arrivée à destination</button>
                                     <?php endif; ?>
                                     <?php if ($canDelete): ?>
-                                    <form action="../backend/handlers/supprimer_covoiturage.php" method="POST">
+                                    <form action="../backend/handlers/delete_ride.php" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                                     <input type="hidden" name="covoiturage_id" value="<?= $rideId ?>">
                                     <button type="submit" class="btn-danger">Supprimer</button>
@@ -450,7 +450,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
         <?php if (in_array($user['status'], ['chauffeur','passager_chauffeur'], true)): ?>
             <div class="saisir-voyage">
                 <h2>Proposer un covoiturage</h2>
-                <form id="voyageForm" method="POST" action="api/ajoutCovoiturages.php">
+                <form id="voyageForm" method="POST" action="api/ajoutrides.php">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
 
                     <div class="form-group">
@@ -632,7 +632,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
     
             <button type="button" class="btn-edit" data-toggle="#edit-veh-<?= $vid ?>">Modifier</button>
 
-            <form action="../backend/handlers/supprimer_vehicule.php" method="POST">
+            <form action="../backend/handlers/delete_vehicle.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
                 <input type="hidden" name="vehicule_id" value="<?= $vid ?>">
                 <button type="submit" class="btn-danger">Supprimer</button>
@@ -640,7 +640,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
     
 
         <!-- Formulaire d'édition (replié par défaut) -->
-        <form id="edit-veh-<?= $vid ?>" class="vehicule-edit-form" action="../backend/handlers/modifier_vehicule.php" method="POST" style="display:none;">
+        <form id="edit-veh-<?= $vid ?>" class="vehicule-edit-form" action="../backend/handlers/edit_vehicle.php" method="POST" style="display:none;">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
           <input type="hidden" name="vehicule_id" value="<?= $vid ?>">
 
@@ -716,7 +716,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

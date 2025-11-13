@@ -9,7 +9,7 @@ header('X-Robots-Tag: noindex, nofollow', true);
 
 // Autorisation : employé uniquement
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'employe') {
-    header('Location: ' . BASE_URL . 'accueil.php');
+    header('Location: ' . BASE_URL . 'home.php');
     exit;
 }
 
@@ -115,7 +115,7 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
       <li><a href="employee_reviews.php">Gérer les Avis</a></li>
       <li><a href="employee_troublesome_rides.php">Covoiturages Problématiques</a></li>
       <li>
-        <form action="../backend/handlers/deconnexion.php" method="POST" style="display:inline">
+        <form action="../backend/handlers/delogin.php" method="POST" style="display:inline">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <button type="submit" class="linklike">Déconnexion</button>
         </form>
@@ -231,7 +231,7 @@ $troublesomeRides = $stmt->fetchAll() ?: [];
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

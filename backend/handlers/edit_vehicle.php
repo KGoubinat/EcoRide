@@ -52,5 +52,5 @@ $up = $pdo->prepare("
 ");
 $up->execute([$plaque,$dateIm,$modele,$marque,$places,$prefs,$smoker,$pets,$energie,$vehId]);
 
-header('Location: ' . BASE_URL . 'profil.php?message=' . urlencode('Véhicule mis à jour'));
+header('Location: ' . BASE_URL . 'profile.php?message=' . urlencode('Véhicule mis à jour'));
 exit;

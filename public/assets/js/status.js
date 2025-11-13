@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("csrf_token", csrf);
 
     // Important : PAS de ../ ici si ton <base href> pointe déjà vers /public/
-    const url = apiUrl("../backend/handlers/update_status.php");
+    const url = apiUrl("../backend/handlers/update_ride_status.php");
 
     try {
       const resp = await fetch(url, {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (resp.status === 401) {
         // Non connecté → rediriger vers la page de connexion avec retour
         const next = encodeURIComponent(location.pathname + location.search);
-        location.href = apiUrl(`connexion.php?redirect=${next}`);
+        location.href = apiUrl(`login.php?redirect=${next}`);
         return;
       }
 

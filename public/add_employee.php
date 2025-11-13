@@ -7,7 +7,7 @@ header('X-Robots-Tag: noindex, nofollow', true);
 
 // Admin uniquement
 if (($_SESSION['user_role'] ?? null) !== 'administrateur') {
-    header('Location: ' . BASE_URL . 'accueil.php');
+    header('Location: ' . BASE_URL . 'home.php');
     exit;
 }
 
@@ -132,7 +132,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <span>|</span>
     <span>EcoRide@gmail.com</span>
     <span>|</span>
-    <a href="mentions_legales.php">Mentions légales</a>
+    <a href="legal_notice.php">Mentions légales</a>
   </div>
 </footer>
 

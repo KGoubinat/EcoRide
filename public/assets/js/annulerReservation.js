@@ -3,7 +3,7 @@
   // Cible uniquement les boutons d'annulation (pas les "Supprimer")
   const buttons = document.querySelectorAll(".btn-danger[data-reservation-id]");
 
-  // Modale (mêmes IDs que dans profil.php)
+  // Modale (mêmes IDs que dans profile.php)
   const modal = document.getElementById("cancel-reservation-modal");
   const okBtn = document.getElementById("resv-cancel-confirm");
   const noBtn = document.getElementById("resv-cancel-cancel");

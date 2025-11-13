@@ -6,7 +6,7 @@ require __DIR__ . '/init.php';
 
 // Admin uniquement
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header('Location: ' . BASE_URL . 'accueil.php');
+    header('Location: ' . BASE_URL . 'home.php');
     exit;
 }
 
@@ -139,7 +139,7 @@ if (!$employee) {
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

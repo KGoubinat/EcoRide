@@ -36,18 +36,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isLoggedIn) {
       setLink(authButton, urlFromBase("logout.php"), "Déconnexion");
-      setLink(profilButton, urlFromBase("profil.php"), "Profil");
+      setLink(profilButton, urlFromBase("profile.php"), "Profil");
 
       if (authButtonMobile && profilButtonMobile) {
         setLink(authButtonMobile, urlFromBase("logout.php"), "Déconnexion");
-        setLink(profilButtonMobile, urlFromBase("profil.php"), "Profil");
+        setLink(profilButtonMobile, urlFromBase("profile.php"), "Profil");
       }
     } else {
-      setLink(authButton, urlFromBase("connexion.php"), "Connexion");
+      setLink(authButton, urlFromBase("login.php"), "Connexion");
       if (profilButton) profilButton.style.display = "none";
 
       if (authButtonMobile && profilButtonMobile) {
-        setLink(authButtonMobile, urlFromBase("connexion.php"), "Connexion");
+        setLink(authButtonMobile, urlFromBase("login.php"), "Connexion");
         profilButtonMobile.style.display = "none";
       }
     }

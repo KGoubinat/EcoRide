@@ -7,5 +7,5 @@ if (empty($_SERVER['HTTPS']) && ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') !== '
     header("Location: $httpsUrl", true, 301);
     exit();
 }
-include_once("accueil.php"); 
+include_once("home.php"); 
 

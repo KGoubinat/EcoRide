@@ -1,11 +1,11 @@
 <?php
-// mentions_legales.php
+// legal_notice.php
 declare(strict_types=1);
 
 require __DIR__ . '/init.php'; // session_start + BASE_URL (+ $pdo si besoin)
 
 $isLoggedIn = isset($_SESSION['user_id']);
-$canonical  = rtrim((string)BASE_URL, '/').'/mentions_legales.php';
+$canonical  = rtrim((string)BASE_URL, '/').'/legal_notice.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -38,9 +38,9 @@ $canonical  = rtrim((string)BASE_URL, '/').'/mentions_legales.php';
     <div class="menu-toggle" id="menu-toggle">☰</div>
     <nav id="navbar">
       <ul>
-        <li><a href="accueil.php">Accueil</a></li>
+        <li><a href="home.php">Accueil</a></li>
         <li><a href="contact_info.php">Contact</a></li>
-        <li><a href="covoiturages.php">Covoiturages</a></li>
+        <li><a href="rides.php">Covoiturages</a></li>
         <li id="profilButton" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
         <li id="authButton"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
       </ul>
@@ -48,8 +48,8 @@ $canonical  = rtrim((string)BASE_URL, '/').'/mentions_legales.php';
   </div>
   <nav id="mobile-menu">
     <ul>
-      <li><a href="accueil.php">Accueil</a></li>
-      <li><a href="covoiturages.php">Covoiturages</a></li>
+      <li><a href="home.php">Accueil</a></li>
+      <li><a href="rides.php">Covoiturages</a></li>
       <li><a href="contact_info.php">Contact</a></li>
       <li id="profilButtonMobile" data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
       <li id="authButtonMobile"   data-logged-in="<?= $isLoggedIn ? 'true' : 'false' ?>"></li>
@@ -102,7 +102,7 @@ $canonical  = rtrim((string)BASE_URL, '/').'/mentions_legales.php';
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

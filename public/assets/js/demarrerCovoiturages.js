@@ -18,13 +18,13 @@
   function handleAuthRedirect(status) {
     if (status === 401) {
       const next = encodeURIComponent(location.pathname + location.search);
-      location.href = apiUrl(`connexion.php?redirect=${next}`);
+      location.href = apiUrl(`login.php?redirect=${next}`);
       return true;
     }
     return false;
   }
 
-  // <<< IMPORTANT : on expose ces fonctions globalement, car profil.php les appelle >>>
+  // <<< IMPORTANT : on expose ces fonctions globalement, car profile.php les appelle >>>
   window.startTrip = function startTrip(rideId) {
     const fd = new FormData();
     fd.append("covoiturage_id", rideId);

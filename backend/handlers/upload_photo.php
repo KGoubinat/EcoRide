@@ -102,5 +102,5 @@ $upd = $pdo->prepare('UPDATE users SET photo = :url WHERE email = :email');
 $upd->execute([':url' => $secureUrl, ':email' => $_SESSION['user_email']]);
 
 // --- Retour profil ---
-header('Location: ' . BASE_URL . 'profil.php');
+header('Location: ' . BASE_URL . 'profile.php');
 exit;

@@ -9,7 +9,7 @@ header('X-Robots-Tag: noindex, nofollow', true);
 
 // Autorisation : employé uniquement
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'employe') {
-    header('Location: ' . BASE_URL . 'accueil.php');
+    header('Location: ' . BASE_URL . 'home.php');
     exit;
 }
 
@@ -83,7 +83,7 @@ $employee_name = trim(($_SESSION['firstName'] ?? '') . ' ' . ($_SESSION['lastNam
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

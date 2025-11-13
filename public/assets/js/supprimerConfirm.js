@@ -37,9 +37,9 @@
 
     // Cible tous les formulaires de SUPPRESSION
     const selectors = [
-      'form[action*="supprimer_covoiturage.php"]',
-      'form[action*="supprimer_reservation.php"]',
-      'form[action*="supprimer_vehicule.php"]',
+      'form[action*="delete_ride.php"]',
+      'form[action*="delete_reservation.php"]',
+      'form[action*="delete_vehicle.php"]',
     ];
     document.querySelectorAll(selectors.join(",")).forEach((form) => {
       form.removeAttribute("data-confirm"); // évite window.confirm natif

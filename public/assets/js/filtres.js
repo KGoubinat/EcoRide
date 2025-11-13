@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (logged) {
       profil.innerHTML = `<a href="${urlFromBase(
-        "profil.php"
+        "profile.php"
       )}">Mon profil</a>`;
       auth.innerHTML = `<a href="${urlFromBase("logout.php")}">Déconnexion</a>`;
     } else {
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.pathname + window.location.search
       );
       profil.innerHTML = `<a href="${urlFromBase(
-        "connexion.php"
+        "login.php"
       )}?redirect=${redirect}">Connexion</a>`;
       auth.innerHTML = `<a href="${urlFromBase(
         "register.php"

@@ -13,9 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     if (isLoggedIn) {
       setLink(authButton, "logout.php", "Déconnexion");
-      setLink(profilButton, "profil.php", "Profil");
+      setLink(profilButton, "profile.php", "Profil");
     } else {
-      setLink(authButton, "connexion.php", "Connexion");
+      setLink(authButton, "login.php", "Connexion");
       profilButton.style.display = "none";
     }
   }
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       } else if (xhr.status === 401) {
         alert("Vous devez être connecté.");
-        // Optionnel : window.location.href = "connexion.php?redirect=" + encodeURIComponent(location.pathname);
+        // Optionnel : window.location.href = "login.php?redirect=" + encodeURIComponent(location.pathname);
       } else if (xhr.status === 403) {
         alert(data.message || "Action non autorisée.");
       } else if (xhr.status === 404) {

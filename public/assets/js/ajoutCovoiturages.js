@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Utiliser l’URL du formulaire si définie, sinon fallback
     const actionAttr =
       voyageForm.getAttribute("action") ||
-      "../backend/handlers/ajoutCovoiturages.php";
+      "../backend/handlers/ajoutrides.php";
     const url = new URL(actionAttr, document.baseURI).toString();
 
     const xhr = new XMLHttpRequest();
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       } else if (xhr.status === 401) {
         alert("Vous devez être connecté pour saisir un voyage.");
-        // Optionnel : window.location.href = "connexion.php?redirect=" + encodeURIComponent(window.location.pathname);
+        // Optionnel : window.location.href = "login.php?redirect=" + encodeURIComponent(window.location.pathname);
       } else if (xhr.status === 403) {
         alert(data.message || "Action non autorisée.");
       } else if (xhr.status === 404) {

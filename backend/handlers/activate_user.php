@@ -4,7 +4,7 @@ require __DIR__ . '/../../public/init.php'; // ← bootstrap + db.php + session_
 
 // 1) Autorisation : réservé aux admins
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header('Location: ' . BASE_URL . 'accueil.php');
+    header('Location: ' . BASE_URL . 'home.php');
     exit;
 }
 

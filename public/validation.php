@@ -128,9 +128,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         <div class="menu-toggle" id="menu-toggle">☰</div>
         <nav id="navbar">
             <ul>
-                <li><a href="accueil.php">Accueil</a></li>
+                <li><a href="home.php">Accueil</a></li>
                 <li><a href="contact_info.php">Contact</a></li>
-                <li><a href="covoiturages.php">Covoiturages</a></li>
+                <li><a href="rides.php">Covoiturages</a></li>
             </ul>
         </nav>
     </div>
@@ -174,7 +174,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 
@@ -213,8 +213,8 @@ if (document.getElementById('confirmationModal')) {
     var modal = document.getElementById("confirmationModal");
     var closeBtn = document.querySelector(".close-btn");
     modal.style.display = "flex";
-    closeBtn.onclick = () => { modal.style.display = "none"; window.location.href = "accueil.php"; }
-    window.onclick = (e) => { if (e.target === modal) { modal.style.display = "none"; window.location.href = "accueil.php"; }}
+    closeBtn.onclick = () => { modal.style.display = "none"; window.location.href = "home.php"; }
+    window.onclick = (e) => { if (e.target === modal) { modal.style.display = "none"; window.location.href = "home.php"; }}
 }
 </script>
 </body>

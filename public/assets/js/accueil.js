@@ -44,13 +44,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (isLoggedIn) {
     setLink(authButton, "logout.php", "Déconnexion");
-    setLink(profilButton, "profil.php", "Profil");
+    setLink(profilButton, "profile.php", "Profil");
     setLink(authButtonMobile, "logout.php", "Déconnexion");
-    setLink(profilButtonMobile, "profil.php", "Profil");
+    setLink(profilButtonMobile, "profile.php", "Profil");
   } else {
-    setLink(authButton, "connexion.php", "Connexion");
+    setLink(authButton, "login.php", "Connexion");
     if (profilButton) profilButton.style.display = "none";
-    setLink(authButtonMobile, "connexion.php", "Connexion");
+    setLink(authButtonMobile, "login.php", "Connexion");
     if (profilButtonMobile) profilButtonMobile.style.display = "none";
   }
 

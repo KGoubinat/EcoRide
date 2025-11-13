@@ -34,5 +34,5 @@ if ($chk->fetchColumn() > 0) { exit('Véhicule utilisé par un covoiturage actif
 $del = $pdo->prepare("DELETE FROM chauffeur_info WHERE id = ?");
 $del->execute([$vehId]);
 
-header('Location: ' . BASE_URL . 'profil.php?message=' . urlencode('Véhicule supprimé'));
+header('Location: ' . BASE_URL . 'profile.php?message=' . urlencode('Véhicule supprimé'));
 exit;

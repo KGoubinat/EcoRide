@@ -180,7 +180,7 @@ function notifyRideEvent(PDO $pdo, int $rideId, string $event, int $triggerUserI
         htmlspecialchars((string)$ride['heure_depart'])
     );
 
-    $profilLink = BASE_URL . 'profil.php';
+    $profilLink = BASE_URL . 'profile.php';
     $content = "
       <p>Bonjour,</p>
       <p>{$title}.</p>

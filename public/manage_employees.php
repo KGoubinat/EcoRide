@@ -7,7 +7,7 @@ header('X-Robots-Tag: noindex, nofollow', true);
 
 // Admin uniquement
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header('Location: ' . BASE_URL . 'accueil.php');
+    header('Location: ' . BASE_URL . 'home.php');
     exit;
 }
 
@@ -79,7 +79,7 @@ $back = 'manage_employees.php' . ($search !== '' ? ('?q='.urlencode($search)) : 
       <li><a href="manage_employees.php" aria-current="page">Gérer les Employés</a></li>
       <li><a href="manage_users.php">Gérer les Utilisateurs</a></li>
       <li>
-        <form action="../backend/handlers/deconnexion.php" method="POST" style="display:inline">
+        <form action="../backend/handlers/delogin.php" method="POST" style="display:inline">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <button type="submit" class="linklike">Déconnexion</button>
         </form>
@@ -158,7 +158,7 @@ $back = 'manage_employees.php' . ($search !== '' ? ('?q='.urlencode($search)) : 
             <span>|</span>
             <span>EcoRide@gmail.com</span>
             <span>|</span>
-            <a href="mentions_legales.php">Mentions légales</a>
+            <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
 

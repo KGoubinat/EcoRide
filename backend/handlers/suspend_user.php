@@ -5,7 +5,7 @@ require __DIR__ . '/../../public/init.php';
         
 
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {
-    header('Location: ' . BASE_URL . 'accueil.php', true, 302);
+    header('Location: ' . BASE_URL . 'home.php', true, 302);
     exit;
 }
 

@@ -1,11 +1,11 @@
 <?php
-// connexion.php
+// login.php
 declare(strict_types=1);
 require __DIR__ . '/../../public/init.php'; // charge .env + BASE_URL + getPDO()
 
 // Autoriser seulement des redirections sûres (internes)
 function is_safe_redirect(string $url): bool {
-    if (str_starts_with($url, '/')) return true;                // /profil.php
+    if (str_starts_with($url, '/')) return true;                // /profile.php
     if (preg_match('#^https?://#i', $url)) return false;        // bloque externes
     return !preg_match('#^[a-z]+://#i', $url);                  // bloque schémas custom
 }
@@ -17,7 +17,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     if ($email === '' || $pwd === '') {
         // message neutre pour éviter l'énumération
-        header('Location: ' . BASE_URL . 'connexion.php?error=missing');
+        header('Location: ' . BASE_URL . 'login.php?error=missing');
         exit;
     }
 
@@ -36,7 +36,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         // Réponse neutre (pas d’info si l’email existe)
         if (!$user) {
-            header('Location: ' . BASE_URL . 'connexion.php?error=credentials');
+            header('Location: ' . BASE_URL . 'login.php?error=credentials');
             exit;
         }
 
@@ -62,7 +62,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         }
 
         if (!$ok) {
-            header('Location: ' . BASE_URL . 'connexion.php?error=credentials');
+            header('Location: ' . BASE_URL . 'login.php?error=credentials');
             exit;
         }
 
@@ -78,7 +78,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         if ($etat !== 'active') {
             // Message neutre côté UI
-            header('Location: ' . BASE_URL . 'connexion.php?error=inactive');
+            header('Location: ' . BASE_URL . 'login.php?error=inactive');
             exit;
         }
 
@@ -115,17 +115,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             exit;
         }
 
-        header('Location: ' . BASE_URL . 'profil.php');
+        header('Location: ' . BASE_URL . 'profile.php');
         exit;
 
     } catch (Throwable $e) {
         http_response_code(500);
-        header('Location: ' . BASE_URL . 'connexion.php?error=internal');
+        header('Location: ' . BASE_URL . 'login.php?error=internal');
         exit;
     }
 }
 
 
 // si on arrive ici sans POST, renvoyer vers le formulaire
-header('Location: ' . BASE_URL . 'connexion.php');
+header('Location: ' . BASE_URL . 'login.php');
 exit;

@@ -2,7 +2,7 @@
 (function () {
   const cancelButtons = document.querySelectorAll(".cancel-ride-button");
 
-  // Modale (IDs conformes à profil.php)
+  // Modale (IDs conformes à profile.php)
   const cancelModal = document.getElementById("cancel-modal");
   const btnConfirm = document.getElementById("ride-cancel-confirm");
   const btnCancel = document.getElementById("ride-cancel-cancel");

@@ -13,7 +13,7 @@ function redirect(string $path, array $qs = []): never {
 
 // Admin only
 if (($_SESSION['user_role'] ?? null) !== 'administrateur') {
-  redirect('accueil.php');
+  redirect('home.php');
 }
 
 $pdo = function_exists('getPDO') ? getPDO() : ($pdo ?? null);

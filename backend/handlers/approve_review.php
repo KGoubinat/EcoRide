@@ -28,7 +28,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // === Auth: employe ou admin ===
 $role = $_SESSION['user_role'] ?? null;
 if (!in_array($role, ['employe', 'administrateur'], true)) {
-    redirect('accueil.php');
+    redirect('home.php');
 }
 
 // === CSRF en session (utile pour l’auto-post) ===

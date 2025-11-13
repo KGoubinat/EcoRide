@@ -11,7 +11,7 @@ function redirect(string $path, array $qs = []): never {
 
 // employé ou admin
 if (!in_array($_SESSION['user_role'] ?? null, ['employe','administrateur'], true)) {
-  redirect('accueil.php');
+  redirect('home.php');
 }
 
 $pdo = function_exists('getPDO') ? getPDO() : ($pdo ?? null);

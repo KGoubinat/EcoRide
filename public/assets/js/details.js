@@ -95,12 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
       )
       .then(({ ok, status, data }) => {
         if (ok && (data.success || data.status === "success")) {
-          const target = new URL("profil.php", document.baseURI);
+          const target = new URL("profile.php", document.baseURI);
           target.searchParams.set("message", "reservation_ok");
           window.location.href = target.toString();
         } else if (status === 401) {
           const next = encodeURIComponent(location.pathname + location.search);
-          window.location.href = `connexion.php?redirect=${next}`;
+          window.location.href = `login.php?redirect=${next}`;
         } else {
           alert(data?.message || `Erreur HTTP: ${status}`);
           btn.disabled = false;

@@ -88,7 +88,7 @@ try {
     }
 
     // 10) Redirection propre
-    header('Location: ' . BASE_URL . 'profil.php?message=' . urlencode('Annulation réussie'));
+    header('Location: ' . BASE_URL . 'profile.php?message=' . urlencode('Annulation réussie'));
     exit;
 
 } catch (\Throwable $e) {
