@@ -115,8 +115,8 @@ $employee_name = trim(($_SESSION['firstName'] ?? '') . ' ' . ($_SESSION['lastNam
     </div>
     </div>
 
-<script src ="assets/js/accueil.js" defer></script>
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src ="assets/js/home.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.getElementById("menu-toggle");

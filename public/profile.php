@@ -515,7 +515,7 @@ if (preg_match('~^https?://res\.cloudinary\.com/[^/]+/image/upload/~', $photoUrl
             <!-- Informations véhicule -->
             <section class="chauffeur-info">
                 <h2>Informations du véhicule</h2>
-                <form id="vehicleForm" method="POST" action="api/ajouter_vehicule.php" enctype="multipart/form-data">
+                <form id="vehicleForm" method="POST" action="api/add_vehicle.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>">
 
                     <div class="form-group">
@@ -918,7 +918,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
 
   // 2) Démarrer / terminer un covoiturage (plus d'onclick inline)
-  //    startTrip / endTrip doivent exister (ex: dans demarrerCovoiturages.js)
+  //    startTrip / endTrip doivent exister (ex: dans start_ride.js)
   document.querySelectorAll('.btn-start-trip[data-ride-id]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.getAttribute('data-ride-id'), 10);
@@ -940,16 +940,16 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- Vos fichiers JS -->
-<script src="assets/js/demarrerCovoiturages.js" defer></script>
-<script src="assets/js/annulerReservation.js" defer></script>
-<script src="assets/js/annulerCovoiturage.js" defer></script>
-<script src="assets/js/ajoutVehicle.js" defer></script>
-<script src="assets/js/profil.js" defer></script>
-<script src="assets/js/ajoutCovoiturages.js" defer></script>
-<script src="assets/js/status.js" defer></script>
-<script src="assets/js/accueil.js" defer></script>
-<script src="assets/js/supprimerConfirm.js" defer></script>
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/start_ride.js" defer></script>
+<script src="assets/js/cancel_reservation.js" defer></script>
+<script src="assets/js/cancel_ride.js" defer></script>
+<script src="assets/js/add_vehicle.js" defer></script>
+<script src="assets/js/profile.js" defer></script>
+<script src="assets/js/create_ride.js" defer></script>
+<script src="assets/js/ride_status.js" defer></script>
+<script src="assets/js/home.js" defer></script>
+<script src="assets/js/delete_confirm.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 </body>
 </html>
 

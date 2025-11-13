@@ -1,4 +1,4 @@
-// annulerReservation.js — annulation de réservation avec modale + fallback
+// cancel_reservation.js — annulation de réservation avec modale + fallback
 (function () {
   // Cible uniquement les boutons d'annulation (pas les "Supprimer")
   const buttons = document.querySelectorAll(".btn-danger[data-reservation-id]");

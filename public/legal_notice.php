@@ -135,8 +135,8 @@ $canonical  = rtrim((string)BASE_URL, '/').'/legal_notice.php';
     </div>
 
  
-<script src="assets/js/cookie-consent.js" defer></script>
-<script src="assets/js/accueil.js"></script>
+<script src="assets/js/cookie_consent.js" defer></script>
+<script src="assets/js/home.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

@@ -1,5 +1,5 @@
 <?php
-// participer_covoiturage.php
+// join_ride.php
 declare(strict_types=1);
 require __DIR__ . '/../init.php';
 header('Content-Type: application/json; charset=UTF-8');

@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // URL : on respecte l'attribut action du form (fallback si absent)
     const actionAttr =
       vehicleForm.getAttribute("action") ||
-      "../backend/handlers/ajouter_vehicule.php";
+      "../backend/handlers/add_vehicle.php";
     const url = new URL(actionAttr, document.baseURI).toString();
 
     const xhr = new XMLHttpRequest();

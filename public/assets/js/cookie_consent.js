@@ -1,4 +1,4 @@
-// frontend/js/cookie-consent.js
+// frontend/js/cookie_consent.js
 (function () {
   "use strict";
 

@@ -223,7 +223,7 @@ $back = 'manage_users.php' . ($qs ? ('?' . http_build_query($qs)) : '');
 .linklike { background:none; border:none; padding:0; margin:0; cursor:pointer; color:inherit; font:inherit; text-decoration:underline; }
 </style>
 
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

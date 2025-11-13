@@ -1,4 +1,4 @@
-// assets/js/demarrerCovoiturages.js
+// assets/js/start_ride.js
 (function () {
   function apiUrl(path) {
     return new URL(path, document.baseURI).toString();
@@ -31,7 +31,7 @@
     const csrf = getCsrf();
     if (csrf) fd.append("csrf_token", csrf);
 
-    fetch(apiUrl("api/demarrer_covoiturage.php"), {
+    fetch(apiUrl("api/start_ride.php"), {
       method: "POST",
       body: fd,
       credentials: "same-origin",
@@ -71,7 +71,7 @@
     const csrf = getCsrf();
     if (csrf) fd.append("csrf_token", csrf);
 
-    fetch(apiUrl("api/terminer_covoiturage.php"), {
+    fetch(apiUrl("api/end_ride.php"), {
       method: "POST",
       body: fd,
       credentials: "same-origin",

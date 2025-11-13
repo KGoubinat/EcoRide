@@ -207,7 +207,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     </div>
 
 
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
 if (document.getElementById('confirmationModal')) {
     var modal = document.getElementById("confirmationModal");

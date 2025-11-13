@@ -206,7 +206,7 @@ $back = 'manage_employees.php' . ($search !== '' ? ('?q='.urlencode($search)) : 
     </div>
     </div>
  
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const results = document.getElementById("resultsContainer");

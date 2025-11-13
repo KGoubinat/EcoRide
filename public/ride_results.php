@@ -381,8 +381,8 @@ function driverPhoto(PDO $pdo, array $row): string {
     </div>
 
 
-<script src="assets/js/cookie-consent.js" defer></script>
-<script src="assets/js/filtres.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
+<script src="assets/js/filters.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const menuToggle = document.getElementById("menu-toggle");

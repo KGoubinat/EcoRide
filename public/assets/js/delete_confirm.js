@@ -1,4 +1,4 @@
-// assets/js/supprimerConfirm.js
+// assets/js/delete_confirm.js
 (function () {
   function setupDeleteModal() {
     const modal = document.getElementById("delete-modal");

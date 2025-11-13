@@ -107,10 +107,10 @@ $csrf = $_SESSION['csrf_token'];
     </div>
 
 <!-- Réutilise ton JS de nav (remplit Connexion/Profil) -->
-<script src="assets/js/accueil.js" defer></script>
+<script src="assets/js/home.js" defer></script>
 <!-- Validation + appel API d’inscription -->
-<script src="assets/js/register.js" defer></script>
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/auth_register.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

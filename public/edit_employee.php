@@ -171,7 +171,7 @@ if (!$employee) {
     </div>
     </div>
 
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const menuToggle = document.getElementById("menu-toggle");

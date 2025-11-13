@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fd.append("passengers", String(passengers));
 
     const apiUrl = new URL(
-      "api/participer_covoiturage.php",
+      "api/join_ride.php",
       document.baseURI
     ).toString();
 

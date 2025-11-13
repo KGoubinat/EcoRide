@@ -172,8 +172,8 @@ $backParam = urlencode($back);
     </div>
     </div>
 
-<script src="assets/js/accueil.js" defer></script>
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/home.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
     // Graphiques Chart.js
     const carpoolLabels = <?= json_encode($carpoolLabels, JSON_UNESCAPED_UNICODE) ?>;

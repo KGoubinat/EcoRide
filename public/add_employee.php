@@ -136,7 +136,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
   </div>
 </footer>
 
-<script src="assets/js/cookie-consent.js" defer></script>
-<script src="assets/js/accueil.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
+<script src="assets/js/home.js" defer></script>
 </body>
 </html>
