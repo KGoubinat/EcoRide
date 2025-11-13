@@ -60,7 +60,7 @@ if (!function_exists('absolute_from_base')) {
 
 
 // 2) Accès BDD
-require_once __DIR__ . '/../backend/bdd/db.php';
+require_once __DIR__ . '/../backend/BDD/db.php';
 
 // 3) Session
 if (session_status() === PHP_SESSION_NONE) {
