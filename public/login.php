@@ -138,7 +138,7 @@ $redirect = $_GET['redirect'] ?? 'home.php';
             <a href="legal_notice.php">Mentions légales</a>
         </div>
     </footer>
-<script src="assets/js/cookie-consent.js" defer></script>
+<script src="assets/js/cookie_consent.js" defer></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   // Menu burger

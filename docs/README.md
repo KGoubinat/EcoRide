@@ -44,9 +44,8 @@ Le projet est développé en PHP pour le backend, HTML/CSS pour l'interface util
 - **HTML/CSS** : Structure et design des pages.
 - **PHP** : Logique métier et traitement des données.
 - **MySQL** : Stockage des utilisateurs, trajets, réservations.
-- **Tailwind CSS** : Framework CSS pour le style.
 - **Docker** : Conteneurisation de l'environnement.
-- **XAMPP** (optionnel) : Développement local.
+- **XAMPP** : Développement local.
 - **Heroku** : Déploiement en ligne.
 
 ---
@@ -102,16 +101,4 @@ Ecoride/
 ├── composer.json
 ├── tailwind.config.js
 └── test.js
-
-Base de données
-La base contient plusieurs tables principales :
-
-users : infos des utilisateurs.
-
-rides : trajets publiés.
-
-bookings : réservations effectuées.
-
-messages : échanges entre utilisateurs.
-
 

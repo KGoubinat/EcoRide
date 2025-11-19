@@ -1,58 +1,120 @@
-USE covoiturage_db;
+USE ecoride;
 
--- Insérer des utilisateurs
-INSERT INTO users (firstName, lastName, email, password, credits, status, plate_number, first_registration_date, smoker_preference, pet_preference, role, etat, photo)
+
+
+-- ================================
+-- 1. UTILISATEURS
+-- Password : Motdepasse123!
+-- ================================
+INSERT INTO users 
+(firstName, lastName, email, password, credits, status, plate_number, first_registration_date, 
+ smoker_preference, pet_preference, role, etat, photo)
 VALUES
-('Alice', 'Dupont', 'alice@example.com', 'hashed_password1', 50.00, 'chauffeur', 'AB-123-CD', '2020-01-15', TRUE, FALSE, 'utilisateur', 'active', NULL),
-('Bob', 'Martin', 'bob@example.com', 'hashed_password2', 20.00, 'passager', NULL, NULL, FALSE, TRUE, 'utilisateur', 'active', NULL),
-('Charlie', 'Durand', 'charlie@example.com', 'hashed_password3', 75.00, 'passager_chauffeur', 'XY-456-ZT', '2018-06-30', NULL, NULL, 'administrateur', 'active', NULL);
+('Marie', 'Dupont', 'marie.dupont@gmail.com',
+ '$2y$10$611rlysI.Awryez4541zCOjAgZ5tZl8hY50.MiG9vH.21S6DYyJzS',
+ 120, 'passager', NULL, NULL, 'non', 'non', 'utilisateur', 'active', NULL),
 
--- Insérer des villes
+('Thomas', 'Leroy', 'thomas.leroy@gmail.com',
+ '$2y$10$611rlysI.Awryez4541zCOjAgZ5tZl8hY50.MiG9vH.21S6DYyJzS',
+ 80, 'chauffeur', NULL, NULL, 'non', 'oui', 'utilisateur', 'active', NULL),
+
+('Sophie', 'Martin', 'sophie.martin@gmail.com',
+ '$2y$10$611rlysI.Awryez4541zCOjAgZ5tZl8hY50.MiG9vH.21S6DYyJzS',
+ 200, 'passager_chauffeur', NULL, NULL, 'oui', 'non', 'utilisateur', 'active', NULL),
+
+('Admin', 'EcoRide', 'admin@gmail.com',
+ '$2y$10$611rlysI.Awryez4541zCOjAgZ5tZl8hY50.MiG9vH.21S6DYyJzS',
+ 0, 'passager', NULL, NULL, 'non', 'non', 'administrateur', 'active', NULL),
+
+('Lucas', 'Morel', 'lucas.morel@gmail.com',
+ '$2y$10$611rlysI.Awryez4541zCOjAgZ5tZl8hY50.MiG9vH.21S6DYyJzS',
+ 30, 'passager', NULL, NULL, 'non', 'oui', 'employe', 'active', NULL);
+
+-- ================================
+-- 2. VILLES
+-- ================================
 INSERT INTO villes (nom) VALUES
-('Paris'), ('Lyon'), ('Marseille'), ('Toulouse'), ('Bordeaux');
+('Paris'), ('Lyon'), ('Marseille'), ('Toulouse'), ('Bordeaux'),
+('Nice'), ('Lille'), ('Nantes'), ('Rennes'), ('Grenoble');
 
--- Insérer des covoiturages
-INSERT INTO covoiturages (user_id, conducteur, note, depart, destination, date, prix, places_restantes, passagers, nb_places_disponibles, ecologique, duree, heure_depart, heure_arrivee, modele_voiture, marque_voiture, energie_voiture, statut)
+-- ================================
+-- 3. CHAUFFEUR INFO
+-- ================================
+INSERT INTO chauffeur_info
+(user_id, plaque_immatriculation, date_1ere_immat, modele, marque, nb_places_disponibles,
+ preferences, smoker_preference, pet_preference, energie, firstName, lastName)
 VALUES
-(1, 'Alice Dupont', 4.8, 'Paris', 'Lyon', '2025-03-25', 30.00, 2, 1, 3, TRUE, '04:30:00', '08:00:00', '12:30:00', 'Model X', 'Tesla', 'Électrique', 'ouvert'),
-(3, 'Charlie Durand', 4.5, 'Marseille', 'Bordeaux', '2025-04-10', 50.00, 3, 1, 4, FALSE, '06:00:00', '07:00:00', '13:00:00', 'Golf', 'Volkswagen', 'Diesel', 'ouvert');
+(2, 'AB-321-CD', '2019-04-12', 'Clio', 'Renault', 3,
+ 'Musique calme', 0, 1, 'Essence', 'Thomas', 'Leroy'),
 
--- Insérer des réservations
-INSERT INTO reservations (user_id, covoiturage_id, statut, depart, destination, heure_depart, date_traject, places_reservees)
-VALUES
-(2, 1, 'confirmé', 'Paris', 'Lyon', '08:00:00', '2025-03-25', 1),
-(2, 2, 'en attente', 'Marseille', 'Bordeaux', '07:00:00', '2025-04-10', 1);
+(3, 'GH-876-FR', '2021-07-22', '308', 'Peugeot', 4,
+ 'AC, pas d’animaux', 1, 0, 'Diesel', 'Sophie', 'Martin');
 
--- Insérer des avis (reviews)
-INSERT INTO reviews (user_id, driver_id, rating, comment, status, created_at)
+-- ================================
+-- 4. TRAJETS
+-- ================================
+INSERT INTO covoiturages 
+(user_id, conducteur, note, depart, destination, date, prix, places_restantes, passagers,
+ ecologique, photo, duree, heure_depart, heure_arrivee, modele_voiture, marque_voiture,
+ energie_voiture, vehicule_id, nb_places_disponibles, statut)
 VALUES
-(2, 1, 5.0, 'Super conducteur, très ponctuel !', 'approved', NOW()),
-(3, 1, 4.2, 'Bonne expérience, voiture propre.', 'approved', NOW());
+(2, 'Thomas Leroy', 4.6, 'Paris', 'Lyon', '2025-04-10', 25.00,
+ 2, 1, 1, 'default.jpg', '05:00:00', '08:00:00', '13:00:00',
+ 'Clio', 'Renault', 'Essence', 1, 3, 'en attente'),
 
--- Insérer des avis conducteurs
-INSERT INTO avis_conducteurs (conducteur_id, utilisateur_id, note, commentaire, date_avis, utilisateur_email, ride_id)
-VALUES
-(1, 2, 5.0, 'Très bonne conduite et ponctuel.', NOW(), 'bob@example.com', 1),
-(3, 2, 4.0, 'Conducteur agréable et sympathique.', NOW(), 'bob@example.com', 2);
+(3, 'Sophie Martin', 4.8, 'Marseille', 'Nice', '2025-04-15', 15.00,
+ 3, 0, 0, 'default.jpg', '02:15:00', '09:00:00', '11:15:00',
+ '308', 'Peugeot', 'Diesel', 2, 4, 'en attente'),
 
--- Insérer des informations sur les chauffeurs
-INSERT INTO chauffeur_info (user_id, plaque_immatriculation, date_1ere_immat, modele, marque, nb_places_disponibles, preferences, smoker_preference, pet_preference, energie, firstName, lastName)
-VALUES
-(1, 'AB-123-CD', '2020-01-15', 'Model X', 'Tesla', 3, 'Climatisation, WiFi', TRUE, FALSE, 'Électrique', 'Alice', 'Dupont'),
-(3, 'XY-456-ZT', '2018-06-30', 'Golf', 'Volkswagen', 4, 'Climatisation', NULL, NULL, 'Diesel', 'Charlie', 'Durand');
+(3, 'Sophie Martin', 5.0, 'Toulouse', 'Bordeaux', '2025-04-20', 20.00,
+ 4, 0, 1, 'default.jpg', '02:30:00', '10:00:00', '12:30:00',
+ '308', 'Peugeot', 'Diesel', 2, 4, 'en attente');
 
--- Insérer des incidents (troublesome_rides)
-INSERT INTO troublesome_rides (ride_id, user_id, driver_id, comment, status, created_at)
+-- ================================
+-- 5. RÉSERVATIONS
+-- ================================
+INSERT INTO reservations
+(user_id, covoiturage_id, statut, depart, destination, heure_depart, date_traject, places_reservees)
 VALUES
-(1, 2, 1, 'Conducteur en retard de 30 minutes.', 'en attente', NOW());
+(1, 1, 'terminé', 'Paris', 'Lyon', '08:00:00', '2025-04-10', 1),
+(5, 1, 'en attente', 'Paris', 'Lyon', '08:00:00', '2025-04-10', 1),
+(1, 2, 'terminé', 'Marseille', 'Nice', '09:00:00', '2025-04-15', 1);
 
--- Insérer des transactions de crédit
-INSERT INTO users_credit (user_id, type_transaction, date_transaction, description, credit)
+-- ================================
+-- 6. AVIS CHAUFFEURS
+-- ================================
+INSERT INTO avis_conducteurs
+(conducteur_id, utilisateur_id, note, commentaire, utilisateur_email, ride_id)
 VALUES
-(1, 'ajout', NOW(), 'Récompense pour covoiturage', 10.00),
-(2, 'retrait', NOW(), 'Paiement du covoiturage', -30.00);
+(2, 1, 5, 'Très bon conducteur, ponctuel.', 'marie.dupont@gmail.com', 1),
+(3, 1, 4, 'Trajet agréable et voiture propre.', 'marie.dupont@gmail.com', 2);
 
--- Insérer des tokens de validation
-INSERT INTO validation_tokens (user_id, ride_id, token, expiration, created_at)
+-- ================================
+-- 7. REVIEWS
+-- ================================
+INSERT INTO reviews (user_id, driver_id, rating, comment, status)
 VALUES
-(2, 1, 'TOKEN123456', DATE_ADD(NOW(), INTERVAL 2 DAY), NOW());
+(1, 2, 5, 'Excellent trajet, je recommande.', 'approved'),
+(5, 3, 4, 'Bonne ambiance, chauffeur sympa.', 'approved');
+
+-- ================================
+-- 8. INCIDENTS
+-- ================================
+INSERT INTO troublesome_rides (ride_id, user_id, driver_id, comment)
+VALUES (1, 5, 2, 'Le conducteur avait 10 minutes de retard.');
+
+-- ================================
+-- 9. CREDIT
+-- ================================
+INSERT INTO users_credit (user_id, type_transaction, description, credit)
+VALUES
+(1, 'ajout', 'Réservation terminée avec succès', 10),
+(2, 'retrait', 'Paiement trajet Paris → Lyon', -25);
+
+-- ================================
+-- 10. VALIDATION TOKENS
+-- ================================
+INSERT INTO validation_tokens (ride_id, user_id, token, expiration)
+VALUES
+(1, 1, SHA2('token1', 256), DATE_ADD(NOW(), INTERVAL 3 DAY)),
+(2, 5, SHA2('token2', 256), DATE_ADD(NOW(), INTERVAL 3 DAY));

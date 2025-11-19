@@ -284,7 +284,7 @@ function driverPhoto(PDO $pdo, array $row): string {
                         Voyage écologique : <?= !empty($covoiturage['ecologique']) ? 'Oui' : 'Non' ?>
                     </p>
                     <a
-                        href="details.php?id=<?= (int)$covoiturage['id'] ?>
+                        href="ride_details.php?id=<?= (int)$covoiturage['id'] ?>
                             &start=<?= urlencode($start) ?>&end=<?= urlencode($end) ?>
                             &date=<?= urlencode($date) ?>&passengers=<?= urlencode((string)$passengers) ?>
                             &ecolo=<?= urlencode($ecolo) ?>&prix=<?= urlencode($prix) ?>
@@ -328,7 +328,7 @@ function driverPhoto(PDO $pdo, array $row): string {
             Places restantes : <?= (int)$ride['places_restantes'] ?><br>
             Prix : <?= htmlspecialchars((string)$ride['prix']) ?> €
           </p>
-          <a href="details.php?id=<?= (int)$ride['id'] ?>" class="btn-detail">+ d'informations</a>
+          <a href="ride_details.php?id=<?= (int)$ride['id'] ?>" class="btn-detail">+ d'informations</a>
         </div>
       </div>
     <?php endforeach; ?>

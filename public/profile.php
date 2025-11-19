@@ -115,7 +115,7 @@ if ($rowAvg && (int)$rowAvg['nb'] > 0) {
     $nbAvis  = (int)$rowAvg['nb'];
 }
 
-// Réservations de lâ€™utilisateur
+// Réservations de l'utilisateur
 $stmtReservations = $pdo->prepare("
     SELECT 
         r.id AS reservation_id,

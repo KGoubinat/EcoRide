@@ -1,10 +1,25 @@
 <?php
+
+
 // --- Charger Composer + .env ---
 $root = dirname(__DIR__); // dossier racine du projet (là où se trouve .env)
 if (file_exists($root . '/vendor/autoload.php')) {
     require $root . '/vendor/autoload.php';
-    Dotenv\Dotenv::createImmutable($root)->safeLoad(); // charge .env -> getenv()/$_ENV dispo
-} else {
+    Dotenv\Dotenv::createImmutable($root)->safeLoad();
+
+    // Rendre APP_ENV visible à getenv()
+    if (isset($_ENV['APP_ENV'])) putenv("APP_ENV=" . $_ENV['APP_ENV']);
+
+    // Rendre variables BDD visibles à getenv()
+    if (isset($_ENV['DB_HOST'])) putenv("DB_HOST=" . $_ENV['DB_HOST']);
+    if (isset($_ENV['DB_PORT'])) putenv("DB_PORT=" . $_ENV['DB_PORT']);
+    if (isset($_ENV['DB_NAME'])) putenv("DB_NAME=" . $_ENV['DB_NAME']);
+    if (isset($_ENV['DB_USER'])) putenv("DB_USER=" . $_ENV['DB_USER']);
+    if (isset($_ENV['DB_PASS'])) putenv("DB_PASS=" . $_ENV['DB_PASS']);
+}
+
+
+ else {
     // (fallback sans composer) : charger .env à la main
     $envFile = $root . '/.env';
     if (is_file($envFile)) {
@@ -49,7 +64,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 
 // Chemin de base différent selon environnement
 if ($host === 'localhost') {
-    $basePath = '/MesGrossesCouilles/public/';
+    $basePath = '/ecoride/public/';
 } else {
     $basePath = '/'; // Heroku/Prod : racine
 }
