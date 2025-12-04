@@ -23,8 +23,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     try {
         $pdo = getPDO();
-
-        //  IMPORTANT: on sélectionne bien `etat` (pas `status`)
         $st = $pdo->prepare('
             SELECT id, firstName, lastName, email, password, role, etat
             FROM users

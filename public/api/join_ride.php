@@ -94,7 +94,7 @@ try {
     $pdo->rollBack(); echo json_encode(['success'=>false,'message'=>'Vous avez déjà une réservation pour ce covoiturage.']); exit;
   }
 
-  // 6) Insérer la réservation (avec places_reservees si la colonne existe)
+  // 6) Insérer la réservation 
   if ($hasPlacesReservees) {
     $stRes = $pdo->prepare("
       INSERT INTO reservations (user_id, covoiturage_id, statut, places_reservees)

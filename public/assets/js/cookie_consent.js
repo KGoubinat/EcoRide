@@ -46,34 +46,31 @@
   }
 
   // ---- Application du consentement aux scripts ----
-  function applyConsentToScripts(consent) {
-    const scripts = document.querySelectorAll('script[type="text/plain"][data-consent]:not([data-applied="1"])');
+   function applyConsentToScripts(consent) {
+  const scripts = document.querySelectorAll(
+    'script[type="text/plain"][data-consent]:not([data-applied="1"])'
+  );
 
-    scripts.forEach(srcScript => {
-      const key = srcScript.dataset.consent;
-      const allowed = !!consent[key]; // true si autorisé
+  scripts.forEach(srcScript => {
+    const key = srcScript.dataset.consent;
+    const allowed = !!consent[key];
 
-      if (!allowed) {
-        return; // on ne charge pas ce script
-      }
+    if (!allowed) return;
 
-      // Marquer comme appliqué pour éviter les doublons
-      srcScript.dataset.applied = '1';
+    srcScript.dataset.applied = "1";
 
-      if (srcScript.dataset.src) {
-        // Script externe (analytics par ex)
-        const s = document.createElement('script');
-        s.src = srcScript.dataset.src;
-        s.async = srcScript.async;
-        document.head.appendChild(s);
-      } else if (srcScript.textContent.trim() !== '') {
-        // Script inline
-        const s = document.createElement('script');
-        s.text = srcScript.textContent;
-        document.body.appendChild(s);
-      }
-    });
-  }
+  
+    const externalSrc = srcScript.dataset.src;
+    if (externalSrc) {
+      const s = document.createElement("script");
+      s.src = externalSrc;
+      s.async = true;
+      document.head.appendChild(s);
+    }
+  });
+}
+
+
 
   // ---- Initialisation au chargement ----
   document.addEventListener('DOMContentLoaded', function () {

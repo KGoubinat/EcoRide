@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const a = document.createElement("a");
     a.setAttribute("href", href);
     a.textContent = label;
+    a.id = "auto-link-" + Math.random().toString(36).slice(2);
     li.appendChild(a);
     // s'assurer qu'il est visible
     li.style.display = "";

@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/init.php';  // <-- une ligne pour tout initialiser
 
+
 // Vérifie si l'utilisateur est connecté
 $isLoggedIn = isset($_SESSION['user_id']); 
 
@@ -104,7 +105,7 @@ $consent = getConsent();
                     
                     <datalist id="cities">
                         <?php foreach ($villes as $ville) : ?>
-                            <option value="<?= htmlspecialchars($ville) ?>">
+                            <option value="<?= htmlspecialchars($ville) ?>"></option>
                         <?php endforeach; ?>
                     </datalist>
 
@@ -163,9 +164,9 @@ $consent = getConsent();
     <div id="cookie-modal" class="cookie-modal" hidden>
     <div class="cookie-modal-card">
         <h3>Préférences de cookies</h3>
-        <label><input type="checkbox" checked disabled> Essentiels (toujours actifs)</label><br>
-        <label><input type="checkbox" id="consent-analytics"> Mesure d’audience</label><br>
-        <label><input type="checkbox" id="consent-marketing"> Marketing</label>
+        <label><input type="checkbox" id="consent-essential" name="consent-essential" checked disabled> Essentiels (toujours actifs)</label><br>
+        <label><input type="checkbox" id="consent-analytics" name="consent-analytics"> Mesure d’audience</label><br>
+        <label><input type="checkbox" id="consent-marketing" name="consent-marketing"> Marketing</label>
         <div class="cookie-modal-actions">
         <button data-action="save"  type="button">Enregistrer</button>
         <button data-action="close" type="button">Fermer</button>
@@ -178,19 +179,13 @@ $consent = getConsent();
     <script src="assets/js/home.js" defer></script>
     
     <!-- Analytics (bloqué tant que pas consenti) -->
-    <script
-        type="text/plain"
-        data-consent="analytics"
-        data-src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"
-        async
-    ></script>
-
     <script type="text/plain" data-consent="analytics">
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date()); 
-        gtag('config', 'G-XXXXXXX');
+    console.log("Analytics activé (mode démo)");
     </script>
+
+
+    <script type="text/plain" data-consent="analytics" data-src="assets/js/analytics.js"></script>
+
 
     <!-- Exemple marketing -->
     <script type="text/plain" data-consent="marketing"></script>
